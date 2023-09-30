@@ -6,6 +6,6 @@ const recycleBinSchema = new mongoose.Schema({
   deletedAt: { type: Date, default: Date.now },
 });
 
-const RecycleBinItem = mongoose.model('RecycleBinItem', recycleBinSchema);
+const RecycleBinItem = mongoose.model('recycleBinItems', recycleBinSchema);
 
 module.exports = RecycleBinItem;
