@@ -4,32 +4,28 @@ import Axios from "axios";
 
 const Blocks = () => {
   const [listOfBlocks, setListOfBlocks] = useState<any[]>([]);
-  const [blockName, setBlockName] = useState(null);
-  const [name, setName] = useState(null);
-  const [email, setEmail] = useState(null);
-  const [username, setUsername] = useState(null);
-  const [password, setPassword] = useState(null);
-  const [picture, setPicture] = useState(null);
-  const [securityQuestions, setSecurityQuestions] = useState(null);
 
   useEffect(() => {
-    Axios.get("http://localhost:3001/getBlock").then((response) => {
-      setListOfBlocks(response.data);
-    });
+    Axios.get("http://localhost:3001/getBlock")
+      .then((response) => {
+        setListOfBlocks(response.data);
+      })
+      .catch((err) => {
+        console.error("Error fetching blocks: ", err);
+      });
   });
 
-  const createBlock = () => {
-    Axios.post("http://localhost:3001/postBlock", {
-      blockName: blockName,
-      name: name,
-      email: email,
-      username: username,
-      password: password,
-      picture: picture,
-      securityQuestions: [securityQuestions],
-    }).then((response) => {
-      alert("Block was created!");
-    });
+  const handleDeleteBlock = (blockId: string) => {
+    Axios.delete(`http://localhost:3001/deleteBlock/${blockId}`)
+      .then(() => {
+        const updatedBlockList = listOfBlocks.filter(
+          (block) => block.id !== blockId
+        );
+        setListOfBlocks(updatedBlockList);
+      })
+      .catch((err) => {
+        console.error("Error deleting block: ", err);
+      });
   };
 
   return (
@@ -123,6 +119,14 @@ const Blocks = () => {
                     </button>
                     <button type="button" className="btn btn-primary">
                       Save block
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-danger"
+                      data-bs-dismiss="modal"
+                      onClick={() => handleDeleteBlock(item._id)}
+                    >
+                      Delete block
                     </button>
                   </div>
                 </div>

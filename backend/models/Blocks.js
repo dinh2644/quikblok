@@ -1,5 +1,10 @@
 const mongoose = require('mongoose');
 
+const securityQuestionSchema = new mongoose.Schema({
+  question: String,
+  answer: String,
+})
+
 const blockSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
   blockName: String,
@@ -8,7 +13,7 @@ const blockSchema = new mongoose.Schema({
   username: String,
   password: String,
   picture: String,
-  securityQuestions: [String],
+  securityQuestions: [securityQuestionSchema],
 });
 
 const Block = mongoose.model('blocks', blockSchema);
