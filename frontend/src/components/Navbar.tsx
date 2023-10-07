@@ -7,11 +7,9 @@ const Navbar = () => {
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container">
         {/* Logo/Name */}
-        <a className="navbar-brand">
-          <Link to="/" className="link-unstyled">
-            QuikBlok
-          </Link>
-        </a>
+        <Link to="/" className="navbar-brand link-unstyled">
+          QuikBlok
+        </Link>
 
         <SearchBar />
 
@@ -34,16 +32,12 @@ const Navbar = () => {
             />
           </button>
           <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a className="dropdown-item">
-              <Link to="/profile" className="link-unstyled">
-                Profile
-              </Link>
-            </a>
-            <a className="dropdown-item">
-              <Link to="/settings" className="link-unstyled">
-                Settings
-              </Link>
-            </a>
+            <Link to="/profile" className="dropdown-item link-unstyled">
+              Profile
+            </Link>
+            <Link to="/settings" className="dropdown-item link-unstyled">
+              Settings
+            </Link>
           </div>
         </div>
       </div>

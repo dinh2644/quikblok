@@ -32,10 +32,9 @@ const Blocks = () => {
     <>
       <div className="container-fluid">
         <div className="row">
-          {listOfBlocks.map((item) => (
-            <div className="col-xl-2">
+          {listOfBlocks.map((item, index: number) => (
+            <div className="col-xl-2" key={index}>
               <div
-                key={item._id}
                 className="card text-center mb-3 mt-4"
                 style={{ width: "18rem", cursor: "pointer" }}
                 data-bs-toggle="modal"
@@ -53,9 +52,9 @@ const Blocks = () => {
             </div>
           ))}
 
-          {listOfBlocks.map((item) => (
+          {listOfBlocks.map((item, index: number) => (
             <div
-              key={item._id}
+              key={index}
               className="modal fade"
               id={`staticBackdrop${item._id}`}
               data-bs-backdrop="static"
@@ -99,13 +98,15 @@ const Blocks = () => {
                           <p>
                             <strong>Security Questions:</strong>
                           </p>
-                          <ul>
-                            {item.securityQuestions.map(
-                              (question: string, index: number) => (
-                                <li key={index}>{question}</li>
-                              )
-                            )}
-                          </ul>
+
+                          {item.securityQuestions.map(
+                            (item: any, index: number) => (
+                              <ul key={index}>
+                                <li>{item.question}</li>
+                                <li>{item.answer}</li>
+                              </ul>
+                            )
+                          )}
                         </div>
                       )}
                   </div>

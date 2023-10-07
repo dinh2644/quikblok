@@ -1,11 +1,37 @@
 import { useState } from "react";
 
-const CardBodyForm = () => {
-  const [securityQuestions, setSecurityQuestions] = useState<
-    { question: string; answer: string }[]
-  >([{ question: "", answer: "" }]);
+interface sqTypes {
+  question: string;
+  answer: string;
+}
 
-  const handleAddQuestion = (e) => {
+interface FormProps {
+  onSubmit: (data: {
+    blockName: string;
+    name: string;
+    email: string;
+    username: string;
+    password: string;
+    picture: string;
+    securityQuestions: sqTypes[];
+  }) => void;
+}
+
+const CardBodyForm = ({ onSubmit }: FormProps) => {
+  const [blockName, setBlockName] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [picture, setPicture] = useState("");
+  const [securityQuestions, setSecurityQuestions] = useState<sqTypes[]>([
+    {
+      question: "",
+      answer: "",
+    },
+  ]);
+
+  const handleAddQuestion = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setSecurityQuestions([...securityQuestions, { question: "", answer: "" }]);
   };
@@ -21,64 +47,94 @@ const CardBodyForm = () => {
     updatedSecurityQuestions[index].answer = newAnswer;
     setSecurityQuestions(updatedSecurityQuestions);
   };
+
+  const handleSubmit = () => {
+    const formData = {
+      blockName,
+      name,
+      email,
+      username,
+      password,
+      picture,
+      securityQuestions,
+    };
+    onSubmit(formData);
+  };
+
   return (
     <>
       <form>
         <div className="mb-3">
-          <label htmlFor="exampleInputEmail1" className="form-label">
+          <label htmlFor="blockName" className="form-label">
             Block name
           </label>
-          <input type="text" className="form-control" id="" />
+          <input
+            type="text"
+            className="form-control"
+            id="blockName"
+            onChange={(e) => setBlockName(e.target.value)}
+            value={blockName}
+          />
         </div>
         <div className="mb-3">
-          <label htmlFor="exampleInputPassword1" className="form-label">
+          <label htmlFor="nameInput" className="form-label">
             Name
           </label>
           <input
             type="text"
             className="form-control"
-            id="exampleInputPassword1"
+            id="nameInput"
+            onChange={(e) => setName(e.target.value)}
+            value={name}
           />
         </div>
         <div className="mb-3">
-          <label htmlFor="exampleInputPassword1" className="form-label">
+          <label htmlFor="emailInput" className="form-label">
             Email
           </label>
           <input
             type="email"
             className="form-control"
-            id="exampleInputPassword1"
+            id="emailInput"
             aria-describedby="emailHelp"
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
           />
         </div>
         <div className="mb-3">
-          <label htmlFor="exampleInputPassword1" className="form-label">
+          <label htmlFor="usernameInput" className="form-label">
             Username
           </label>
           <input
             type="text"
             className="form-control"
-            id="exampleInputPassword1"
+            id="usernameInput"
+            onChange={(e) => setUsername(e.target.value)}
+            value={username}
           />
         </div>
         <div className="mb-3">
-          <label htmlFor="exampleInputPassword1" className="form-label">
+          <label htmlFor="passwordInput" className="form-label">
             Password
           </label>
           <input
             type="password"
             className="form-control"
-            id="exampleInputPassword1"
+            id="passwordInput"
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
           />
         </div>
         <div className="mb-3">
-          <label htmlFor="exampleInputPassword1" className="form-label">
+          <label htmlFor="setpictureInput" className="form-label">
             Set picture
           </label>
           <input
-            type="password"
+            type="image"
             className="form-control"
-            id="exampleInputPassword1"
+            id="setpictureInput"
+            onChange={(e) => setPicture(e.target.value)}
+            value={picture}
           />
         </div>
         {securityQuestions.map((sq, index: number) => (
@@ -91,7 +147,7 @@ const CardBodyForm = () => {
               className="form-control"
               id={`question${index}`}
               onChange={(e) => handleQuestionChange(index, e.target.value)}
-              value={sq.answer}
+              value={sq.question}
             />
             <label htmlFor={`answer${index}`} className="form-label">
               Answer
@@ -100,8 +156,8 @@ const CardBodyForm = () => {
               type="text"
               className="form-control"
               id={`answer${index}`}
-              value={sq.answer}
               onChange={(e) => handleAnswerChange(index, e.target.value)}
+              value={sq.answer}
             />
           </div>
         ))}
@@ -109,6 +165,12 @@ const CardBodyForm = () => {
           Add Security Question
         </button>
       </form>
+      <button type="button" className="btn btn-primary">
+        Add block
+      </button>
+      <button type="button" onClick={handleSubmit}>
+        Submit
+      </button>
     </>
   );
 };
