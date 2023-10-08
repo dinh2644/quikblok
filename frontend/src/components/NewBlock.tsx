@@ -13,12 +13,8 @@ const NewBlock = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [picture, setPicture] = useState("");
-  const [securityQuestions, setSecurityQuestions] = useState<sqTypes[]>([
-    {
-      question: "",
-      answer: "",
-    },
-  ]);
+  const [securityQuestions, setSecurityQuestions] = useState<sqTypes[]>([]);
+
   const handleAddSecurityQuestion = (
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
@@ -201,17 +197,19 @@ const NewBlock = () => {
                   <label htmlFor="setpictureInput" className="form-label">
                     Set picture
                   </label>
-                  <FileBase64
-                    type="file"
-                    accept="image/*"
-                    multiple={false}
-                    className="form-control"
-                    id="setpictureInput"
-                    onDone={({ base64 }: { base64: string }) =>
-                      setPicture(base64)
-                    }
-                    value={picture}
-                  />
+                  <div>
+                    <FileBase64
+                      className="file-base64-input "
+                      type="file"
+                      accept="image/*"
+                      multiple={false}
+                      id="setpictureInput"
+                      onDone={({ base64 }: { base64: string }) =>
+                        setPicture(base64)
+                      }
+                      value={picture}
+                    />
+                  </div>
                 </div>
                 {securityQuestions.map((sq, index: number) => (
                   <div className="mb-3" key={index}>
