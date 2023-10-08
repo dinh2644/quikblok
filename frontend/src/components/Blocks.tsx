@@ -1,4 +1,3 @@
-//import { BlockInfo } from "../helper/block-info";
 import { useState, useEffect } from "react";
 import Axios from "axios";
 

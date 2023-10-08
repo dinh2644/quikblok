@@ -1,6 +1,7 @@
-const express = require('express');
+const express = require("express");
 const cors = require("cors");
-const mongoose = require('mongoose'); 
+const mongoose = require("mongoose"); 
+const multer = require("multer");
 const app = express();
 
 const UserModel = require("./models/Users");
@@ -13,6 +14,7 @@ app.use(cors());
 //connection string
 mongoose.connect("mongodb+srv://dinh2644:8luHY4f1Q1KuFxDz@password-manager.pnahnra.mongodb.net/quikblok?retryWrites=true&w=majority")
 
+//retrieve blocks
 app.get("/getBlock", async (req, res) => {
   try {
     const result = await Block.find({}).exec();
@@ -22,13 +24,14 @@ app.get("/getBlock", async (req, res) => {
   }
 });
 
+//create blocks
 app.post("/postBlock",async(req,res) =>{
   const block = req.body;
   const NewBlock = new Block(block);
   await NewBlock.save();
   res.json(block);
 })
-
+//delete blocks
 app.delete("/deleteBlock/:id",(req,res)=>{
   const blockId = req.params.id;
   try{
@@ -43,6 +46,28 @@ app.delete("/deleteBlock/:id",(req,res)=>{
     res.status(500).json({ message: "Internal server error" });
   }
 })
+
+app.put("/updateBlockPicture/:blockId", async (req, res) => {
+  const blockId = req.params.blockId;
+  const { picture } = req.body;
+
+  try {
+    const updatedBlock = await Block.findByIdAndUpdate(
+      blockId,
+      { picture }, // Update the "picture" field with the new base64 data
+      { new: true } // Return the updated block document
+    ).exec();
+
+    if (!updatedBlock) {
+      return res.status(404).json({ message: "Block not found" });
+    }
+
+    res.json({ message: "Block picture updated successfully", block: updatedBlock });
+  } catch (err) {
+    console.error("Error updating block picture:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 app.listen(3001, ()=>{
   console.log("Connection successful!");

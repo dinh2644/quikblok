@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Axios from "axios";
+import FileBase64 from "react-file-base64";
 interface sqTypes {
   question: string;
   answer: string;
@@ -18,7 +19,9 @@ const NewBlock = () => {
       answer: "",
     },
   ]);
-  const handleAddQuestion = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleAddSecurityQuestion = (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
     e.preventDefault();
     setSecurityQuestions([...securityQuestions, { question: "", answer: "" }]);
   };
@@ -34,7 +37,8 @@ const NewBlock = () => {
     updatedSecurityQuestions[index].answer = newAnswer;
     setSecurityQuestions(updatedSecurityQuestions);
   };
-  const handleCreateBlock = () => {
+  const handleCreateBlock = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     Axios.post("http://localhost:3001/postBlock", {
       blockName,
       name,
@@ -45,6 +49,12 @@ const NewBlock = () => {
       securityQuestions,
     })
       .then((response) => {
+        const createdBlock = response.data; // Assuming the response contains the created block including its ID
+        const createdBlockId = createdBlock._id; // Assuming "_id" is the field that holds the block's ID
+
+        // Now that you have the createdBlockId, you can update its picture
+        updateBlockPictureInMongoDB(createdBlockId, picture);
+
         closeModal();
       })
       .catch((err) => {
@@ -62,6 +72,34 @@ const NewBlock = () => {
       cancelButton.click();
     }
   };
+
+  const updateBlockPictureInMongoDB = (blockId: string, picture: string) => {
+    fetch(`/updateBlockPicture/${blockId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ picture: picture }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Block picture updated:", data);
+      })
+      .catch((error) => {
+        console.error("Error updating block picture:", error);
+      });
+  };
+
+  const cancelClick = () => {
+    setBlockName("");
+    setName("");
+    setEmail("");
+    setUsername("");
+    setPassword("");
+    setPicture("");
+    setSecurityQuestions([]);
+  };
+
   return (
     <>
       <button
@@ -163,11 +201,15 @@ const NewBlock = () => {
                   <label htmlFor="setpictureInput" className="form-label">
                     Set picture
                   </label>
-                  <input
+                  <FileBase64
                     type="file"
+                    accept="image/*"
+                    multiple={false}
                     className="form-control"
                     id="setpictureInput"
-                    onChange={(e) => setPicture(e.target.value)}
+                    onDone={({ base64 }: { base64: string }) =>
+                      setPicture(base64)
+                    }
                     value={picture}
                   />
                 </div>
@@ -199,7 +241,7 @@ const NewBlock = () => {
                     />
                   </div>
                 ))}
-                <button type="button" onClick={handleAddQuestion}>
+                <button type="button" onClick={handleAddSecurityQuestion}>
                   Add Security Question
                 </button>
               </form>
@@ -210,6 +252,7 @@ const NewBlock = () => {
                 type="button"
                 className="btn btn-secondary"
                 data-bs-dismiss="modal"
+                onClick={cancelClick}
               >
                 Cancel
               </button>
