@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Axios from "axios";
-import FileBase64 from "react-file-base64";
 interface sqTypes {
   question: string;
   answer: string;
@@ -45,12 +44,6 @@ const NewBlock = () => {
       securityQuestions,
     })
       .then((response) => {
-        const createdBlock = response.data; // Assuming the response contains the created block including its ID
-        const createdBlockId = createdBlock._id; // Assuming "_id" is the field that holds the block's ID
-
-        // Now that you have the createdBlockId, you can update its picture
-        updateBlockPictureInMongoDB(createdBlockId, picture);
-
         closeModal();
       })
       .catch((err) => {
@@ -69,21 +62,31 @@ const NewBlock = () => {
     }
   };
 
-  const updateBlockPictureInMongoDB = (blockId: string, picture: string) => {
-    fetch(`/updateBlockPicture/${blockId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ picture: picture }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Block picture updated:", data);
-      })
-      .catch((error) => {
-        console.error("Error updating block picture:", error);
-      });
+  const uploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const base64 = await convertBase64(file);
+      setPicture(base64);
+    }
+  };
+
+  const convertBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+
+      fileReader.onload = () => {
+        if (typeof fileReader.result === "string") {
+          resolve(fileReader.result);
+        } else {
+          reject(new Error("Failed to read file as base64."));
+        }
+      };
+
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
   };
 
   const cancelClick = () => {
@@ -198,16 +201,12 @@ const NewBlock = () => {
                     Set picture
                   </label>
                   <div>
-                    <FileBase64
-                      className="file-base64-input "
+                    <input
                       type="file"
                       accept="image/*"
-                      multiple={false}
                       id="setpictureInput"
-                      onDone={({ base64 }: { base64: string }) =>
-                        setPicture(base64)
-                      }
-                      value={picture}
+                      className="form-control"
+                      onChange={(e) => uploadImage(e)}
                     />
                   </div>
                 </div>

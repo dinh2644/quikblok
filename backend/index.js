@@ -47,27 +47,27 @@ app.delete("/deleteBlock/:id",(req,res)=>{
   }
 })
 
-app.put("/updateBlockPicture/:blockId", async (req, res) => {
-  const blockId = req.params.blockId;
-  const { picture } = req.body;
+// app.put("/updateBlockPicture/:blockId", async (req, res) => {
+//   const blockId = req.params.blockId;
+//   const { picture } = req.body;
 
-  try {
-    const updatedBlock = await Block.findByIdAndUpdate(
-      blockId,
-      { picture }, // Update the "picture" field with the new base64 data
-      { new: true } // Return the updated block document
-    ).exec();
+//   try {
+//     const updatedBlock = await Block.findByIdAndUpdate(
+//       blockId,
+//       { picture }, // Update the "picture" field with the new base64 data
+//       { new: true } // Return the updated block document
+//     ).exec();
 
-    if (!updatedBlock) {
-      return res.status(404).json({ message: "Block not found" });
-    }
+//     if (!updatedBlock) {
+//       return res.status(404).json({ message: "Block not found" });
+//     }
 
-    res.json({ message: "Block picture updated successfully", block: updatedBlock });
-  } catch (err) {
-    console.error("Error updating block picture:", err);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
+//     res.json({ message: "Block picture updated successfully", block: updatedBlock });
+//   } catch (err) {
+//     console.error("Error updating block picture:", err);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// });
 
 app.listen(3001, ()=>{
   console.log("Connection successful!");

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import "../assets/Card.css";
 import Axios from "axios";
 
 const Blocks = () => {
