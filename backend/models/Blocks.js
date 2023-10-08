@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const securityQuestionSchema = new mongoose.Schema({
   question: String,
   answer: String,
-})
+},{ _id : false})
 
 const blockSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },

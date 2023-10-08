@@ -95,16 +95,23 @@ const Blocks = () => {
                     {item.securityQuestions &&
                       item.securityQuestions.length > 0 && (
                         <div>
-                          <p>
-                            <strong>Security Questions:</strong>
-                          </p>
-
                           {item.securityQuestions.map(
                             (item: any, index: number) => (
-                              <ul key={index}>
-                                <li>{item.question}</li>
-                                <li>{item.answer}</li>
-                              </ul>
+                              <div key={index}>
+                                <p>
+                                  <strong>
+                                    Security Question {index + 1}:
+                                  </strong>
+                                </p>
+                                <ul className="list-inline">
+                                  <li>
+                                    <strong>Q:</strong> {item.question}
+                                  </li>
+                                  <li>
+                                    <strong>A:</strong> {item.answer}
+                                  </li>
+                                </ul>
+                              </div>
                             )
                           )}
                         </div>
