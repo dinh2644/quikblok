@@ -1,7 +1,7 @@
 import Blocks from "../components/Blocks";
 import NewBlock from "../components/NewBlock";
 
-const MainPage = () => {
+const Home = () => {
   return (
     <>
       <Blocks />
@@ -10,4 +10,4 @@ const MainPage = () => {
   );
 };
 
-export default MainPage;
+export default Home;

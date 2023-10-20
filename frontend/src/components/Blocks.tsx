@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import "../assets/Card.css";
 import Axios from "axios";
 
 const Blocks = () => {
@@ -124,9 +123,6 @@ const Blocks = () => {
                       data-bs-dismiss="modal"
                     >
                       Cancel
-                    </button>
-                    <button type="button" className="btn btn-primary">
-                      Save block
                     </button>
                     <button
                       type="button"

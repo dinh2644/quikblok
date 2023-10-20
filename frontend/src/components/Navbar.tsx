@@ -7,7 +7,7 @@ const Navbar = () => {
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container">
           {/* Logo/Name */}
-          <Link to="/" className="navbar-brand link-unstyled">
+          <Link to="/Home" className="navbar-brand link-unstyled">
             QuikBlok
           </Link>
 
@@ -24,19 +24,14 @@ const Navbar = () => {
               aria-expanded="false"
             >
               {/* Empty Profile Picture */}
-              <img
-                src={""}
-                alt="Profile"
-                className="rounded-circle"
-                style={{ width: "32px", height: "32px" }}
-              />
+              <img src={""} alt="profile dropdown" className="rounded-circle" />
             </button>
             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <Link to="/profile" className="dropdown-item link-unstyled">
-                Profile
+              <Link to="/Login" className="dropdown-item link-unstyled">
+                Login
               </Link>
-              <Link to="/settings" className="dropdown-item link-unstyled">
-                Settings
+              <Link to="/Signup" className="dropdown-item link-unstyled">
+                Sign up
               </Link>
             </div>
           </div>

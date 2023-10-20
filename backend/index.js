@@ -4,12 +4,14 @@ const mongoose = require("mongoose");
 const multer = require("multer");
 const app = express();
 
-const UserModel = require("./models/Users");
+//const UserModel = require("./models/Users");
 const Block = require("./models/Blocks");
-const RecycleBinItem = require("./models/Recyclebin")
+//const RecycleBinItem = require("./models/Recyclebin")
 
 app.use(express.json());
 app.use(cors());
+
+
 
 //connection string
 mongoose.connect("mongodb+srv://dinh2644:8luHY4f1Q1KuFxDz@password-manager.pnahnra.mongodb.net/quikblok?retryWrites=true&w=majority")
@@ -47,14 +49,14 @@ app.delete("/deleteBlock/:id",(req,res)=>{
   }
 })
 
-// app.put("/updateBlockPicture/:blockId", async (req, res) => {
+// app.put("/updateBlock/:blockId", async (req, res) => {
 //   const blockId = req.params.blockId;
-//   const { picture } = req.body;
+//   const { block } = req.body;
 
 //   try {
 //     const updatedBlock = await Block.findByIdAndUpdate(
 //       blockId,
-//       { picture }, // Update the "picture" field with the new base64 data
+//       { block }, // Update the "picture" field with the new base64 data
 //       { new: true } // Return the updated block document
 //     ).exec();
 

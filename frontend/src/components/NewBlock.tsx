@@ -34,21 +34,32 @@ const NewBlock = () => {
   };
   const handleCreateBlock = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    Axios.post("http://localhost:3001/postBlock", {
-      blockName,
-      name,
-      email,
-      username,
-      password,
-      picture,
-      securityQuestions,
-    })
-      .then((response) => {
-        closeModal();
+    if (blockName != "") {
+      Axios.post("http://localhost:3001/postBlock", {
+        blockName,
+        name,
+        email,
+        username,
+        password,
+        picture,
+        securityQuestions,
       })
-      .catch((err) => {
-        console.error("Error in creating block: ", err);
-      });
+        .then((response) => {
+          closeModal();
+          setBlockName("");
+          setName("");
+          setEmail("");
+          setUsername("");
+          setPassword("");
+          setPicture("");
+          setSecurityQuestions([]);
+        })
+        .catch((err) => {
+          console.error("Error in creating block: ", err);
+        });
+    } else {
+      alert("Fields must not be empty!");
+    }
   };
   const closeModal = () => {
     let modal = document.getElementById("staticBackdrop");
