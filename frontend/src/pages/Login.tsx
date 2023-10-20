@@ -1,7 +1,17 @@
-import React from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
+  const [data, setData] = useState({
+    username: "",
+    passwordL: "",
+  });
+
+  const handleLoginUser = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    axios.get("/");
+  };
   return (
     <>
       <div className="container">
@@ -34,6 +44,7 @@ const Login = () => {
                   <button
                     type="submit"
                     className="btn btn-color px-5 mb-5 w-100"
+                    onClick={handleLoginUser}
                   >
                     Login
                   </button>

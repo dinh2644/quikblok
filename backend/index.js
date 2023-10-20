@@ -1,20 +1,26 @@
 const express = require("express");
+const dotenv = require('dotenv').config()
 const cors = require("cors");
 const mongoose = require("mongoose"); 
 const multer = require("multer");
 const app = express();
 
-//const UserModel = require("./models/Users");
+const UserModel = require("./models/Users");
 const Block = require("./models/Blocks");
 //const RecycleBinItem = require("./models/Recyclebin")
 
+// middleware
 app.use(express.json());
-app.use(cors());
+//app.use(cors());
+
+// database string
+mongoose.connect(process.env.MONGO_URL).then(()=>console.log("Connection Successful!!!")).catch((err)=>console.error("Connection failed",err));
 
 
+app.use('/', require('./routes/authRoutes'))
 
-//connection string
-mongoose.connect("mongodb+srv://dinh2644:8luHY4f1Q1KuFxDz@password-manager.pnahnra.mongodb.net/quikblok?retryWrites=true&w=majority")
+const port = 8000;
+app.listen(port,()=>console.log(`Server is runnning on port ${port}`));
 
 //retrieve blocks
 app.get("/getBlock", async (req, res) => {
@@ -49,6 +55,16 @@ app.delete("/deleteBlock/:id",(req,res)=>{
   }
 })
 
+// get users
+app.get("/getUsers", async (req, res) => {
+  try {
+    const result = await UserModel.find({}).exec();
+    res.json(result);
+  } catch (err) {
+    res.json(err);
+  }
+});
+
 // app.put("/updateBlock/:blockId", async (req, res) => {
 //   const blockId = req.params.blockId;
 //   const { block } = req.body;
@@ -70,7 +86,3 @@ app.delete("/deleteBlock/:id",(req,res)=>{
 //     res.status(500).json({ message: "Internal server error" });
 //   }
 // });
-
-app.listen(3001, ()=>{
-  console.log("Connection successful!");
-})

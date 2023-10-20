@@ -1,6 +1,8 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./App.css";
+import axios from "axios";
+import { Toaster } from "react-hot-toast";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
@@ -13,11 +15,15 @@ import Signup from "./pages/Signup";
 
 const currentYear = new Date().getFullYear();
 
+axios.defaults.baseURL = "http://localhost:8000";
+axios.defaults.withCredentials = true;
+
 const App = () => {
   return (
     <>
       <Router>
         <Navbar />
+        <Toaster position="bottom-center" toastOptions={{ duration: 2000 }} />
         <Routes>
           <Route path="/Signup" element={<Signup />} />
           <Route path="/Login" element={<Login />} />

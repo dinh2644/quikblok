@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
+  const navigate = useNavigate();
   const [data, setData] = useState({
     email: "",
     firstName: "",
@@ -10,8 +14,33 @@ const Signup = () => {
     password: "",
   });
 
-  const registerUser = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleRegisterUser = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    const { email, firstName, lastName, username, password } = data;
+    try {
+      const { data } = await axios.post("/register", {
+        email,
+        firstName,
+        lastName,
+        username,
+        password,
+      });
+      if (data.error) {
+        toast.error(data.error);
+      } else {
+        setData({
+          email: "",
+          firstName: "",
+          lastName: "",
+          username: "",
+          password: "",
+        });
+        toast.success("Login Successful. Welcome!");
+        navigate("/Home");
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -83,7 +112,11 @@ const Signup = () => {
                 />
               </div>
               <div className="text-center">
-                <button type="submit" className="btn btn-color px-5 mb-5 w-100">
+                <button
+                  type="submit"
+                  className="btn btn-color px-5 mb-5 w-100"
+                  onClick={handleRegisterUser}
+                >
                   Sign Up
                 </button>
               </div>
