@@ -35,7 +35,7 @@ const Register = () => {
           username: "",
           password: "",
         });
-        navigate("/Home");
+        navigate("/Login");
         toast.success("Sign Up Successful. Welcome!");
       }
     } catch (error) {

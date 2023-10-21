@@ -5,6 +5,8 @@ const {
   test,
   registerUser,
   loginUser,
+  getProfile,
+  logoutUser,
   getBlock,
   createBlock,
   deleteBlock,
@@ -17,6 +19,8 @@ router.get("/", test);
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
+router.get("/profile", getProfile);
+router.post("/logout", logoutUser);
 
 router.get("/getBlock", getBlock);
 router.post("/postBlock", createBlock);

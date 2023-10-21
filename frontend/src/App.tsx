@@ -5,13 +5,13 @@ import axios from "axios";
 import { Toaster } from "react-hot-toast";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Footer from "./components/Footer";
-import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import ProfilePage from "./pages/ProfilePage";
 import RecycleBinPage from "./pages/RecycleBinPage";
 import SettingsPage from "./pages/SettingsPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import { UserContextProvider } from "../context/userContext";
 
 const currentYear = new Date().getFullYear();
 
@@ -20,22 +20,20 @@ axios.defaults.withCredentials = true;
 
 const App = () => {
   return (
-    <>
+    <UserContextProvider>
       <Router>
-        <Navbar />
         <Toaster position="bottom-center" toastOptions={{ duration: 2000 }} />
         <Routes>
-          <Route path="/Register" element={<Register />} />
+          <Route path="/" element={<Register />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/Home" element={<Home />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/bin" element={<RecycleBinPage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Routes>
-
         <Footer year={currentYear} />
       </Router>
-    </>
+    </UserContextProvider>
   );
 };
 

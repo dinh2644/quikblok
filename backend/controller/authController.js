@@ -1,4 +1,5 @@
 const { hashPassword, comparePassword } = require("../helpers/auth");
+const jwt = require("jsonwebtoken");
 
 const test = (req, res) => {
   res.json("test is working");
@@ -67,13 +68,46 @@ const loginUser = async (req, res) => {
       usernameMatch.password
     );
     if (passwordMatch) {
-      res.json("Password matches!");
+      jwt.sign(
+        {
+          email: usernameMatch.email,
+          id: usernameMatch._id,
+          username: usernameMatch.username,
+          firstName: usernameMatch.firstName,
+        },
+        process.env.JWT_SECRET,
+        {},
+        (err, token) => {
+          if (err) throw err;
+          res.cookie("token", token).json(usernameMatch);
+        }
+      );
+      console.log(req.usernameMatch.firstName);
     } else {
       return res.json({ error: "Incorrect password!" });
     }
   } catch (error) {
     console.error(error);
   }
+};
+
+// Get profile endpoint
+const getProfile = async (req, res) => {
+  const { token } = req.cookies;
+  if (token) {
+    jwt.verify(token, process.env.JWT_SECRET, {}, (err, user) => {
+      if (err) throw err;
+      res.json(user);
+    });
+  } else {
+    res.json(null);
+  }
+};
+
+// Logout profile endpoint
+const logoutUser = async (req, res) => {
+  res.clearCookie("token");
+  res.json({ message: "Logout successful" });
 };
 
 {
@@ -119,6 +153,8 @@ module.exports = {
   test,
   registerUser,
   loginUser,
+  getProfile,
+  logoutUser,
   getBlock,
   createBlock,
   deleteBlock,

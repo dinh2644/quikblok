@@ -1,40 +1,86 @@
 import SearchBar from "./SearchBar";
 import { Link } from "react-router-dom";
+import { UserContext } from "../../context/userContext";
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+  const userContext = useContext(UserContext);
+  const user = userContext?.user;
+
+  const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    try {
+      // Make a request to the "/logout" endpoint on your backend
+      const response = await axios.post(
+        "/logout",
+        {},
+        { withCredentials: true }
+      );
+
+      if (response.status === 200) {
+        // Successful logout, you can perform additional actions here if needed
+        console.log("Logged out successfully");
+        navigate("/");
+      } else {
+        console.error("Logout failed");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container">
-          {/* Logo/Name */}
           <Link to="/Home" className="navbar-brand link-unstyled">
             QuikBlok
           </Link>
 
           <SearchBar />
 
-          {/* Signed In Dropdown */}
-          <div className="dropdown">
-            <button
-              className="btn btn-secondary dropdown-toggle"
-              type="button"
-              id="dropdownMenuButton"
-              data-bs-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              {/* Empty Profile Picture */}
-              <img src={""} alt="profile dropdown" className="rounded-circle" />
-            </button>
-            <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <Link to="/Login" className="dropdown-item link-unstyled">
+          {user ? (
+            <div className="dropdown">
+              <div className="dropdown">
+                <button
+                  className="btn btn-secondary dropdown-toggle"
+                  type="button"
+                  id="dropdownMenuButton1"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Logged in as: {user.firstName}
+                </button>
+                <ul
+                  className="dropdown-menu"
+                  aria-labelledby="dropdownMenuButton1"
+                >
+                  <li>
+                    <Link to="/Profile" className="dropdown-item">
+                      Profile
+                    </Link>
+                  </li>
+                  <li>
+                    <button className="dropdown-item" onClick={handleLogout}>
+                      Log out
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          ) : (
+            <>
+              <Link to="/Login" className="navbar-brand link-unstyled">
                 Login
               </Link>
-              <Link to="/Register" className="dropdown-item link-unstyled">
+              <Link to="/" className="navbar-brand link-unstyled">
                 Sign up
               </Link>
-            </div>
-          </div>
+            </>
+          )}
         </div>
       </nav>
     </>
