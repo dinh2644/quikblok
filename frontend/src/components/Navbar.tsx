@@ -30,7 +30,7 @@ const Navbar = () => {
               <Link to="/Login" className="dropdown-item link-unstyled">
                 Login
               </Link>
-              <Link to="/Signup" className="dropdown-item link-unstyled">
+              <Link to="/Register" className="dropdown-item link-unstyled">
                 Sign up
               </Link>
             </div>

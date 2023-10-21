@@ -5,8 +5,8 @@ const mongoose = require("mongoose");
 const multer = require("multer");
 const app = express();
 
-const UserModel = require("./models/Users");
-const Block = require("./models/Blocks");
+//const UserModel = require("./models/Users");
+//const Block = require("./models/Blocks");
 //const RecycleBinItem = require("./models/Recyclebin")
 
 // middleware
@@ -22,48 +22,8 @@ app.use('/', require('./routes/authRoutes'))
 const port = 8000;
 app.listen(port,()=>console.log(`Server is runnning on port ${port}`));
 
-//retrieve blocks
-app.get("/getBlock", async (req, res) => {
-  try {
-    const result = await Block.find({}).exec();
-    res.json(result);
-  } catch (err) {
-    res.json(err);
-  }
-});
 
-//create blocks
-app.post("/postBlock",async(req,res) =>{
-  const block = req.body;
-  const NewBlock = new Block(block);
-  await NewBlock.save();
-  res.json(block);
-})
-//delete blocks
-app.delete("/deleteBlock/:id",(req,res)=>{
-  const blockId = req.params.id;
-  try{
-    const deletedBlock = Block.findByIdAndDelete(blockId).exec()
-    if(!deletedBlock){
-      res.status(404).json({message: "Block not found"})
-    }else{
-      res.json({message: "Block deleted successfully"})
-    }
-  }catch(err){
-    console.error("Error deleting block:", err);
-    res.status(500).json({ message: "Internal server error" });
-  }
-})
 
-// get users
-app.get("/getUsers", async (req, res) => {
-  try {
-    const result = await UserModel.find({}).exec();
-    res.json(result);
-  } catch (err) {
-    res.json(err);
-  }
-});
 
 // app.put("/updateBlock/:blockId", async (req, res) => {
 //   const blockId = req.params.blockId;

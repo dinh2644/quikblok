@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Axios from "axios";
+import { toast } from "react-hot-toast";
 interface sqTypes {
   question: string;
   answer: string;
@@ -35,7 +36,7 @@ const NewBlock = () => {
   const handleCreateBlock = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (blockName != "") {
-      Axios.post("http://localhost:3001/postBlock", {
+      Axios.post("/postBlock", {
         blockName,
         name,
         email,
@@ -53,12 +54,14 @@ const NewBlock = () => {
           setPassword("");
           setPicture("");
           setSecurityQuestions([]);
+          toast.success(`${blockName} block created!`);
         })
         .catch((err) => {
           console.error("Error in creating block: ", err);
+          toast.error("Error creating block");
         });
     } else {
-      alert("Fields must not be empty!");
+      toast.error("Fields cannot be empty!");
     }
   };
   const closeModal = () => {

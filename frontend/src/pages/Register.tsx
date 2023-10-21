@@ -4,7 +4,7 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
-const Signup = () => {
+const Register = () => {
   const navigate = useNavigate();
   const [data, setData] = useState({
     email: "",
@@ -35,8 +35,8 @@ const Signup = () => {
           username: "",
           password: "",
         });
-        toast.success("Login Successful. Welcome!");
         navigate("/Home");
+        toast.success("Sign Up Successful. Welcome!");
       }
     } catch (error) {
       console.error(error);
@@ -137,4 +137,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default Register;

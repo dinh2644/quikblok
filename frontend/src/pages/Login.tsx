@@ -1,16 +1,37 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [data, setData] = useState({
     username: "",
-    passwordL: "",
+    password: "",
   });
 
-  const handleLoginUser = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleLoginUser = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    axios.get("/");
+    const { username, password } = data;
+    try {
+      const { data } = await axios.post("/login", {
+        username,
+        password,
+      });
+      if (data.error) {
+        toast.error(data.error);
+      } else {
+        setData({
+          username: "",
+          password: "",
+        });
+        navigate("/Home");
+        toast.success("Login. Welcome!");
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
   return (
     <>
@@ -29,7 +50,7 @@ const Login = () => {
                     className="form-control"
                     id="Username"
                     aria-describedby="emailHelp"
-                    placeholder="User Name"
+                    placeholder="Username"
                   />
                 </div>
                 <div className="mb-3">
@@ -37,7 +58,7 @@ const Login = () => {
                     type="password"
                     className="form-control"
                     id="password"
-                    placeholder="password"
+                    placeholder="Password"
                   />
                 </div>
                 <div className="text-center">
@@ -54,7 +75,7 @@ const Login = () => {
                   className="form-text text-center mb-5 text-dark"
                 >
                   Not Registered?{" "}
-                  <Link to="/Signup" className="text-dark fw-bold">
+                  <Link to="/Register" className="text-dark fw-bold">
                     Create an account
                   </Link>
                 </div>

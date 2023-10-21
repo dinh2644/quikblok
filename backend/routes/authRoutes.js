@@ -1,13 +1,25 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const cors = require('cors');
-const {test,registerUser} = require("../controller/authController")
+const cors = require("cors");
+const {
+  test,
+  registerUser,
+  loginUser,
+  getBlock,
+  createBlock,
+  deleteBlock,
+} = require("../controller/authController");
 
 // middleware
-router.use(cors({credentials:true,origin:'http://localhost:5173'}))
+router.use(cors({ credentials: true, origin: "http://localhost:5173" }));
 
-router.get('/',test)
+router.get("/", test);
 
-router.post('/register',registerUser);
+router.post("/register", registerUser);
+router.post("/login", loginUser);
 
-module.exports = router
+router.get("/getBlock", getBlock);
+router.post("/postBlock", createBlock);
+router.delete("/deleteBlock/:id", deleteBlock);
+
+module.exports = router;

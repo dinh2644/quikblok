@@ -11,7 +11,7 @@ import ProfilePage from "./pages/ProfilePage";
 import RecycleBinPage from "./pages/RecycleBinPage";
 import SettingsPage from "./pages/SettingsPage";
 import Login from "./pages/Login";
-import Signup from "./pages/Signup";
+import Register from "./pages/Register";
 
 const currentYear = new Date().getFullYear();
 
@@ -25,7 +25,7 @@ const App = () => {
         <Navbar />
         <Toaster position="bottom-center" toastOptions={{ duration: 2000 }} />
         <Routes>
-          <Route path="/Signup" element={<Signup />} />
+          <Route path="/Register" element={<Register />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/Home" element={<Home />} />
           <Route path="/profile" element={<ProfilePage />} />

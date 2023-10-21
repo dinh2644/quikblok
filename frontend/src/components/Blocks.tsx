@@ -1,26 +1,28 @@
 import { useState, useEffect } from "react";
+import toast from "react-hot-toast/headless";
 import Axios from "axios";
 
 const Blocks = () => {
   const [listOfBlocks, setListOfBlocks] = useState<any[]>([]);
 
   useEffect(() => {
-    Axios.get("http://localhost:3001/getBlock")
+    Axios.get("/getBlock")
       .then((response) => {
         setListOfBlocks(response.data);
       })
       .catch((err) => {
         console.error("Error fetching blocks: ", err);
       });
-  });
+  }, []);
 
   const handleDeleteBlock = (blockId: string) => {
-    Axios.delete(`http://localhost:3001/deleteBlock/${blockId}`)
+    Axios.delete(`/deleteBlock/${blockId}`)
       .then(() => {
         const updatedBlockList = listOfBlocks.filter(
           (block) => block.id !== blockId
         );
         setListOfBlocks(updatedBlockList);
+        toast.success("Block deleted");
       })
       .catch((err) => {
         console.error("Error deleting block: ", err);
