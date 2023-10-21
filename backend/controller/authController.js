@@ -55,16 +55,21 @@ const loginUser = async (req, res) => {
   try {
     const { username, password } = req.body;
     // Check if user exists
-    const usernameExist = await UserModel.findOne({ username });
-    if (!usernameExist) {
+    const usernameMatch = await UserModel.findOne({ username });
+    if (!usernameMatch) {
       return res.json({
-        error: "Login failed: Unknown username or password",
+        error: "No user found!",
       });
     }
     // Check if passwords match
-    const passwordMatch = await comparePassword(password, user.password);
+    const passwordMatch = await comparePassword(
+      password,
+      usernameMatch.password
+    );
     if (passwordMatch) {
       res.json("Password matches!");
+    } else {
+      return res.json({ error: "Incorrect password!" });
     }
   } catch (error) {
     console.error(error);

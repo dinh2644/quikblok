@@ -27,7 +27,7 @@ const Login = () => {
           password: "",
         });
         navigate("/Home");
-        toast.success("Login. Welcome!");
+        toast.success("Login successful. Welcome!");
       }
     } catch (error) {
       console.error(error);
@@ -51,6 +51,10 @@ const Login = () => {
                     id="Username"
                     aria-describedby="emailHelp"
                     placeholder="Username"
+                    value={data.username}
+                    onChange={(e) =>
+                      setData({ ...data, username: e.target.value })
+                    }
                   />
                 </div>
                 <div className="mb-3">
@@ -59,6 +63,10 @@ const Login = () => {
                     className="form-control"
                     id="password"
                     placeholder="Password"
+                    value={data.password}
+                    onChange={(e) =>
+                      setData({ ...data, password: e.target.value })
+                    }
                   />
                 </div>
                 <div className="text-center">
