@@ -56,30 +56,24 @@ const loginUser = async (req, res) => {
   try {
     const { username, password } = req.body;
     // Check if user exists
-    const usernameMatch = await UserModel.findOne({ username });
-    if (!usernameMatch) {
+    const user = await UserModel.findOne({ username });
+    if (!user) {
       return res.json({
         error: "No user found!",
       });
     }
     // Check if passwords match
-    const passwordMatch = await comparePassword(
-      password,
-      usernameMatch.password
-    );
+    const passwordMatch = await comparePassword(password, user.password);
     if (passwordMatch) {
       jwt.sign(
         {
-          email: usernameMatch.email,
-          id: usernameMatch._id,
-          username: usernameMatch.username,
-          firstName: usernameMatch.firstName,
+          id: user._id,
         },
         process.env.JWT_SECRET,
         {},
         (err, token) => {
           if (err) throw err;
-          res.cookie("token", token).json(usernameMatch);
+          res.cookie("token", token).json(user);
         }
       );
       console.log(req.usernameMatch.firstName);
@@ -114,18 +108,23 @@ const logoutUser = async (req, res) => {
   /*BLOCK HANDLING*/
 }
 const Block = require("../models/Blocks");
-// Retrieve block endpoint
+// Get block endpoint
 const getBlock = async (req, res) => {
   try {
+    //const userId = req.user.id;
     const result = await Block.find({}).exec();
     return res.json(result);
   } catch (err) {
     return res.json(err);
   }
 };
+
 // Create block endpoint
 const createBlock = async (req, res) => {
   const block = req.body;
+  // const userId = req.user.id;
+  //block.user = userId;
+
   const NewBlock = new Block(block);
   await NewBlock.save();
   return res.json(block);
