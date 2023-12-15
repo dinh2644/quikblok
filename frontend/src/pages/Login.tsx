@@ -11,14 +11,19 @@ const Login = () => {
     password: "",
   });
 
+  // handle login
   const handleLoginUser = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const { username, password } = data;
     try {
-      const { data } = await axios.post("/login", {
-        username,
-        password,
-      });
+      const { data } = await axios.post(
+        "/login",
+        {
+          username,
+          password,
+        },
+        { withCredentials: true }
+      );
       if (data.error) {
         toast.error(data.error);
       } else {
@@ -26,7 +31,9 @@ const Login = () => {
           username: "",
           password: "",
         });
-        navigate("/Home");
+        setTimeout(() => {
+          navigate("/Home");
+        }, 1000);
         toast.success("Login successful. Welcome!");
       }
     } catch (error) {
@@ -83,7 +90,7 @@ const Login = () => {
                   className="form-text text-center mb-5 text-dark"
                 >
                   Not Registered?{" "}
-                  <Link to="/Register" className="text-dark fw-bold">
+                  <Link to="/" className="text-dark fw-bold">
                     Create an account
                   </Link>
                 </div>

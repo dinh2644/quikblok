@@ -1,16 +1,13 @@
 const { hashPassword, comparePassword } = require("../helpers/auth");
+const { createSecretToken } = require("../util/SecretToken");
 const jwt = require("jsonwebtoken");
-
-const test = (req, res) => {
-  res.json("test is working");
-};
 
 {
   /*USER HANDLING*/
 }
 const UserModel = require("../models/Users");
 // Register endpoint
-const registerUser = async (req, res) => {
+const registerUser = async (req, res, next) => {
   try {
     // Check if all fields has input
     const { email, firstName, lastName, username, password } = req.body;
@@ -44,15 +41,24 @@ const registerUser = async (req, res) => {
       username,
       password: hashedPassword,
     });
+    //create token on signup
+    const token = createSecretToken(user._id);
+    res.cookie("token", token, {
+      withCredentials: true,
+      httpOnly: false,
+    });
 
-    return res.json(user);
+    res
+      .status(201)
+      .json({ message: "User signed in successfully", success: true, user });
+    next();
   } catch (error) {
     console.error(error);
   }
 };
 
 // Login endpoint
-const loginUser = async (req, res) => {
+const loginUser = async (req, res, next) => {
   try {
     const { username, password } = req.body;
     // Check if user exists
@@ -64,22 +70,18 @@ const loginUser = async (req, res) => {
     }
     // Check if passwords match
     const passwordMatch = await comparePassword(password, user.password);
-    if (passwordMatch) {
-      jwt.sign(
-        {
-          id: user._id,
-        },
-        process.env.JWT_SECRET,
-        {},
-        (err, token) => {
-          if (err) throw err;
-          res.cookie("token", token).json(user);
-        }
-      );
-      console.log(req.usernameMatch.firstName);
-    } else {
-      return res.json({ error: "Incorrect password!" });
+    if (!passwordMatch) {
+      return res.json({ message: "Incorrect password or email" });
     }
+    const token = createSecretToken(user._id);
+    res.cookie("token", token, {
+      withCredentials: true,
+      httpOnly: false,
+    });
+    res
+      .status(201)
+      .json({ message: "User logged in successfully", success: true });
+    next();
   } catch (error) {
     console.error(error);
   }
@@ -108,27 +110,32 @@ const logoutUser = async (req, res) => {
   /*BLOCK HANDLING*/
 }
 const Block = require("../models/Blocks");
-// Get block endpoint
+
+// Get user's block endpoint
 const getBlock = async (req, res) => {
-  try {
-    //const userId = req.user.id;
-    const result = await Block.find({}).exec();
-    return res.json(result);
-  } catch (err) {
-    return res.json(err);
-  }
+  Block.find({ userId: req.user._id })
+    .populate("UserID", "_id name")
+    .then((myBlock) => {
+      res.json({ myBlock }).catch((err) => {
+        console.error(error);
+      });
+    });
 };
 
 // Create block endpoint
 const createBlock = async (req, res) => {
-  const block = req.body;
-  // const userId = req.user.id;
-  //block.user = userId;
+  try {
+    const { userId, ...blockData } = req.body; // Extract userId from the request body
+    const newBlockData = { userId, ...blockData }; // Combine userId with block data
 
-  const NewBlock = new Block(block);
-  await NewBlock.save();
-  return res.json(block);
+    const newBlock = new Block(newBlockData);
+    await newBlock.save();
+    return res.status(201).json(newBlock);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
 };
+
 // Delete block endpoint
 const deleteBlock = async (req, res) => {
   const blockId = req.params.id;
@@ -149,7 +156,6 @@ const deleteBlock = async (req, res) => {
   /* EXPORT */
 }
 module.exports = {
-  test,
   registerUser,
   loginUser,
   getProfile,

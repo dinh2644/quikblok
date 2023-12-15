@@ -2,30 +2,36 @@ const express = require("express");
 const dotenv = require("dotenv").config();
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 const app = express();
-//const multer = require("multer");
-//const cors = require("cors");
-
-//const UserModel = require("./models/Users");
-//const Block = require("./models/Blocks");
-//const RecycleBinItem = require("./models/Recyclebin")
-
-// middleware
-//app.use(cors());
-app.use(express.json());
-app.use(cookieParser());
-app.use(express.urlencoded({ extended: false }));
+const PORT = 8000;
+app.listen(PORT, () => {
+  console.log(`Server is listening on port ${PORT}`);
+});
 
 // database string
 mongoose
-  .connect(process.env.MONGO_URL)
-  .then(() => console.log("Connection Successful!!!"))
+  .connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("Connection Successful!"))
   .catch((err) => console.error("Connection failed", err));
 
-app.use("/", require("./routes/authRoutes"));
+// middleware
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+app.use(express.json());
 
-const port = 8000;
-app.listen(port, () => console.log(`Server is runnning on port ${port}`));
+app.use(cookieParser());
+app.use(express.urlencoded({ extended: false }));
+
+app.use("/", require("./routes/authRoutes"));
 
 // app.put("/updateBlock/:blockId", async (req, res) => {
 //   const blockId = req.params.blockId;

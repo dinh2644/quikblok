@@ -1,19 +1,25 @@
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast/headless";
 import Axios from "axios";
+import { UserContext } from "../../context/userContext";
+import { useContext } from "react";
 
 const Blocks = () => {
   const [listOfBlocks, setListOfBlocks] = useState<any[]>([]);
+  const userContext = useContext(UserContext);
+  const user = userContext?.user;
 
   useEffect(() => {
-    Axios.get("/getBlock")
-      .then((response) => {
+    const fetchBlocks = async () => {
+      if (user) {
+        const response = await Axios.get("/getBlock");
         setListOfBlocks(response.data);
-      })
-      .catch((err) => {
-        console.error("Error fetching blocks: ", err);
-      });
-  }, []);
+      }
+    };
+    fetchBlocks().catch((err) => {
+      console.error("Error fetching blocks: ", err);
+    });
+  }, [user]);
 
   const handleDeleteBlock = (blockId: string) => {
     Axios.delete(`/deleteBlock/${blockId}`)

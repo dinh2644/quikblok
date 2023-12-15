@@ -5,7 +5,7 @@ import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Navbar = () => {
+const Navbar = ({ username }) => {
   const navigate = useNavigate();
   const userContext = useContext(UserContext);
   const user = userContext?.user;
@@ -13,7 +13,6 @@ const Navbar = () => {
   const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      // Make a request to the "/logout" endpoint on your backend
       const response = await axios.post(
         "/logout",
         {},
@@ -21,9 +20,8 @@ const Navbar = () => {
       );
 
       if (response.status === 200) {
-        // Successful logout, you can perform additional actions here if needed
-        console.log("Logged out successfully");
         navigate("/");
+        console.log("Logged out successfully");
       } else {
         console.error("Logout failed");
       }
@@ -52,7 +50,7 @@ const Navbar = () => {
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  Logged in as: {user.firstName}
+                  Logged in as: {username}
                 </button>
                 <ul
                   className="dropdown-menu"
