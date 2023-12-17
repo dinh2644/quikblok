@@ -1,11 +1,9 @@
 const { hashPassword, comparePassword } = require("../helpers/auth");
 const { createSecretToken } = require("../util/SecretToken");
 const jwt = require("jsonwebtoken");
-
-{
-  /*USER HANDLING*/
-}
+const Block = require("../models/Blocks");
 const UserModel = require("../models/Users");
+
 // Register endpoint
 const registerUser = async (req, res, next) => {
   try {
@@ -57,86 +55,91 @@ const registerUser = async (req, res, next) => {
   }
 };
 
-// Login endpoint
+// Login 
 const loginUser = async (req, res, next) => {
   try {
     const { username, password } = req.body;
     // Check if user exists
     const user = await UserModel.findOne({ username });
     if (!user) {
-      return res.json({
+      return res.status(404).json({
         error: "No user found!",
       });
     }
     // Check if passwords match
     const passwordMatch = await comparePassword(password, user.password);
     if (!passwordMatch) {
-      return res.json({ message: "Incorrect password or email" });
+      return res.status(401).json({ message: "Incorrect password or username" });
     }
     const token = createSecretToken(user._id);
     res.cookie("token", token, {
       withCredentials: true,
       httpOnly: false,
     });
-    res
-      .status(201)
-      .json({ message: "User logged in successfully", success: true });
-    next();
+    res.status(201).json({ 
+      message: "User logged in successfully", 
+      success: true,
+      token: token // for postman
+    });
+    next(); 
   } catch (error) {
     console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-// Get profile endpoint
-const getProfile = async (req, res) => {
-  const { token } = req.cookies;
-  if (token) {
-    jwt.verify(token, process.env.JWT_SECRET, {}, (err, user) => {
-      if (err) throw err;
-      res.json(user);
-    });
-  } else {
-    res.json(null);
-  }
-};
-
-// Logout profile endpoint
+// Logout user
 const logoutUser = async (req, res) => {
   res.clearCookie("token");
   res.json({ message: "Logout successful" });
 };
 
-{
-  /*BLOCK HANDLING*/
-}
-const Block = require("../models/Blocks");
-
-// Get user's block endpoint
+// Get user's block 
 const getBlock = async (req, res) => {
-  Block.find({ userId: req.user._id })
-    .populate("UserID", "_id name")
-    .then((myBlock) => {
-      res.json({ myBlock }).catch((err) => {
-        console.error(error);
-      });
-    });
-};
-
-// Create block endpoint
-const createBlock = async (req, res) => {
   try {
-    const { userId, ...blockData } = req.body; // Extract userId from the request body
-    const newBlockData = { userId, ...blockData }; // Combine userId with block data
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
 
-    const newBlock = new Block(newBlockData);
-    await newBlock.save();
-    return res.status(201).json(newBlock);
+    const userId = req.user._id;
+
+    const myBlocks = await Block.find({ postedBy: userId }) 
+      .populate("postedBy", "_id name"); 
+
+    res.json({ myBlocks });
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch user\'s blocks', errorMessage: err.message });
   }
 };
 
-// Delete block endpoint
+// Create block
+const createBlock = async (req, res) => {
+  try {
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const { blockName, name, email, username, password, picture, securityQuestions } = req.body;
+
+    const newBlock = await Block.create({
+      postedBy: req.user._id,
+      blockName,
+      name,
+      email,
+      username,
+      password,
+      picture,
+      securityQuestions,
+    });
+
+    res.status(201).json({ message: 'Block created successfully', block: newBlock });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to create block', errorMessage: err.message });
+  }
+};
+
+// Delete block
 const deleteBlock = async (req, res) => {
   const blockId = req.params.id;
   try {
@@ -152,13 +155,10 @@ const deleteBlock = async (req, res) => {
   }
 };
 
-{
-  /* EXPORT */
-}
+
 module.exports = {
   registerUser,
   loginUser,
-  getProfile,
   logoutUser,
   getBlock,
   createBlock,

@@ -11,7 +11,6 @@ import RecycleBinPage from "./pages/RecycleBinPage";
 import SettingsPage from "./pages/SettingsPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import { UserContextProvider } from "../context/userContext";
 
 const currentYear = new Date().getFullYear();
 
@@ -20,20 +19,18 @@ axios.defaults.withCredentials = true;
 
 const App = () => {
   return (
-    <UserContextProvider>
-      <Router>
-        <Toaster position="bottom-center" toastOptions={{ duration: 2000 }} />
-        <Routes>
-          <Route path="/" element={<Register />} />
-          <Route path="/Login" element={<Login />} />
-          <Route path="/Home" element={<Home />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/bin" element={<RecycleBinPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
-        </Routes>
-        <Footer year={currentYear} />
-      </Router>
-    </UserContextProvider>
+    <Router>
+      <Toaster position="bottom-center" toastOptions={{ duration: 2000 }} />
+      <Routes>
+        <Route path="/" element={<Register />} />
+        <Route path="/Login" element={<Login />} />
+        <Route path="/Home" element={<Home />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/bin" element={<RecycleBinPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
+      </Routes>
+      <Footer year={currentYear} />
+    </Router>
   );
 };
 

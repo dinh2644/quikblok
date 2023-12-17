@@ -1,14 +1,10 @@
 import SearchBar from "./SearchBar";
 import { Link } from "react-router-dom";
-import { UserContext } from "../../context/userContext";
-import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Navbar = ({ username }) => {
+const Navbar = () => {
   const navigate = useNavigate();
-  const userContext = useContext(UserContext);
-  const user = userContext?.user;
 
   const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -40,45 +36,34 @@ const Navbar = ({ username }) => {
 
           <SearchBar />
 
-          {user ? (
+          <div className="dropdown">
             <div className="dropdown">
-              <div className="dropdown">
-                <button
-                  className="btn btn-secondary dropdown-toggle"
-                  type="button"
-                  id="dropdownMenuButton1"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Logged in as: {username}
-                </button>
-                <ul
-                  className="dropdown-menu"
-                  aria-labelledby="dropdownMenuButton1"
-                >
-                  <li>
-                    <Link to="/Profile" className="dropdown-item">
-                      Profile
-                    </Link>
-                  </li>
-                  <li>
-                    <button className="dropdown-item" onClick={handleLogout}>
-                      Log out
-                    </button>
-                  </li>
-                </ul>
-              </div>
+              <button
+                className="btn btn-secondary dropdown-toggle"
+                type="button"
+                id="dropdownMenuButton1"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Logged in as: empty for now
+              </button>
+              <ul
+                className="dropdown-menu"
+                aria-labelledby="dropdownMenuButton1"
+              >
+                <li>
+                  <Link to="/Profile" className="dropdown-item">
+                    Profile
+                  </Link>
+                </li>
+                <li>
+                  <button className="dropdown-item" onClick={handleLogout}>
+                    Log out
+                  </button>
+                </li>
+              </ul>
             </div>
-          ) : (
-            <>
-              <Link to="/Login" className="navbar-brand link-unstyled">
-                Login
-              </Link>
-              <Link to="/" className="navbar-brand link-unstyled">
-                Sign up
-              </Link>
-            </>
-          )}
+          </div>
         </div>
       </nav>
     </>

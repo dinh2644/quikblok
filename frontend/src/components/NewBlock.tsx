@@ -36,7 +36,7 @@ const NewBlock = () => {
   const handleCreateBlock = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (blockName != "") {
-      Axios.post("/postBlock", {
+      Axios.post("/createBlock", {
         blockName,
         name,
         email,
