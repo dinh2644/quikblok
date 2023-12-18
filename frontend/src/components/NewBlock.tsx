@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Axios from "axios";
 import { toast } from "react-hot-toast";
+import "../assets/NewBlocks.css";
+
 interface sqTypes {
   question: string;
   answer: string;
@@ -117,11 +119,15 @@ const NewBlock = () => {
     <>
       <button
         type="button"
-        className="btn btn-primary"
+        className="btn newBlockBtn"
         data-bs-toggle="modal"
         data-bs-target="#staticBackdrop"
       >
-        New block
+        <svg className="svg-circleplus" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="45" fill="none" strokeWidth="2"></circle>
+          <line x1="32.5" y1="50" x2="67.5" y2="50" strokeWidth="2"></line>
+          <line x1="50" y1="32.5" x2="50" y2="67.5" strokeWidth="2"></line>
+        </svg>
       </button>
 
       <div

@@ -4,6 +4,26 @@ const jwt = require("jsonwebtoken");
 const Block = require("../models/Blocks");
 const UserModel = require("../models/Users");
 
+
+const getFirstName = async (req, res) => {
+  try {
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const firstName = req.user.firstName;
+
+    if (firstName) {
+      return res.json({ user: firstName });
+    } else {
+      return res.json({ message: "First name not found for the user" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to fetch first name' });
+  }
+};
+
 // Register endpoint
 const registerUser = async (req, res, next) => {
   try {
@@ -51,7 +71,8 @@ const registerUser = async (req, res, next) => {
       .json({ message: "User signed in successfully", success: true, user });
     next();
   } catch (error) {
-    console.error(error);
+    console.error(err);
+    res.status(500).json({ message: 'Failed to sign up'});
   }
 };
 
@@ -84,7 +105,7 @@ const loginUser = async (req, res, next) => {
     next(); 
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Failed to log in" });
   }
 };
 
@@ -109,7 +130,7 @@ const getBlock = async (req, res) => {
     res.json({ myBlocks });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Failed to fetch user\'s blocks', errorMessage: err.message });
+    res.status(500).json({ message: 'Failed to log out'});
   }
 };
 
@@ -135,7 +156,8 @@ const createBlock = async (req, res) => {
 
     res.status(201).json({ message: 'Block created successfully', block: newBlock });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to create block', errorMessage: err.message });
+    console.error(err);
+    res.status(500).json({ message: 'Failed to create block'});
   }
 };
 
@@ -150,14 +172,15 @@ const deleteBlock = async (req, res) => {
       res.json({ message: "Block deleted successfully" });
     }
   } catch (err) {
-    console.error("Error deleting block:", err);
-    res.status(500).json({ message: "Internal server error" });
+    console.error(err);
+    res.status(500).json({ message: 'Failed to delete block'});
   }
 };
 
 
 module.exports = {
   registerUser,
+  getFirstName,
   loginUser,
   logoutUser,
   getBlock,

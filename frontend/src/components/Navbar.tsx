@@ -2,8 +2,13 @@ import SearchBar from "./SearchBar";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import "../assets/Navbar.css";
 
-const Navbar = () => {
+interface usernameProp {
+  username: string;
+}
+
+const Navbar = ({ username }: usernameProp) => {
   const navigate = useNavigate();
 
   const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -38,15 +43,14 @@ const Navbar = () => {
 
           <div className="dropdown">
             <div className="dropdown">
-              <button
-                className="btn btn-secondary dropdown-toggle"
-                type="button"
+              <div
+                className="dropdown-toggle welcomeDropdown"
                 id="dropdownMenuButton1"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                Logged in as: empty for now
-              </button>
+                Welcome, {username}
+              </div>
               <ul
                 className="dropdown-menu"
                 aria-labelledby="dropdownMenuButton1"

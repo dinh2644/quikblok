@@ -1,13 +1,14 @@
 import { useState } from "react";
+import "../assets/Navbar.css";
 
 const SearchBar = () => {
   const [searchInput, setSearchInput] = useState("");
 
   return (
     <>
-      <form className="d-flex">
+      <form className="d-flex" style={{ width: "15rem" }}>
         <input
-          className="form-control me-2"
+          className="form-control"
           id="hello"
           type="search"
           placeholder="Search"

@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast/headless";
 import axios from "axios";
+import "../assets/Blocks.css";
+import defaultImgPlaceholder from "../assets/placeholder.png";
 
 const Blocks = () => {
   const [listOfBlocks, setListOfBlocks] = useState<any[]>([]);
@@ -35,19 +37,21 @@ const Blocks = () => {
 
   return (
     <>
-      <div className="container-fluid">
+      <div className="container">
         <div className="row">
           {listOfBlocks.map((item, index: number) => (
-            <div className="col-xl-2" key={index}>
+            <div
+              className=" col-xxl-2 col-xl-2 col-lg-3 col-md-3 col-sm-4 col-xs-6"
+              key={index}
+            >
               <div
-                className="card text-center mb-3 mt-4"
-                style={{ width: "18rem", cursor: "pointer" }}
+                className="card BlocksCards text-center mb-3 mt-4"
                 data-bs-toggle="modal"
                 data-bs-target={`#staticBackdrop${item._id}`}
               >
                 <img
-                  src={item.picture}
-                  className="card-img-top"
+                  src={item.picture ? item.picture : defaultImgPlaceholder}
+                  className="card-img-top BlocksCardsImg"
                   alt={item.blockName}
                 />
                 <div className="card-body">

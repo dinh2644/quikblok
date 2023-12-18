@@ -1,0 +1,9 @@
+.navbar-brand{
+    font-size: 2rem;
+}
+
+.welcomeDropdown{
+    outline: none;
+    cursor: pointer;
+    font-size: var(--mediumTxt);
+}

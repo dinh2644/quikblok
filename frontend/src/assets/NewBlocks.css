@@ -1,0 +1,23 @@
+.svg-circleplus {
+    height: 75px;
+    stroke: black;
+  }
+  
+  .newBlockBtn {
+    border: none;
+    outline: none;
+    transition: transform 0.3s ease;
+  }
+  
+  .newBlockBtn:hover {
+    transform: scale(1.1);
+  }
+  
+  .newBlockBtn:active {
+    transform: scale(1);
+  }
+  
+  .newBlockBtn:active .svg-circleplus {
+    fill: black;
+  }
+  

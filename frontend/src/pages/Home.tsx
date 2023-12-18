@@ -1,34 +1,27 @@
 import Blocks from "../components/Blocks";
 import NewBlock from "../components/NewBlock";
 import Navbar from "../components/Navbar";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useCookies } from "react-cookie";
-import axios from "axios";
+import "../assets/HomePage.css";
 
-const Home = () => {
-  // const userContext = useContext(UserContext);
-  // const user = userContext?.user;
-  const navigate = useNavigate();
-  const [cookies, removeCookie] = useCookies(["token"]);
+interface usernameProp {
+  username: string;
+}
 
-  useEffect(() => {
-    const verifyCookie = async () => {
-      if (!cookies.token) {
-        navigate("/login");
-      }
-      await axios.post("http://localhost:8000", {}, { withCredentials: true });
-    };
-    verifyCookie();
-  }, [cookies, navigate, removeCookie]);
-
+const Home = ({ username }: usernameProp) => {
   return (
-    <>
-      <Navbar />
-      <Blocks />
-
-      <NewBlock />
-    </>
+    <section>
+      <Navbar username={username} />
+      <div className="container">
+        <div className="row">
+          <Blocks />
+        </div>
+        <div className="row">
+          <div className="col d-flex justify-content-end">
+            <NewBlock />
+          </div>
+        </div>
+      </div>
+    </section>
   );
 };
 
