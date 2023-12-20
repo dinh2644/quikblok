@@ -23,3 +23,49 @@
       padding: 0;
     }
   }
+
+
+.BlocksModal .modal-footer .btn {
+  border-radius: 4px; 
+  padding: 8px 16px;
+  transition: background-color 0.3s ease-in-out; 
+}
+
+.BlocksModal .modal-footer .btn-secondary {
+  color: #333;
+  background-color: #f8f9fa; 
+  border-color: #ced4da;
+}
+
+.BlocksModal .modal-footer .btn-danger {
+  color: #fff;
+  background-color: #dc3545; 
+  border-color: #dc3545; 
+}
+
+
+.BlocksModal .modal-footer .btn:hover,
+.BlocksModal .modal-footer .btn:focus {
+  opacity: 0.8; 
+}
+
+.no-content-message {
+  text-align: center;
+  margin: 50px auto;
+  padding: 20px;
+  max-width: 600px;
+  border-radius: 8px;
+ user-select: none;
+}
+
+.no-content-message h2 {
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.no-content-message p {
+  color: #666;
+  font-size: 16px;
+  line-height: 1.6;
+}

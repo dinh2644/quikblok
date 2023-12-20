@@ -1,5 +1,5 @@
 .svg-circleplus {
-    height: 75px;
+    height: 100px;
     stroke: black;
   }
   
@@ -21,3 +21,14 @@
     fill: black;
   }
   
+  .addBlockSign {
+    cursor: pointer;
+    width: 175px;
+    opacity: 0.65;
+    transition: transform 0.3s ease;
+  }
+  
+  .addBlockSign:hover {
+    transform: scale(1.1);
+    opacity: 1; 
+  }

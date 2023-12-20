@@ -1,70 +1,61 @@
-import { useState, useEffect } from "react";
-import toast from "react-hot-toast/headless";
-import axios from "axios";
 import "../assets/Blocks.css";
 import defaultImgPlaceholder from "../assets/placeholder.png";
+import SadEmoji from "../assets/sad.png";
+import NewBlock1 from "../components/NewBlock1";
 
-const Blocks = () => {
-  const [listOfBlocks, setListOfBlocks] = useState<any[]>([]);
+interface BlocksProps {
+  listOfBlocks: any[];
+  handleDeleteBlock: (blockId: string) => void;
+}
 
-  useEffect(() => {
-    const fetchBlocks = async () => {
-      try {
-        const response = await axios.get("/getBlock");
-        setListOfBlocks(response.data.myBlocks);
-      } catch (error) {
-        console.error("Error fetching blocks:", error);
-        toast.error("Failed to fetch blocks");
-      }
-    };
-    fetchBlocks();
-  }, []);
-
-  const handleDeleteBlock = (blockId: string) => {
-    axios
-      .delete(`/deleteBlock/${blockId}`)
-      .then(() => {
-        const updatedBlockList = listOfBlocks.filter(
-          (block) => block.id !== blockId
-        );
-        setListOfBlocks(updatedBlockList);
-        toast.success("Block deleted");
-      })
-      .catch((err) => {
-        console.error("Error deleting block: ", err);
-      });
-  };
-
+const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProps) => {
   return (
     <>
       <div className="container">
         <div className="row">
-          {listOfBlocks.map((item, index: number) => (
-            <div
-              className=" col-xxl-2 col-xl-2 col-lg-3 col-md-3 col-sm-4 col-xs-6"
-              key={index}
-            >
+          {listOfBlocks.length > 0 ? (
+            listOfBlocks.map((item, index: number) => (
               <div
-                className="card BlocksCards text-center mb-3 mt-4"
-                data-bs-toggle="modal"
-                data-bs-target={`#staticBackdrop${item._id}`}
+                className="col-xxl-2 col-xl-2 col-lg-3 col-md-3 col-sm-4 col-xs-6"
+                key={index}
               >
-                <img
-                  src={item.picture ? item.picture : defaultImgPlaceholder}
-                  className="card-img-top BlocksCardsImg"
-                  alt={item.blockName}
-                />
-                <div className="card-body">
-                  <h5 className="card-title">{item.blockName}</h5>
+                <div
+                  className="card BlocksCards text-center mb-3 mt-4"
+                  data-bs-toggle="modal"
+                  data-bs-target={`#staticBackdrop${item._id}`}
+                >
+                  <img
+                    src={item.picture ? item.picture : defaultImgPlaceholder}
+                    className="card-img-top BlocksCardsImg"
+                    alt={item.blockName}
+                  />
+                  <div className="card-body">
+                    <h5 className="card-title">{item.blockName}</h5>
+                  </div>
                 </div>
               </div>
+            ))
+          ) : (
+            <div className="no-content-message">
+              <img
+                src={SadEmoji}
+                alt="Sad emoji"
+                width={100}
+                className="mb-4"
+              />
+              <p style={{ fontSize: "var(--mediumTxt)" }}>
+                It seems you haven't created any blocks yet. Click the plus sign
+                to create one now!
+              </p>
             </div>
-          ))}
+          )}
+
+          {listOfBlocks.length > 0 && <NewBlock1 />}
 
           {listOfBlocks.map((item, index: number) => (
             <div
               key={index}
-              className="modal fade"
+              className="modal fade BlocksModal"
               id={`staticBackdrop${item._id}`}
               data-bs-backdrop="static"
               data-bs-keyboard="false"

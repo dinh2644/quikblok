@@ -8,7 +8,7 @@ import {
   BrowserRouter as Router,
   Route,
   Routes,
-  useNavigate,
+  Outlet,
 } from "react-router-dom";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
@@ -18,6 +18,7 @@ import SettingsPage from "./pages/SettingsPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { useCookies } from "react-cookie";
+import Navbar from "./components/Navbar";
 
 const currentYear = new Date().getFullYear();
 
@@ -47,10 +48,19 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Register />} />
         <Route path="/Login" element={<Login />} />
-        <Route path="/Home" element={<Home username={username} />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/bin" element={<RecycleBinPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
+        <Route
+          element={
+            <>
+              <Navbar username={username} />
+              <Outlet />
+            </>
+          }
+        >
+          <Route path="/Home" element={<Home username={username} />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/bin" element={<RecycleBinPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+        </Route>
       </Routes>
       <Footer year={currentYear} />
     </Router>

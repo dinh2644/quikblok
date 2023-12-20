@@ -2,13 +2,14 @@ import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import "../assets/NewBlocks.css";
+import AddBlockPLus from "../assets/grayplussign.png";
 
 interface sqTypes {
   question: string;
   answer: string;
 }
 
-const NewBlock = () => {
+const NewBlock1 = () => {
   const [blockName, setBlockName] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -35,7 +36,6 @@ const NewBlock = () => {
     updatedSecurityQuestions[index].answer = newAnswer;
     setSecurityQuestions(updatedSecurityQuestions);
   };
-
   const handleCreateBlock = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (blockName != "") {
@@ -69,7 +69,6 @@ const NewBlock = () => {
       toast.error("Fields cannot be empty!");
     }
   };
-
   const closeModal = () => {
     let modal = document.getElementById("staticBackdrop");
     modal?.classList.remove("show");
@@ -121,18 +120,18 @@ const NewBlock = () => {
 
   return (
     <>
-      <button
-        type="button"
-        className="btn newBlockBtn"
+      <div
+        className="col-xxl-2 col-xl-2 col-lg-3 col-md-3 col-sm-4 col-xs-6 d-flex justify-content-center align-items-center"
         data-bs-toggle="modal"
         data-bs-target="#staticBackdrop"
       >
-        <svg className="svg-circleplus" viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r="45" fill="none" strokeWidth="2"></circle>
-          <line x1="32.5" y1="50" x2="67.5" y2="50" strokeWidth="2"></line>
-          <line x1="50" y1="32.5" x2="50" y2="67.5" strokeWidth="2"></line>
-        </svg>
-      </button>
+        <img
+          src={AddBlockPLus}
+          alt="Gray plus sign"
+          width={200}
+          className="addBlockSign"
+        />
+      </div>
 
       <div
         className="modal fade"
@@ -292,4 +291,4 @@ const NewBlock = () => {
   );
 };
 
-export default NewBlock;
+export default NewBlock1;
