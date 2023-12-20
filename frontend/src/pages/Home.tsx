@@ -7,14 +7,11 @@ import axios from "axios";
 import toast from "react-hot-toast/headless";
 import Loading from "../components/Loading";
 
-interface usernameProp {
-  username: string;
-}
-
-const Home = ({ username }: usernameProp) => {
+const Home = () => {
   const [listOfBlocks, setListOfBlocks] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Fetch blocks
   useEffect(() => {
     setIsLoading(true);
     const fetchBlocks = async () => {
@@ -30,6 +27,7 @@ const Home = ({ username }: usernameProp) => {
     fetchBlocks();
   }, []);
 
+  // Delete blocks
   const handleDeleteBlock = (blockId: string) => {
     axios
       .delete(`/deleteBlock/${blockId}`)
