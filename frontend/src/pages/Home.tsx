@@ -1,6 +1,5 @@
 import Blocks from "../components/Blocks";
 import NewBlock from "../components/NewBlock";
-import Navbar from "../components/Navbar";
 import "../assets/HomePage.css";
 import { useState, useEffect } from "react";
 import axios from "axios";

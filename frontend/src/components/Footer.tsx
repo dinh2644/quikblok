@@ -1,8 +1,4 @@
-interface Props {
-  year: number;
-}
-
-const Footer = ({ year }: Props) => {
+const Footer = ({ year }: { year: number }) => {
   return (
     <footer className="bg-light py-3">
       <div className="container text-center">
