@@ -5,6 +5,7 @@ const {
   registerUser,
   getFirstName,
   loginUser,
+  updateUser,
   logoutUser,
   getBlock,
   createBlock,
@@ -23,8 +24,8 @@ router.post("/createBlock", userVerification, createBlock);
 router.get("/getBlock", userVerification, getBlock);
 
 // update
-//router.put("/updateAccountInfo, userVerification, updateAccountInfo") 
-//router.put("/updateBlockInfo, userVerification, updateBlockInfo") 
+router.put("/updateUser/:id", userVerification, updateUser);
+//router.put("/updateBlockInfo, userVerification, updateBlockInfo")
 
 // delete
 router.delete("/deleteBlock/:id", deleteBlock);

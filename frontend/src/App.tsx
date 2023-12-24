@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./App.css";
@@ -8,7 +9,6 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import ProfilePage from "./pages/ProfilePage";
 import RecycleBinPage from "./pages/RecycleBinPage";
-import SettingsPage from "./pages/SettingsPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import PrivateRoutes from "./components/PrivateRoutes";
@@ -19,17 +19,33 @@ axios.defaults.baseURL = "http://localhost:8000";
 axios.defaults.withCredentials = true;
 
 const App = () => {
+  const [username, setUsername] = useState("");
+  const [id, setId] = useState("");
+
+  useEffect(() => {
+    const verifyCookie = async () => {
+      const { data } = await axios.post(
+        "http://localhost:8000",
+        {},
+        { withCredentials: true }
+      );
+      const { user, id } = data;
+      setUsername(user);
+      setId(id);
+    };
+    verifyCookie();
+  }, []);
+
   return (
     <Router>
       <Toaster position="bottom-center" toastOptions={{ duration: 2000 }} />
       <Routes>
         <Route path="/" element={<Register />} />
         <Route path="/Login" element={<Login />} />
-        <Route element={<PrivateRoutes />}>
+        <Route element={<PrivateRoutes username={username} />}>
           <Route path="/Home" element={<Home />} />
-          <Route path="/Profile" element={<ProfilePage />} />
-          <Route path="/Bin" element={<RecycleBinPage />} />
-          <Route path="/Settings" element={<SettingsPage />} />
+          <Route path="/Profile" element={<ProfilePage id={id} />} />
+          <Route path="/Bin" element={<RecycleBinPage />} />{" "}
         </Route>
       </Routes>
       <Footer year={currentYear} />

@@ -1,15 +1,32 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 
-const ProfilePage = () => {
+interface IdProp {
+  id: string;
+}
+
+interface UserInfo {
+  [key: string]: string;
+}
+
+const ProfilePage = ({ id }: IdProp) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("accountDetails");
+  const [userInfo, setUserInfo] = useState<UserInfo>({
+    email: "",
+    firstName: "",
+    lastName: "",
+    username: "",
+  });
 
+  // handle tab click
   const handleTabClick = (tabName: string) => {
     setActiveTab(tabName);
   };
 
+  // logout user
   const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
@@ -27,6 +44,38 @@ const ProfilePage = () => {
       }
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  // handle input change
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setUserInfo((prev) => {
+      return {
+        ...prev,
+        [name]: value,
+      };
+    });
+  };
+
+  // update user
+  const handleUpdateUser = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.put(`/updateUser/${id}`, userInfo);
+
+      if (response) {
+        setUserInfo({
+          email: "",
+          firstName: "",
+          lastName: "",
+          username: "",
+        });
+        toast.success("Success! Your information has been updated.z");
+      }
+    } catch (error) {
+      console.error("Error updating user:", error);
     }
   };
 
@@ -81,7 +130,10 @@ const ProfilePage = () => {
                         <input
                           className="form-control"
                           type="text"
-                          value="Jane"
+                          value={userInfo.firstName}
+                          name="firstName"
+                          id="firstName"
+                          onChange={handleChange}
                         />
                       </div>
                     </div>
@@ -93,7 +145,10 @@ const ProfilePage = () => {
                         <input
                           className="form-control"
                           type="text"
-                          value="Bishop"
+                          value={userInfo.lastName}
+                          name="lastName"
+                          id="lastName"
+                          onChange={handleChange}
                         />
                       </div>
                     </div>
@@ -104,7 +159,10 @@ const ProfilePage = () => {
                         <input
                           className="form-control"
                           type="text"
-                          value="janesemail@gmail.com"
+                          value={userInfo.email}
+                          name="email"
+                          id="email"
+                          onChange={handleChange}
                         />
                       </div>
                     </div>
@@ -117,7 +175,10 @@ const ProfilePage = () => {
                         <input
                           className="form-control"
                           type="text"
-                          value="janeuser"
+                          value={userInfo.username}
+                          name="username"
+                          id="username"
+                          onChange={handleChange}
                         />
                       </div>
                     </div>
@@ -125,17 +186,21 @@ const ProfilePage = () => {
                     <div className="form-group">
                       <label className="col-md-3 control-label"></label>
                       <div className="col-md-8">
-                        <input
-                          type="button"
+                        <button
+                          type="submit"
                           className="btn btn-primary"
-                          value="Save Changes"
-                        />
-                        <span></span>
-                        <input
+                          value="Update Information"
+                          onClick={handleUpdateUser}
+                        >
+                          Update Information
+                        </button>
+                        <button
                           type="reset"
                           className="btn btn-default"
-                          value="Cancel"
-                        />
+                          value="Update Information"
+                        >
+                          Cancel
+                        </button>
                       </div>
                     </div>
                   </form>
@@ -155,6 +220,7 @@ const ProfilePage = () => {
                           className="form-control"
                           type="password"
                           value=""
+                          onChange={handleChange}
                         />
                       </div>
                     </div>
@@ -167,6 +233,7 @@ const ProfilePage = () => {
                           className="form-control"
                           type="password"
                           value=""
+                          onChange={handleChange}
                         />
                       </div>
                     </div>

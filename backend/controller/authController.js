@@ -2,25 +2,25 @@ const { hashPassword, comparePassword } = require("../helpers/auth");
 const { createSecretToken } = require("../util/SecretToken");
 const jwt = require("jsonwebtoken");
 const Block = require("../models/Blocks");
-const UserModel = require("../models/Users");
-
+const User = require("../models/Users");
 
 const getFirstName = async (req, res) => {
   try {
     if (!req.user || !req.user._id) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ error: "Unauthorized" });
     }
 
     const firstName = req.user.firstName;
+    const id = req.user._id;
 
     if (firstName) {
-      return res.json({ user: firstName });
+      return res.json({ user: firstName, id: id });
     } else {
       return res.json({ message: "First name not found for the user" });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Failed to fetch first name' });
+    res.status(500).json({ message: err });
   }
 };
 
@@ -33,12 +33,12 @@ const registerUser = async (req, res, next) => {
       return res.json({ error: "All fields are required!" });
     }
     // Check if email is taken
-    const emailExist = await UserModel.findOne({ email });
+    const emailExist = await User.findOne({ email });
     if (emailExist) {
       return res.json({ error: "Email is taken already!" });
     }
     // Check if username is taken
-    const userNameExist = await UserModel.findOne({ username });
+    const userNameExist = await User.findOne({ username });
     if (userNameExist) {
       return res.json({
         error: "Username is taken already!",
@@ -52,7 +52,7 @@ const registerUser = async (req, res, next) => {
     }
 
     const hashedPassword = await hashPassword(password);
-    const user = await UserModel.create({
+    const user = await User.create({
       email,
       firstName,
       lastName,
@@ -72,16 +72,16 @@ const registerUser = async (req, res, next) => {
     next();
   } catch (error) {
     console.error(err);
-    res.status(500).json({ message: 'Failed to sign up'});
+    res.status(500).json({ message: err });
   }
 };
 
-// Login 
+// Login
 const loginUser = async (req, res, next) => {
   try {
     const { username, password } = req.body;
     // Check if user exists
-    const user = await UserModel.findOne({ username });
+    const user = await User.findOne({ username });
     if (!user) {
       return res.status(404).json({
         error: "No user found!",
@@ -90,22 +90,24 @@ const loginUser = async (req, res, next) => {
     // Check if passwords match
     const passwordMatch = await comparePassword(password, user.password);
     if (!passwordMatch) {
-      return res.status(401).json({ message: "Incorrect password or username" });
+      return res
+        .status(401)
+        .json({ message: "Incorrect password or username" });
     }
     const token = createSecretToken(user._id);
     res.cookie("token", token, {
       withCredentials: true,
       httpOnly: false,
     });
-    res.status(201).json({ 
-      message: "User logged in successfully", 
+    res.status(201).json({
+      message: "User logged in successfully",
       success: true,
-      token: token // for postman
+      token: token, // for postman
     });
-    next(); 
+    next();
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Failed to log in" });
+    res.status(500).json({ error: err });
   }
 };
 
@@ -115,22 +117,48 @@ const logoutUser = async (req, res) => {
   res.json({ message: "Logout successful" });
 };
 
-// Get user's block 
+// Get user's block
 const getBlock = async (req, res) => {
   try {
     if (!req.user || !req.user._id) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ error: "Unauthorized" });
     }
 
     const userId = req.user._id;
 
-    const myBlocks = await Block.find({ postedBy: userId }) 
-      .populate("postedBy", "_id name"); 
+    const myBlocks = await Block.find({ postedBy: userId }).populate(
+      "postedBy",
+      "_id name"
+    );
 
     res.json({ myBlocks });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Failed to log out'});
+    res.status(500).json({ message: err });
+  }
+};
+
+// Update user info
+const updateUser = async (req, res) => {
+  try {
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const id = req.params.id;
+    const userExist = await User.findById(id);
+
+    if (!userExist) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    const updatedData = await User.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+    res.status(200).json(updatedData);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err });
   }
 };
 
@@ -138,10 +166,18 @@ const getBlock = async (req, res) => {
 const createBlock = async (req, res) => {
   try {
     if (!req.user || !req.user._id) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const { blockName, name, email, username, password, picture, securityQuestions } = req.body;
+    const {
+      blockName,
+      name,
+      email,
+      username,
+      password,
+      picture,
+      securityQuestions,
+    } = req.body;
 
     const newBlock = await Block.create({
       postedBy: req.user._id,
@@ -154,10 +190,12 @@ const createBlock = async (req, res) => {
       securityQuestions,
     });
 
-    res.status(201).json({ message: 'Block created successfully', block: newBlock });
+    res
+      .status(201)
+      .json({ message: "Block created successfully", block: newBlock });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Failed to create block'});
+    res.status(500).json({ message: err });
   }
 };
 
@@ -173,15 +211,15 @@ const deleteBlock = async (req, res) => {
     }
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Failed to delete block'});
+    res.status(500).json({ message: err });
   }
 };
-
 
 module.exports = {
   registerUser,
   getFirstName,
   loginUser,
+  updateUser,
   logoutUser,
   getBlock,
   createBlock,
