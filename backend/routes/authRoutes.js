@@ -10,6 +10,7 @@ const {
   getBlock,
   createBlock,
   deleteBlock,
+  verifyUser,
 } = require("../controller/authController");
 const { userVerification } = require("../middlewares/AuthMiddleware");
 
@@ -22,6 +23,7 @@ router.post("/createBlock", userVerification, createBlock);
 
 // get
 router.get("/getBlock", userVerification, getBlock);
+router.get("/verify/:token", verifyUser);
 
 // update
 router.put("/updateUser/:id", userVerification, updateUser);

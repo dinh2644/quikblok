@@ -1,9 +1,13 @@
 const { hashPassword, comparePassword } = require("../helpers/auth");
 const { createSecretToken } = require("../util/SecretToken");
-const jwt = require("jsonwebtoken");
+const { sendEmail } = require("../util/SendEmail");
+//const jwt = require("jsonwebtoken");
 const Block = require("../models/Blocks");
 const User = require("../models/Users");
+const Token = require("../models/Token");
+const crypto = require("crypto");
 
+// retrieve relative information for fetching in frontend
 const getFirstName = async (req, res) => {
   try {
     if (!req.user || !req.user._id) {
@@ -20,7 +24,7 @@ const getFirstName = async (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: err });
+    res.status(500).json({ message: error });
   }
 };
 
@@ -59,20 +63,42 @@ const registerUser = async (req, res, next) => {
       username,
       password: hashedPassword,
     });
-    //create token on signup
-    const token = createSecretToken(user._id);
-    res.cookie("token", token, {
-      withCredentials: true,
-      httpOnly: false,
+
+    const token = await new Token({
+      userId: user._id,
+      token: crypto.randomBytes(16).toString("hex"),
+    }).save();
+
+    // send mail
+    const link = `${process.env.BASE_URL}/verify/${token.token}`;
+    await sendEmail(email, link);
+
+    res.status(201).json({
+      message: "An email has been sent to your account. Please verify.",
+      success: true,
+      user,
     });
 
-    res
-      .status(201)
-      .json({ message: "User signed in successfully", success: true, user });
     next();
   } catch (error) {
-    console.error(err);
-    res.status(500).json({ message: err });
+    console.error(error);
+    res.status(500).json({ message: error });
+  }
+};
+
+// Verify link
+const verifyUser = async (req, res) => {
+  try {
+    const token = await Token.findOne({
+      token: req.params.token,
+    });
+    console.log(token);
+    await User.updateOne({ _id: token.userId }, { $set: { verified: true } });
+    await Token.findByIdAndRemove(token._id);
+    res.send("Email verified");
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error });
   }
 };
 
@@ -80,20 +106,41 @@ const registerUser = async (req, res, next) => {
 const loginUser = async (req, res, next) => {
   try {
     const { username, password } = req.body;
-    // Check if user exists
+    // check if user exists
     const user = await User.findOne({ username });
     if (!user) {
       return res.status(404).json({
         error: "No user found!",
       });
     }
-    // Check if passwords match
+    // check if passwords match
     const passwordMatch = await comparePassword(password, user.password);
     if (!passwordMatch) {
       return res
         .status(401)
         .json({ message: "Incorrect password or username" });
     }
+
+    // check if user is verified
+    // if (!user.verified) {
+    //   let token = await Token.findOne({ userId: user._id });
+    //   if (!token) {
+    //     token = new Token({
+    //       userId: user._id,
+    //       token: crypto.randomBytes(16).toString("hex"),
+    //     }).save();
+
+    //     // send mail
+    //     const link = `${process.env.BASE_URL}/${user._id}/verify/${token.token}`;
+    //     await sendEmail(email, link);
+    //   }
+
+    //   return res.status(400).send({
+    //     message: "An email has been sent to your account. Please verify.",
+    //   });
+    // }
+
+    // create token after logging in
     const token = createSecretToken(user._id);
     res.cookie("token", token, {
       withCredentials: true,
@@ -102,12 +149,13 @@ const loginUser = async (req, res, next) => {
     res.status(201).json({
       message: "User logged in successfully",
       success: true,
-      token: token, // for postman
+      token: token, // for postman testing
     });
     next();
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: err });
+    console.error(error);
+    res.status(500).json({ message: error });
   }
 };
 
@@ -132,9 +180,9 @@ const getBlock = async (req, res) => {
     );
 
     res.json({ myBlocks });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: err });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error });
   }
 };
 
@@ -156,9 +204,9 @@ const updateUser = async (req, res) => {
       new: true,
     });
     res.status(200).json(updatedData);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: err });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error });
   }
 };
 
@@ -193,9 +241,9 @@ const createBlock = async (req, res) => {
     res
       .status(201)
       .json({ message: "Block created successfully", block: newBlock });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: err });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error });
   }
 };
 
@@ -209,9 +257,9 @@ const deleteBlock = async (req, res) => {
     } else {
       res.json({ message: "Block deleted successfully" });
     }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: err });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error });
   }
 };
 
@@ -224,4 +272,5 @@ module.exports = {
   getBlock,
   createBlock,
   deleteBlock,
+  verifyUser,
 };

@@ -12,6 +12,7 @@ import RecycleBinPage from "./pages/RecycleBinPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import PrivateRoutes from "./components/PrivateRoutes";
+import EmailVerify from "./pages/EmailVerified";
 
 const currentYear = new Date().getFullYear();
 
@@ -42,6 +43,8 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Register />} />
         <Route path="/Login" element={<Login />} />
+        <Route path="/verify/:token" element={<EmailVerify />} />
+
         <Route element={<PrivateRoutes username={username} />}>
           <Route path="/Home" element={<Home />} />
           <Route path="/Profile" element={<ProfilePage id={id} />} />

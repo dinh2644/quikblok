@@ -72,7 +72,7 @@ const ProfilePage = ({ id }: IdProp) => {
           lastName: "",
           username: "",
         });
-        toast.success("Success! Your information has been updated.z");
+        toast.success("Success! Your information has been updated.");
       }
     } catch (error) {
       console.error("Error updating user:", error);
@@ -96,7 +96,16 @@ const ProfilePage = ({ id }: IdProp) => {
                   }`}
                   onClick={() => handleTabClick("accountDetails")}
                 >
-                  Account Details
+                  Personal
+                </a>
+                <a
+                  href="#"
+                  className={`list-group-item list-group-item-action ${
+                    activeTab === "changeEmail" ? "active" : ""
+                  }`}
+                  onClick={() => handleTabClick("changeEmail")}
+                >
+                  Email
                 </a>
                 <a
                   href="#"
@@ -105,7 +114,7 @@ const ProfilePage = ({ id }: IdProp) => {
                   }`}
                   onClick={() => handleTabClick("changePassword")}
                 >
-                  Change Password
+                  Password
                 </a>
                 <button
                   className="list-group-item list-group-item-action text-danger font-weight-bold"
@@ -118,9 +127,10 @@ const ProfilePage = ({ id }: IdProp) => {
 
             {/* Edit form column */}
             <div className="col-md-9 personal-info">
+              {/* Personal Info */}
               {activeTab === "accountDetails" && (
                 <>
-                  <h3>Personal info</h3>
+                  <h3>Change Personal Info</h3>
                   <form className="form-horizontal" role="form">
                     <div className="form-group">
                       <label className="col-lg-3 control-label">
@@ -192,7 +202,7 @@ const ProfilePage = ({ id }: IdProp) => {
                           value="Update Information"
                           onClick={handleUpdateUser}
                         >
-                          Update Information
+                          Update
                         </button>
                         <button
                           type="reset"
@@ -207,13 +217,83 @@ const ProfilePage = ({ id }: IdProp) => {
                 </>
               )}
 
+              {/* Change Email */}
+              {activeTab === "changeEmail" && (
+                <>
+                  <h3>Change Email</h3>
+                  <form className="form-horizontal" role="form">
+                    <div className="form-group">
+                      <label className="col-md-3 control-label">
+                        New Email:
+                      </label>
+                      <div className="col-md-8">
+                        <input
+                          className="form-control"
+                          type="email"
+                          value=""
+                          onChange={handleChange}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-group">
+                      <label className="col-md-3 control-label">
+                        Confirm Email:
+                      </label>
+                      <div className="col-md-8">
+                        <input
+                          className="form-control"
+                          type="email"
+                          value=""
+                          onChange={handleChange}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-group">
+                      <label className="col-md-3 control-label"></label>
+                      <div className="col-md-8">
+                        <button
+                          type="submit"
+                          className="btn btn-primary"
+                          value="Update Information"
+                        >
+                          Save
+                        </button>
+                        <button
+                          type="reset"
+                          className="btn btn-default"
+                          value="Update Information"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </>
+              )}
+
+              {/* Change Password */}
               {activeTab === "changePassword" && (
                 <>
                   <h3>Change Password</h3>
                   <form className="form-horizontal" role="form">
                     <div className="form-group">
                       <label className="col-md-3 control-label">
-                        Current Password:
+                        Old Password:
+                      </label>
+                      <div className="col-md-8">
+                        <input
+                          className="form-control"
+                          type="password"
+                          value=""
+                          onChange={handleChange}
+                        />
+                      </div>
+                    </div>
+                    <div className="form-group">
+                      <label className="col-md-3 control-label">
+                        New password:
                       </label>
                       <div className="col-md-8">
                         <input
@@ -241,17 +321,21 @@ const ProfilePage = ({ id }: IdProp) => {
                     <div className="form-group">
                       <label className="col-md-3 control-label"></label>
                       <div className="col-md-8">
-                        <input
-                          type="button"
+                        <button
+                          type="submit"
                           className="btn btn-primary"
-                          value="Save Changes"
-                        />
-                        <span></span>
-                        <input
+                          value="Update Information"
+                          onClick={handleUpdateUser}
+                        >
+                          Save
+                        </button>
+                        <button
                           type="reset"
                           className="btn btn-default"
-                          value="Cancel"
-                        />
+                          value="Update Information"
+                        >
+                          Cancel
+                        </button>
                       </div>
                     </div>
                   </form>
