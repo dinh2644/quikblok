@@ -6,6 +6,7 @@ import { toast } from "react-hot-toast";
 interface IdProp {
   userData: {
     _id: string;
+    password: string;
   };
 }
 
@@ -22,17 +23,23 @@ interface PasswordType {
 const ProfilePage = ({ userData }: IdProp) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("accountDetails");
+  // personal info
   const [personalInfo, setPersonalInfo] = useState<PersonalInfoType>({
     firstName: "",
     lastName: "",
     username: "",
   });
+  // email
   const [emailInfo, setEmailInfo] = useState<EmailInfoType>({
     email: "",
   });
   const [confirmEmail, setConfirmEmail] = useState<string>("");
-
-  const [password, setPassword] = useState<string>("");
+  // password
+  const [passwordInfo, setPasswordInfo] = useState<PasswordType>({
+    password: "",
+    oldPassword: "",
+  });
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
 
   // handle tab click
   const handleTabClick = (tabName: string) => {
@@ -75,6 +82,12 @@ const ProfilePage = ({ userData }: IdProp) => {
         [name]: value,
       };
     });
+    setPasswordInfo((prev) => {
+      return {
+        ...prev,
+        [name]: value,
+      };
+    });
   };
 
   // update personal info
@@ -105,9 +118,9 @@ const ProfilePage = ({ userData }: IdProp) => {
         return;
       }
 
-      const response = await axios.put("/updateUser", personalInfo);
+      const response = await axios.put("/updatePersonalInfo", personalInfo);
 
-      if (response) {
+      if (response.status === 200) {
         setPersonalInfo({
           firstName: "",
           lastName: "",
@@ -125,18 +138,47 @@ const ProfilePage = ({ userData }: IdProp) => {
     e.preventDefault();
 
     try {
-      // update current email first
-      const verificationResponse = await axios.put("/updateEmail", {
+      const response = await axios.put("/updateEmail", {
         email: emailInfo.email,
       });
 
-      if (verificationResponse.status === 200) {
+      if (response.status === 200) {
         setEmailInfo({ email: "" });
         setConfirmEmail("");
         toast.success("A new verification link has been sent to your email.");
         await axios.post("/newEmailVerification", {
           email: emailInfo.email,
         });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // update password
+  const handleUpdatePassword = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    try {
+      if (!passwordInfo.password || passwordInfo.password.length < 6) {
+        toast.error("New password must be at least 6 characters long.");
+        return;
+      }
+      if (passwordInfo.password !== confirmPassword) {
+        toast.error("New passwords don't match. Try again.");
+        return;
+      }
+
+      const { data } = await axios.put("/updatePassword", passwordInfo);
+
+      if (data.error) {
+        toast.error(data.error);
+        return;
+      } else {
+        setPasswordInfo({ password: "", oldPassword: "" });
+        setConfirmPassword("");
+        toast.success("Success! Your password has been updated.");
       }
     } catch (error) {
       console.error("Error updating user:", error);
@@ -349,9 +391,9 @@ const ProfilePage = ({ userData }: IdProp) => {
                         <input
                           className="form-control"
                           type="password"
-                          name="password"
-                          id="password"
-                          value=""
+                          name="oldPassword"
+                          id="oldPassword"
+                          value={passwordInfo.oldPassword}
                           onChange={handleChange}
                         />
                       </div>
@@ -364,7 +406,8 @@ const ProfilePage = ({ userData }: IdProp) => {
                         <input
                           className="form-control"
                           type="password"
-                          value=""
+                          name="password"
+                          value={passwordInfo.password}
                           onChange={handleChange}
                         />
                       </div>
@@ -377,8 +420,11 @@ const ProfilePage = ({ userData }: IdProp) => {
                         <input
                           className="form-control"
                           type="password"
-                          value=""
-                          onChange={handleChange}
+                          name="confirmPassword"
+                          value={confirmPassword}
+                          onChange={(e) => {
+                            setConfirmPassword(e.target.value);
+                          }}
                         />
                       </div>
                     </div>
@@ -390,6 +436,7 @@ const ProfilePage = ({ userData }: IdProp) => {
                           type="submit"
                           className="btn btn-primary"
                           value="Update Information"
+                          onClick={handleUpdatePassword}
                         >
                           Save
                         </button>
@@ -397,6 +444,10 @@ const ProfilePage = ({ userData }: IdProp) => {
                           type="reset"
                           className="btn btn-default"
                           value="Update Information"
+                          onClick={() => {
+                            setConfirmEmail("");
+                            setPasswordInfo({ password: "", oldPassword: "" });
+                          }}
                         >
                           Cancel
                         </button>

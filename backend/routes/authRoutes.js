@@ -5,7 +5,7 @@ const {
   registerUser,
   getUserInfo,
   loginUser,
-  updateUser,
+  updatePersonalInfo,
   logoutUser,
   getBlock,
   createBlock,
@@ -13,14 +13,15 @@ const {
   verifyUser,
   updateEmail,
   newEmailVerification,
+  updatePassword
 } = require("../controller/authController");
 const { userVerification } = require("../middlewares/AuthMiddleware");
 
 // post
+router.post("/", userVerification, getUserInfo);
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/logout", logoutUser);
-router.post("/", userVerification, getUserInfo);
 router.post("/createBlock", userVerification, createBlock);
 router.post("/newEmailVerification", userVerification, newEmailVerification)
 
@@ -29,8 +30,10 @@ router.get("/getBlock", userVerification, getBlock);
 router.get("/verify/:token", verifyUser);
 
 // update
-router.put("/updateUser", userVerification, updateUser);
+router.put("/updatePersonalInfo", userVerification, updatePersonalInfo);
 router.put("/updateEmail", userVerification, updateEmail);
+router.put("/updatePassword", userVerification, updatePassword);
+
 //router.put("/updateBlockInfo, userVerification, updateBlockInfo")
 
 // delete

@@ -22,12 +22,14 @@ axios.defaults.withCredentials = true;
 interface UserData {
   _id: string;
   firstName: string;
+  password: string;
 }
 
 const App = () => {
   const [userData, setUserData] = useState<UserData>({
     _id: "",
     firstName: "",
+    password: "",
   });
 
   useEffect(() => {

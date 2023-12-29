@@ -187,22 +187,17 @@ const getBlock = async (req, res) => {
 };
 
 // Update user info
-const updateUser = async (req, res) => {
+const updatePersonalInfo = async (req, res) => {
   try {
     if (!req.user || !req.user._id) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const userExist = await User.findById(req.user._id);
-
-    if (!userExist) {
-      return res.status(401).json({ message: "User not found" });
-    }
-
-    const updatedData = await User.findByIdAndUpdate(req.user._id, req.body, {
+    const updatedPseronalInfo = await User.findByIdAndUpdate(req.user._id, req.body, {
       new: true,
     });
-    res.status(200).json(updatedData);
+
+    res.status(200).json(updatedPseronalInfo);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error });
@@ -224,6 +219,7 @@ const updateEmail = async (req, res) => {
       new: true,
     });
     res.status(200).json(updatedEmail);
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error });
@@ -258,6 +254,40 @@ const newEmailVerification = async (req, res) => {
     res.status(500).json({ message: error });
   }
 };
+
+// Update user's password
+const updatePassword = async(req,res) => {
+  try {
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const {password: newPassword, oldPassword} = req.body;
+
+    const passwordMatch = await comparePassword(newPassword, req.user.password);
+    const oldPasswordMatch = await comparePassword(oldPassword, req.user.password)
+
+    if(passwordMatch){
+      return res.json({error: "New password cannot match with current password."})
+    }
+    if(!oldPasswordMatch){
+      return res.json({error: "Old password does not match with current password."})
+    }
+
+    // hash new password
+    const hashedPassword = await hashPassword(newPassword);
+
+    const updatedPassword = await User.findByIdAndUpdate(req.user._id, {password: hashedPassword}, {
+      new: true,
+    });
+
+    res.status(200).json(updatedPassword)
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({message: error})
+  }
+}
 
 // Create block
 const createBlock = async (req, res) => {
@@ -316,7 +346,7 @@ module.exports = {
   registerUser,
   getUserInfo,
   loginUser,
-  updateUser,
+  updatePersonalInfo,
   logoutUser,
   getBlock,
   createBlock,
@@ -324,4 +354,5 @@ module.exports = {
   verifyUser,
   updateEmail,
   newEmailVerification,
+  updatePassword
 };
