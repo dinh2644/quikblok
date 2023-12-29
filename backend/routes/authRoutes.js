@@ -12,6 +12,7 @@ const {
   deleteBlock,
   verifyUser,
   updateEmail,
+  newEmailVerification,
 } = require("../controller/authController");
 const { userVerification } = require("../middlewares/AuthMiddleware");
 
@@ -21,14 +22,15 @@ router.post("/login", loginUser);
 router.post("/logout", logoutUser);
 router.post("/", userVerification, getUserInfo);
 router.post("/createBlock", userVerification, createBlock);
+router.post("/newEmailVerification", userVerification, newEmailVerification)
 
 // get
 router.get("/getBlock", userVerification, getBlock);
 router.get("/verify/:token", verifyUser);
 
 // update
-router.put("/updateUser/:id", userVerification, updateUser);
-router.put("/updateEmail/:id", updateEmail);
+router.put("/updateUser", userVerification, updateUser);
+router.put("/updateEmail", userVerification, updateEmail);
 //router.put("/updateBlockInfo, userVerification, updateBlockInfo")
 
 // delete

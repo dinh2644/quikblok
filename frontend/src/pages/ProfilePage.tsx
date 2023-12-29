@@ -105,10 +105,7 @@ const ProfilePage = ({ userData }: IdProp) => {
         return;
       }
 
-      const response = await axios.put(
-        `/updateUser/${userData._id}`,
-        personalInfo
-      );
+      const response = await axios.put("/updateUser", personalInfo);
 
       if (response) {
         setPersonalInfo({
@@ -128,14 +125,18 @@ const ProfilePage = ({ userData }: IdProp) => {
     e.preventDefault();
 
     try {
-      const verificationResponse = await axios.post("/newEmailVerification", {
+      // update current email first
+      const verificationResponse = await axios.put("/updateEmail", {
         email: emailInfo.email,
       });
 
-      if (verificationResponse.status === 201) {
+      if (verificationResponse.status === 200) {
         setEmailInfo({ email: "" });
         setConfirmEmail("");
         toast.success("A new verification link has been sent to your email.");
+        await axios.post("/newEmailVerification", {
+          email: emailInfo.email,
+        });
       }
     } catch (error) {
       console.error("Error updating user:", error);

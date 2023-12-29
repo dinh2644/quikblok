@@ -37,7 +37,9 @@ const App = () => {
         {},
         { withCredentials: true }
       );
+
       const { userInfo } = data;
+
       setUserData(userInfo);
     };
     verifyCookie();

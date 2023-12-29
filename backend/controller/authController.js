@@ -193,14 +193,13 @@ const updateUser = async (req, res) => {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const id = req.params.id;
-    const userExist = await User.findById(id);
+    const userExist = await User.findById(req.user._id);
 
     if (!userExist) {
       return res.status(401).json({ message: "User not found" });
     }
 
-    const updatedData = await User.findByIdAndUpdate(id, req.body, {
+    const updatedData = await User.findByIdAndUpdate(req.user._id, req.body, {
       new: true,
     });
     res.status(200).json(updatedData);
@@ -213,13 +212,15 @@ const updateUser = async (req, res) => {
 // Update user's email
 const updateEmail = async (req, res) => {
   try {
-    const id = req.params.id;
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
 
     // unverify user
-    await User.findByIdAndUpdate(id, { $set: { verified: false } });
+    await User.findByIdAndUpdate(req.user._id, { $set: { verified: false } });
 
     // update to new email
-    const updatedEmail = await User.findByIdAndUpdate(id, req.body, {
+    const updatedEmail = await User.findByIdAndUpdate(req.user._id, req.body, {
       new: true,
     });
     res.status(200).json(updatedEmail);
@@ -236,13 +237,11 @@ const newEmailVerification = async (req, res) => {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const userId = req.user._id;
-
     const { email } = req.body;
 
     // create new verification token
     const token = await new Token({
-      userId: userId,
+      userId: req.user._id,
       token: crypto.randomBytes(16).toString("hex"),
     }).save();
 
@@ -250,7 +249,7 @@ const newEmailVerification = async (req, res) => {
     const link = `${process.env.BASE_URL}/verify/${token.token}`;
     await sendEmail(email, link);
 
-    res.status(201).json({
+    res.status(200).json({
       message: "A new verification link has been sent to your email.",
       success: true,
     });
