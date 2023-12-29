@@ -19,9 +19,16 @@ const currentYear = new Date().getFullYear();
 axios.defaults.baseURL = "http://localhost:8000";
 axios.defaults.withCredentials = true;
 
+interface UserData {
+  _id: string;
+  firstName: string;
+}
+
 const App = () => {
-  const [username, setUsername] = useState("");
-  const [id, setId] = useState("");
+  const [userData, setUserData] = useState<UserData>({
+    _id: "",
+    firstName: "",
+  });
 
   useEffect(() => {
     const verifyCookie = async () => {
@@ -30,9 +37,8 @@ const App = () => {
         {},
         { withCredentials: true }
       );
-      const { user, id } = data;
-      setUsername(user);
-      setId(id);
+      const { userInfo } = data;
+      setUserData(userInfo);
     };
     verifyCookie();
   }, []);
@@ -45,9 +51,12 @@ const App = () => {
         <Route path="/Login" element={<Login />} />
         <Route path="/verify/:token" element={<EmailVerify />} />
 
-        <Route element={<PrivateRoutes username={username} />}>
+        <Route element={<PrivateRoutes userData={userData} />}>
           <Route path="/Home" element={<Home />} />
-          <Route path="/Profile" element={<ProfilePage id={id} />} />
+          <Route
+            path="/Profile"
+            element={<ProfilePage userData={userData} />}
+          />
           <Route path="/Bin" element={<RecycleBinPage />} />{" "}
         </Route>
       </Routes>

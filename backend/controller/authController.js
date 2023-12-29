@@ -8,19 +8,18 @@ const Token = require("../models/Token");
 const crypto = require("crypto");
 
 // retrieve relative information for fetching in frontend
-const getFirstName = async (req, res) => {
+const getUserInfo = async (req, res) => {
   try {
     if (!req.user || !req.user._id) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const firstName = req.user.firstName;
-    const id = req.user._id;
+    const userInfo = req.user;
 
-    if (firstName) {
-      return res.json({ user: firstName, id: id });
+    if (userInfo) {
+      return res.json({ userInfo: userInfo });
     } else {
-      return res.json({ message: "First name not found for the user" });
+      return res.json({ message: "User is not found." });
     }
   } catch (error) {
     console.error(error);
@@ -74,7 +73,7 @@ const registerUser = async (req, res, next) => {
     await sendEmail(email, link);
 
     res.status(201).json({
-      message: "An email has been sent to your account. Please verify.",
+      message: "A verification link has been sent to your email.",
       success: true,
       user,
     });
@@ -86,7 +85,7 @@ const registerUser = async (req, res, next) => {
   }
 };
 
-// Verify link
+// Verify user when user clicks link
 const verifyUser = async (req, res) => {
   try {
     const token = await Token.findOne({
@@ -106,13 +105,32 @@ const verifyUser = async (req, res) => {
 const loginUser = async (req, res, next) => {
   try {
     const { username, password } = req.body;
-    // check if user exists
     const user = await User.findOne({ username });
+
+    // check if user exists
     if (!user) {
       return res.status(404).json({
         error: "No user found!",
       });
     }
+    // resend verification email if user is not verified
+    if (!user.verified) {
+      let token = await Token.findOne({ userId: user._id });
+      if (!token) {
+        token = await new Token({
+          userId: user._id,
+          token: crypto.randomBytes(16).toString("hex"),
+        }).save();
+      }
+      // send mail
+      const link = `${process.env.BASE_URL}/verify/${token.token}`;
+      await sendEmail(user.email, link);
+
+      return res.status(400).send({
+        message: "A verification link has been resent to your email.",
+      });
+    }
+
     // check if passwords match
     const passwordMatch = await comparePassword(password, user.password);
     if (!passwordMatch) {
@@ -121,26 +139,7 @@ const loginUser = async (req, res, next) => {
         .json({ message: "Incorrect password or username" });
     }
 
-    // check if user is verified
-    // if (!user.verified) {
-    //   let token = await Token.findOne({ userId: user._id });
-    //   if (!token) {
-    //     token = new Token({
-    //       userId: user._id,
-    //       token: crypto.randomBytes(16).toString("hex"),
-    //     }).save();
-
-    //     // send mail
-    //     const link = `${process.env.BASE_URL}/${user._id}/verify/${token.token}`;
-    //     await sendEmail(email, link);
-    //   }
-
-    //   return res.status(400).send({
-    //     message: "An email has been sent to your account. Please verify.",
-    //   });
-    // }
-
-    // create token after logging in
+    // create token after successfully logging in
     const token = createSecretToken(user._id);
     res.cookie("token", token, {
       withCredentials: true,
@@ -151,6 +150,7 @@ const loginUser = async (req, res, next) => {
       success: true,
       token: token, // for postman testing
     });
+
     next();
   } catch (error) {
     console.error(error);
@@ -204,6 +204,56 @@ const updateUser = async (req, res) => {
       new: true,
     });
     res.status(200).json(updatedData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error });
+  }
+};
+
+// Update user's email
+const updateEmail = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    // unverify user
+    await User.findByIdAndUpdate(id, { $set: { verified: false } });
+
+    // update to new email
+    const updatedEmail = await User.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+    res.status(200).json(updatedEmail);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error });
+  }
+};
+
+// Send new verification email
+const newEmailVerification = async (req, res) => {
+  try {
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const userId = req.user._id;
+
+    const { email } = req.body;
+
+    // create new verification token
+    const token = await new Token({
+      userId: userId,
+      token: crypto.randomBytes(16).toString("hex"),
+    }).save();
+
+    // send mail
+    const link = `${process.env.BASE_URL}/verify/${token.token}`;
+    await sendEmail(email, link);
+
+    res.status(201).json({
+      message: "A new verification link has been sent to your email.",
+      success: true,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error });
@@ -265,7 +315,7 @@ const deleteBlock = async (req, res) => {
 
 module.exports = {
   registerUser,
-  getFirstName,
+  getUserInfo,
   loginUser,
   updateUser,
   logoutUser,
@@ -273,4 +323,6 @@ module.exports = {
   createBlock,
   deleteBlock,
   verifyUser,
+  updateEmail,
+  newEmailVerification,
 };

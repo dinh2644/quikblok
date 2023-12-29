@@ -4,22 +4,35 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 
 interface IdProp {
-  id: string;
+  userData: {
+    _id: string;
+  };
 }
 
-interface UserInfo {
+interface PersonalInfoType {
+  [key: string]: string;
+}
+interface EmailInfoType {
+  [key: string]: string;
+}
+interface PasswordType {
   [key: string]: string;
 }
 
-const ProfilePage = ({ id }: IdProp) => {
+const ProfilePage = ({ userData }: IdProp) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("accountDetails");
-  const [userInfo, setUserInfo] = useState<UserInfo>({
-    email: "",
+  const [personalInfo, setPersonalInfo] = useState<PersonalInfoType>({
     firstName: "",
     lastName: "",
     username: "",
   });
+  const [emailInfo, setEmailInfo] = useState<EmailInfoType>({
+    email: "",
+  });
+  const [confirmEmail, setConfirmEmail] = useState<string>("");
+
+  const [password, setPassword] = useState<string>("");
 
   // handle tab click
   const handleTabClick = (tabName: string) => {
@@ -50,7 +63,13 @@ const ProfilePage = ({ id }: IdProp) => {
   // handle input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setUserInfo((prev) => {
+    setPersonalInfo((prev) => {
+      return {
+        ...prev,
+        [name]: value,
+      };
+    });
+    setEmailInfo((prev) => {
       return {
         ...prev,
         [name]: value,
@@ -58,21 +77,65 @@ const ProfilePage = ({ id }: IdProp) => {
     });
   };
 
-  // update user
-  const handleUpdateUser = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  // update personal info
+  const handleUpdatePersonalInfo = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
     e.preventDefault();
 
     try {
-      const response = await axios.put(`/updateUser/${id}`, userInfo);
+      if (
+        personalInfo.firstName.trim() === "" ||
+        personalInfo.firstName.trim().length < 2 ||
+        personalInfo.lastName.trim() === "" ||
+        personalInfo.lastName.trim().length < 2
+      ) {
+        toast.error(
+          "First and last name cannot be empty and must be longer than 1 character."
+        );
+        return;
+      }
+      if (
+        personalInfo.username.trim() === "" ||
+        personalInfo.username.trim().length < 3
+      ) {
+        toast.error(
+          "Username cannot be empty and must be 3 characters or longer."
+        );
+        return;
+      }
+
+      const response = await axios.put(
+        `/updateUser/${userData._id}`,
+        personalInfo
+      );
 
       if (response) {
-        setUserInfo({
-          email: "",
+        setPersonalInfo({
           firstName: "",
           lastName: "",
           username: "",
         });
         toast.success("Success! Your information has been updated.");
+      }
+    } catch (error) {
+      console.error("Error updating user:", error);
+    }
+  };
+
+  // update email
+  const handleUpdateEmail = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    try {
+      const verificationResponse = await axios.post("/newEmailVerification", {
+        email: emailInfo.email,
+      });
+
+      if (verificationResponse.status === 201) {
+        setEmailInfo({ email: "" });
+        setConfirmEmail("");
+        toast.success("A new verification link has been sent to your email.");
       }
     } catch (error) {
       console.error("Error updating user:", error);
@@ -140,7 +203,7 @@ const ProfilePage = ({ id }: IdProp) => {
                         <input
                           className="form-control"
                           type="text"
-                          value={userInfo.firstName}
+                          value={personalInfo.firstName}
                           name="firstName"
                           id="firstName"
                           onChange={handleChange}
@@ -155,23 +218,9 @@ const ProfilePage = ({ id }: IdProp) => {
                         <input
                           className="form-control"
                           type="text"
-                          value={userInfo.lastName}
+                          value={personalInfo.lastName}
                           name="lastName"
                           id="lastName"
-                          onChange={handleChange}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-group">
-                      <label className="col-lg-3 control-label">Email:</label>
-                      <div className="col-lg-8">
-                        <input
-                          className="form-control"
-                          type="text"
-                          value={userInfo.email}
-                          name="email"
-                          id="email"
                           onChange={handleChange}
                         />
                       </div>
@@ -185,7 +234,7 @@ const ProfilePage = ({ id }: IdProp) => {
                         <input
                           className="form-control"
                           type="text"
-                          value={userInfo.username}
+                          value={personalInfo.username}
                           name="username"
                           id="username"
                           onChange={handleChange}
@@ -200,7 +249,7 @@ const ProfilePage = ({ id }: IdProp) => {
                           type="submit"
                           className="btn btn-primary"
                           value="Update Information"
-                          onClick={handleUpdateUser}
+                          onClick={handleUpdatePersonalInfo}
                         >
                           Update
                         </button>
@@ -230,7 +279,9 @@ const ProfilePage = ({ id }: IdProp) => {
                         <input
                           className="form-control"
                           type="email"
-                          value=""
+                          name="email"
+                          id="email"
+                          value={emailInfo.email}
                           onChange={handleChange}
                         />
                       </div>
@@ -243,9 +294,13 @@ const ProfilePage = ({ id }: IdProp) => {
                       <div className="col-md-8">
                         <input
                           className="form-control"
-                          type="email"
-                          value=""
-                          onChange={handleChange}
+                          type="password"
+                          name="confirmEmail"
+                          id="confirmEmail"
+                          value={confirmEmail}
+                          onChange={(e) => {
+                            setConfirmEmail(e.target.value);
+                          }}
                         />
                       </div>
                     </div>
@@ -257,6 +312,7 @@ const ProfilePage = ({ id }: IdProp) => {
                           type="submit"
                           className="btn btn-primary"
                           value="Update Information"
+                          onClick={handleUpdateEmail}
                         >
                           Save
                         </button>
@@ -264,6 +320,12 @@ const ProfilePage = ({ id }: IdProp) => {
                           type="reset"
                           className="btn btn-default"
                           value="Update Information"
+                          onClick={() => {
+                            setEmailInfo({
+                              email: "",
+                            });
+                            setConfirmEmail("");
+                          }}
                         >
                           Cancel
                         </button>
@@ -286,6 +348,8 @@ const ProfilePage = ({ id }: IdProp) => {
                         <input
                           className="form-control"
                           type="password"
+                          name="password"
+                          id="password"
                           value=""
                           onChange={handleChange}
                         />
@@ -325,7 +389,6 @@ const ProfilePage = ({ id }: IdProp) => {
                           type="submit"
                           className="btn btn-primary"
                           value="Update Information"
-                          onClick={handleUpdateUser}
                         >
                           Save
                         </button>

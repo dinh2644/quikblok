@@ -3,16 +3,18 @@ import { useCookies } from "react-cookie";
 import Navbar from "./Navbar";
 
 interface UsernameProps {
-  username: string;
+  userData: {
+    firstName: string;
+  };
 }
 
-const PrivateRoutes = ({ username }: UsernameProps) => {
+const PrivateRoutes = ({ userData }: UsernameProps) => {
   const [cookies] = useCookies(["token"]);
 
   return cookies.token ? (
     <>
       {" "}
-      <Navbar username={username} /> <Outlet />{" "}
+      <Navbar username={userData.firstName} /> <Outlet />{" "}
     </>
   ) : (
     <Navigate to="/" replace />

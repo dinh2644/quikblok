@@ -3,7 +3,7 @@ const router = express.Router();
 //const cors = require("cors");
 const {
   registerUser,
-  getFirstName,
+  getUserInfo,
   loginUser,
   updateUser,
   logoutUser,
@@ -11,6 +11,7 @@ const {
   createBlock,
   deleteBlock,
   verifyUser,
+  updateEmail,
 } = require("../controller/authController");
 const { userVerification } = require("../middlewares/AuthMiddleware");
 
@@ -18,7 +19,7 @@ const { userVerification } = require("../middlewares/AuthMiddleware");
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/logout", logoutUser);
-router.post("/", userVerification, getFirstName);
+router.post("/", userVerification, getUserInfo);
 router.post("/createBlock", userVerification, createBlock);
 
 // get
@@ -27,6 +28,7 @@ router.get("/verify/:token", verifyUser);
 
 // update
 router.put("/updateUser/:id", userVerification, updateUser);
+router.put("/updateEmail/:id", updateEmail);
 //router.put("/updateBlockInfo, userVerification, updateBlockInfo")
 
 // delete

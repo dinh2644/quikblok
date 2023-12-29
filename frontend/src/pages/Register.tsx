@@ -40,7 +40,7 @@ const Register = () => {
           password: "",
         });
         navigate("/Login");
-        toast.success("Sign Up Successful. Welcome!");
+        toast.success("A verification link has been sent to your email.");
       }
     } catch (error) {
       console.error(error);
