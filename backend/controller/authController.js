@@ -1,7 +1,9 @@
 const { hashPassword, comparePassword } = require("../helpers/auth");
 const { createSecretToken } = require("../util/SecretToken");
 const { sendEmail } = require("../util/SendEmail");
-//const jwt = require("jsonwebtoken");
+const { sendResetPasswordLink } = require("../util/SendResetPasswordLink");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const Block = require("../models/Blocks");
 const User = require("../models/Users");
 const Token = require("../models/Token");
@@ -193,9 +195,13 @@ const updatePersonalInfo = async (req, res) => {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const updatedPseronalInfo = await User.findByIdAndUpdate(req.user._id, req.body, {
-      new: true,
-    });
+    const updatedPseronalInfo = await User.findByIdAndUpdate(
+      req.user._id,
+      req.body,
+      {
+        new: true,
+      }
+    );
 
     res.status(200).json(updatedPseronalInfo);
   } catch (error) {
@@ -219,7 +225,6 @@ const updateEmail = async (req, res) => {
       new: true,
     });
     res.status(200).json(updatedEmail);
-
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error });
@@ -256,38 +261,108 @@ const newEmailVerification = async (req, res) => {
 };
 
 // Update user's password
-const updatePassword = async(req,res) => {
+const updatePassword = async (req, res) => {
   try {
     if (!req.user || !req.user._id) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const {password: newPassword, oldPassword} = req.body;
+    const { password: newPassword, oldPassword } = req.body;
 
-    const passwordMatch = await comparePassword(newPassword, req.user.password);
-    const oldPasswordMatch = await comparePassword(oldPassword, req.user.password)
+    const passwordMatch = await comparePassword(
+      newPassword.trim(),
+      req.user.password.trim()
+    );
+    const oldPasswordMatch = await comparePassword(
+      oldPassword.trim(),
+      req.user.password.trim()
+    );
 
-    if(passwordMatch){
-      return res.json({error: "New password cannot match with current password."})
+    if (passwordMatch) {
+      return res.json({
+        error: "New password cannot match with current password.",
+      });
     }
-    if(!oldPasswordMatch){
-      return res.json({error: "Old password does not match with current password."})
+    if (!oldPasswordMatch) {
+      return res.json({
+        error: "Old password does not match with current password.",
+      });
     }
 
     // hash new password
     const hashedPassword = await hashPassword(newPassword);
 
-    const updatedPassword = await User.findByIdAndUpdate(req.user._id, {password: hashedPassword}, {
-      new: true,
-    });
+    const updatedPassword = await User.findByIdAndUpdate(
+      req.user._id,
+      { password: hashedPassword },
+      {
+        new: true,
+      }
+    );
 
-    res.status(200).json(updatedPassword)
-
+    res.status(200).json(updatedPassword);
   } catch (error) {
     console.error(error);
-    res.status(500).json({message: error})
+    res.status(500).json({ message: error });
   }
-}
+};
+
+// Reset password
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) return res.status(400).json({ error: "Please enter your email" });
+
+  const user = await User.findOne({ email: email });
+
+  if (!user) {
+    return res.json({ error: "Email not found." });
+  }
+  const resetToken = user.getResetPasswordToken();
+  await user.save();
+
+  const link = `http://localhost:5173/resetPassword/${resetToken}`;
+  await sendResetPasswordLink(email, link);
+
+  res
+    .status(200)
+    .json({ message: "Reset password link sent successfully to your email." });
+};
+
+// Reset password
+const resetPassword = async (req, res) => {
+  try {
+    const { password, resetToken } = req.body;
+
+    if (!resetToken || !password)
+      return res.status(400).json({ error: "Invalid Request" });
+
+    const resetPasswordToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+
+    const user = await User.findOne({
+      resetPasswordToken,
+      resetPasswordExpire: { $gt: Date.now() },
+    });
+
+    if (!user)
+      return res.status(400).json({ error: "Invalid Token or expired" });
+
+    const hashedPassword = await hashPassword(password);
+
+    user.password = hashedPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save();
+
+    res.status(200).json({ message: "Password has been reset" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 // Create block
 const createBlock = async (req, res) => {
@@ -354,5 +429,7 @@ module.exports = {
   verifyUser,
   updateEmail,
   newEmailVerification,
-  updatePassword
+  updatePassword,
+  forgotPassword,
+  resetPassword,
 };

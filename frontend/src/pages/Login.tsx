@@ -81,6 +81,8 @@ const Login = () => {
                       }
                     />
                   </div>
+                  <Link to="/forgotPassword">Forgot Password</Link>
+
                   <div className="text-center">
                     <button
                       type="submit"

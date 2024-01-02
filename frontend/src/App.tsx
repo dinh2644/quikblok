@@ -13,6 +13,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import PrivateRoutes from "./components/PrivateRoutes";
 import EmailVerify from "./pages/EmailVerified";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 const currentYear = new Date().getFullYear();
 
@@ -23,6 +25,9 @@ interface UserData {
   _id: string;
   firstName: string;
   password: string;
+  lastName: string;
+  email: string;
+  username: string;
 }
 
 const App = () => {
@@ -30,6 +35,9 @@ const App = () => {
     _id: "",
     firstName: "",
     password: "",
+    lastName: "",
+    email: "",
+    username: "",
   });
 
   useEffect(() => {
@@ -54,6 +62,10 @@ const App = () => {
         <Route path="/" element={<Register />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/verify/:token" element={<EmailVerify />} />
+        <Route path="/forgotPassword" element={<ForgotPassword />}></Route>
+
+        {/* Accessible through email link only */}
+        <Route path="/resetPassword/:token" element={<ResetPassword />}></Route>
 
         <Route element={<PrivateRoutes userData={userData} />}>
           <Route path="/Home" element={<Home />} />

@@ -2,11 +2,16 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import "../assets/ProfilePage.css";
 
 interface IdProp {
   userData: {
     _id: string;
     password: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    username: string;
   };
 }
 
@@ -136,8 +141,12 @@ const ProfilePage = ({ userData }: IdProp) => {
   // update email
   const handleUpdateEmail = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-
     try {
+      if (emailInfo.email.trim() !== confirmEmail.trim()) {
+        toast.error("New emails don't match. Try again.");
+        return;
+      }
+
       const response = await axios.put("/updateEmail", {
         email: emailInfo.email,
       });
@@ -165,7 +174,7 @@ const ProfilePage = ({ userData }: IdProp) => {
         toast.error("New password must be at least 6 characters long.");
         return;
       }
-      if (passwordInfo.password !== confirmPassword) {
+      if (passwordInfo.password.trim() !== confirmPassword.trim()) {
         toast.error("New passwords don't match. Try again.");
         return;
       }
@@ -202,6 +211,15 @@ const ProfilePage = ({ userData }: IdProp) => {
                   }`}
                   onClick={() => handleTabClick("accountDetails")}
                 >
+                  Your Account
+                </a>
+                <a
+                  href="#"
+                  className={`list-group-item list-group-item-action ${
+                    activeTab === "personalDetails" ? "active" : ""
+                  }`}
+                  onClick={() => handleTabClick("personalDetails")}
+                >
                   Personal
                 </a>
                 <a
@@ -233,8 +251,32 @@ const ProfilePage = ({ userData }: IdProp) => {
 
             {/* Edit form column */}
             <div className="col-md-9 personal-info">
-              {/* Personal Info */}
+              {/* Account information */}
               {activeTab === "accountDetails" && (
+                <>
+                  <div className="account-details">
+                    <h3>Your Account Details</h3>
+                    <div className="detail">
+                      <h4>First Name:</h4>
+                      <p>{userData.firstName}</p>
+                    </div>
+                    <div className="detail">
+                      <h4>Last Name:</h4>
+                      <p>{userData.lastName}</p>
+                    </div>
+                    <div className="detail">
+                      <h4>Username:</h4>
+                      <p>{userData.username}</p>
+                    </div>
+                    <div className="detail">
+                      <h4>Email:</h4>
+                      <p>{userData.email}</p>
+                    </div>
+                  </div>
+                </>
+              )}
+              {/* Change personal */}
+              {activeTab === "personalDetails" && (
                 <>
                   <h3>Change Personal Info</h3>
                   <form className="form-horizontal" role="form">
@@ -337,7 +379,7 @@ const ProfilePage = ({ userData }: IdProp) => {
                       <div className="col-md-8">
                         <input
                           className="form-control"
-                          type="password"
+                          type="email"
                           name="confirmEmail"
                           id="confirmEmail"
                           value={confirmEmail}

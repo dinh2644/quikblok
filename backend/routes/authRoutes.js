@@ -13,7 +13,9 @@ const {
   verifyUser,
   updateEmail,
   newEmailVerification,
-  updatePassword
+  updatePassword,
+  forgotPassword,
+  resetPassword,
 } = require("../controller/authController");
 const { userVerification } = require("../middlewares/AuthMiddleware");
 
@@ -23,7 +25,9 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/logout", logoutUser);
 router.post("/createBlock", userVerification, createBlock);
-router.post("/newEmailVerification", userVerification, newEmailVerification)
+router.post("/newEmailVerification", userVerification, newEmailVerification);
+router.post("/forgotPassword", forgotPassword);
+router.post("/resetPassword", resetPassword);
 
 // get
 router.get("/getBlock", userVerification, getBlock);
