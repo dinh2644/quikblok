@@ -37,6 +37,7 @@ const Login = () => {
         });
         setTimeout(() => {
           navigate("/Home");
+          window.location.reload();
         }, 1000);
         toast.success("Login successful. Welcome!");
       }

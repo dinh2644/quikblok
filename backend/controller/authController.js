@@ -401,6 +401,26 @@ const createBlock = async (req, res) => {
   }
 };
 
+// Update block
+const updateBlock = async (req, res) => {
+  try {
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const blockId = req.params.id;
+
+    const updatedBlockInfo = await Block.findByIdAndUpdate(blockId, req.body, {
+      new: true,
+    });
+
+    res.status(200).json(updatedBlockInfo);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error });
+  }
+};
+
 // Delete block
 const deleteBlock = async (req, res) => {
   const blockId = req.params.id;
@@ -425,6 +445,7 @@ module.exports = {
   logoutUser,
   getBlock,
   createBlock,
+  updateBlock,
   deleteBlock,
   verifyUser,
   updateEmail,

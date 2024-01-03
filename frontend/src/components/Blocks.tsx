@@ -2,13 +2,59 @@ import "../assets/Blocks.css";
 import defaultImgPlaceholder from "../assets/placeholder.png";
 import SadEmoji from "../assets/sad.png";
 import NewBlock1 from "../components/NewBlock1";
+import EasyEdit, { Types } from "react-easy-edit";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useState } from "react";
 
-interface BlocksProps {
+interface BlocksProp {
   listOfBlocks: any[];
   handleDeleteBlock: (blockId: string) => void;
 }
 
-const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProps) => {
+interface BlockInfoProp {
+  name: string;
+  email: string;
+  username: string;
+  password: string;
+}
+
+const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
+  const [updatedBlockInfo, setUpdatedBlockInfo] = useState<BlockInfoProp>({
+    name: "",
+    email: "",
+    username: "",
+    password: "",
+  });
+
+  // Save line edit
+  const save = async (
+    value: string,
+    index: number,
+    key: keyof BlockInfoProp
+  ) => {
+    try {
+      const updatedInfo = { ...updatedBlockInfo, [key]: value };
+      setUpdatedBlockInfo(updatedInfo);
+
+      const { data } = await axios.put(
+        `/updateBlock/${listOfBlocks[index]._id}`,
+        updatedInfo
+      );
+      if (data.error) {
+        toast.error("Failed to update block.");
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Cancel line edit
+  const cancel = () => {
+    return;
+  };
+
   return (
     <>
       <div className="container">
@@ -79,19 +125,83 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProps) => {
                       aria-label="Close"
                     ></button>
                   </div>
-                  <div className="modal-body">
-                    <p>
-                      <strong>Name:</strong> {item.name}
-                    </p>
-                    <p>
-                      <strong>Email:</strong> {item.email}
-                    </p>
-                    <p>
-                      <strong>Username:</strong> {item.username}
-                    </p>
-                    <p>
-                      <strong>Password:</strong> {item.password}
-                    </p>
+                  <div className="modal-body easyEdit">
+                    <strong>Name:</strong>
+                    <EasyEdit
+                      type={Types.TEXT}
+                      onSave={(value: string) => {
+                        save(value, index, "name");
+                      }}
+                      onValidate={(value: string) => {
+                        return value != null;
+                      }}
+                      onCancel={cancel}
+                      saveButtonLabel="Save"
+                      cancelButtonLabel="Cancel"
+                      attributes={{
+                        name: "name",
+                        id: 1,
+                      }}
+                      value={updatedBlockInfo.name}
+                      placeholder={item.name}
+                    />
+                    <strong>Email:</strong>{" "}
+                    <EasyEdit
+                      type={Types.TEXT}
+                      onSave={(value: string) => {
+                        save(value, index, "email");
+                      }}
+                      onValidate={(value: string) => {
+                        return value != null;
+                      }}
+                      onCancel={cancel}
+                      saveButtonLabel="Save"
+                      cancelButtonLabel="Cancel"
+                      attributes={{
+                        name: "email",
+                        id: 2,
+                      }}
+                      value={updatedBlockInfo.email}
+                      placeholder={item.email}
+                    />
+                    <strong>Username:</strong>{" "}
+                    <EasyEdit
+                      type={Types.TEXT}
+                      onSave={(value: string) => {
+                        save(value, index, "username");
+                      }}
+                      onValidate={(value: string) => {
+                        return value != null;
+                      }}
+                      onCancel={cancel}
+                      saveButtonLabel="Save"
+                      cancelButtonLabel="Cancel"
+                      attributes={{
+                        name: "username",
+                        id: 3,
+                      }}
+                      value={updatedBlockInfo.username}
+                      placeholder={item.username}
+                    />
+                    <strong>Password:</strong>{" "}
+                    <EasyEdit
+                      type={Types.TEXT}
+                      onSave={(value: string) => {
+                        save(value, index, "password");
+                      }}
+                      onValidate={(value: string) => {
+                        return value != null;
+                      }}
+                      onCancel={cancel}
+                      saveButtonLabel="Save"
+                      cancelButtonLabel="Cancel"
+                      attributes={{
+                        name: "password",
+                        id: 4,
+                      }}
+                      value={updatedBlockInfo.password}
+                      placeholder={item.password}
+                    />
                     {item.securityQuestions &&
                       item.securityQuestions.length > 0 && (
                         <div>
@@ -125,6 +235,7 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProps) => {
                     >
                       Cancel
                     </button>
+
                     <button
                       type="button"
                       className="btn btn-danger"
