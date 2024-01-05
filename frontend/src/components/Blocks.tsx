@@ -17,15 +17,11 @@ interface BlockInfoProp {
   email: string;
   username: string;
   password: string;
+  securityQuestions: object[]; // todo: fix to include this in save()
 }
 
 const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
-  const [updatedBlockInfo, setUpdatedBlockInfo] = useState<BlockInfoProp>({
-    name: "",
-    email: "",
-    username: "",
-    password: "",
-  });
+  const [blockStates, setBlockStates] = useState<BlockInfoProp[]>(listOfBlocks);
 
   // Save line edit
   const save = async (
@@ -34,15 +30,20 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
     key: keyof BlockInfoProp
   ) => {
     try {
-      const updatedInfo = { ...updatedBlockInfo, [key]: value };
-      setUpdatedBlockInfo(updatedInfo);
+      const updatedBlocks = [...blockStates];
+      updatedBlocks[index] = {
+        ...updatedBlocks[index],
+        [key]: value,
+      };
+      setBlockStates(updatedBlocks);
 
       const { data } = await axios.put(
         `/updateBlock/${listOfBlocks[index]._id}`,
-        updatedInfo
+        updatedBlocks[index]
       );
       if (data.error) {
         toast.error("Failed to update block.");
+
         return;
       }
     } catch (error) {
@@ -142,7 +143,7 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
                         name: "name",
                         id: 1,
                       }}
-                      value={updatedBlockInfo.name}
+                      value={blockStates[index].name}
                       placeholder={item.name}
                     />
                     <strong>Email:</strong>{" "}
@@ -161,7 +162,7 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
                         name: "email",
                         id: 2,
                       }}
-                      value={updatedBlockInfo.email}
+                      value={blockStates[index].email}
                       placeholder={item.email}
                     />
                     <strong>Username:</strong>{" "}
@@ -180,7 +181,7 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
                         name: "username",
                         id: 3,
                       }}
-                      value={updatedBlockInfo.username}
+                      value={blockStates[index].username}
                       placeholder={item.username}
                     />
                     <strong>Password:</strong>{" "}
@@ -199,7 +200,7 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
                         name: "password",
                         id: 4,
                       }}
-                      value={updatedBlockInfo.password}
+                      value={blockStates[index].password}
                       placeholder={item.password}
                     />
                     {item.securityQuestions &&
