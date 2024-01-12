@@ -29,7 +29,13 @@ const getUserInfo = async (req, res) => {
 };
 
 const decryptPassword = (req, res) => {
-  res.send(decrypt(req.body));
+  try {
+    const decryptedPassword = decrypt(req.body);
+    return res.json(decryptedPassword);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to decrypt password." });
+  }
 };
 
 // Register endpoint
@@ -415,6 +421,13 @@ const updateBlock = async (req, res) => {
     }
 
     const blockId = req.params.id;
+
+    const encryptedPassword = encrypt(req.body.password);
+    req.body = {
+      ...req.body,
+      password: encryptedPassword.password,
+      iv: encryptedPassword.iv,
+    };
 
     const updatedBlockInfo = await Block.findByIdAndUpdate(blockId, req.body, {
       new: true,

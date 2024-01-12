@@ -19,18 +19,21 @@ interface BlockInfoProp {
   password: string;
   securityQuestions: object[]; // todo: fix to include this in save()
   decryptedPassword?: string;
+  iv: string;
 }
 
 const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
-  const [blockStates, setBlockStates] = useState<BlockInfoProp[]>(
+  const [blockList, setBlockList] = useState<BlockInfoProp[]>(
     listOfBlocks.map(() => ({
       name: "",
       email: "",
       username: "",
       password: "",
       securityQuestions: [],
+      iv: "",
     }))
   );
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   useEffect(() => {
     const decryptAllPasswords = async () => {
@@ -44,20 +47,27 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
 
             if (data.error) {
               console.error(data.error);
-              return { ...block, decryptedPassword: "********" }; // Placeholder value if decryption fails
+              return {
+                ...block,
+                decryptedPassword: "********", // Placeholder value if decryption fails
+              };
             } else {
-              return { ...block, decryptedPassword: data };
+              return {
+                ...block,
+                decryptedPassword: data,
+              };
             }
           } catch (error) {
             console.error(error);
-            return { ...block, decryptedPassword: "********" }; // Placeholder value if an error occurs
+            return {
+              ...block,
+              decryptedPassword: "********", // Placeholder value if an error occurs
+            };
           }
         })
       );
-
-      setBlockStates(decryptedBlocks);
+      setBlockList(decryptedBlocks);
     };
-
     decryptAllPasswords();
   }, [listOfBlocks]);
 
@@ -68,12 +78,13 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
     key: keyof BlockInfoProp
   ) => {
     try {
-      const updatedBlocks = [...blockStates];
+      const updatedBlocks = [...blockList];
       updatedBlocks[index] = {
         ...updatedBlocks[index],
         [key]: value,
       };
-      setBlockStates(updatedBlocks);
+
+      setBlockList(updatedBlocks);
 
       const { data } = await axios.put(
         `/updateBlock/${listOfBlocks[index]._id}`,
@@ -183,7 +194,7 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
                         name: "name",
                         id: 1,
                       }}
-                      value={blockStates[index].name}
+                      value={blockList[index].name}
                       placeholder={item.name}
                     />
                     <strong>Email:</strong>{" "}
@@ -202,7 +213,7 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
                         name: "email",
                         id: 2,
                       }}
-                      value={blockStates[index].email}
+                      value={blockList[index].email}
                       placeholder={item.email}
                     />
                     <strong>Username:</strong>{" "}
@@ -221,28 +232,33 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
                         name: "username",
                         id: 3,
                       }}
-                      value={blockStates[index].username}
+                      value={blockList[index].username}
                       placeholder={item.username}
                     />
                     <strong>Password:</strong>{" "}
-                    <EasyEdit
-                      type={Types.TEXT}
-                      onSave={(value: string) => {
-                        save(value, index, "password");
-                      }}
-                      onValidate={(value: string) => {
-                        return value != null;
-                      }}
-                      onCancel={cancel}
-                      saveButtonLabel="Save"
-                      cancelButtonLabel="Cancel"
-                      attributes={{
-                        name: "password",
-                        id: 4,
-                      }}
-                      value={blockStates[index].decryptedPassword}
-                      placeholder={blockStates[index].decryptedPassword}
-                    />
+                    <div
+                      onMouseOver={() => setShowPassword(true)}
+                      onMouseOut={() => setShowPassword(false)}
+                    >
+                      <EasyEdit
+                        type={showPassword ? Types.TEXT : Types.PASSWORD}
+                        onSave={(value: string) => {
+                          save(value, index, "password");
+                        }}
+                        onValidate={(value: string) => {
+                          return value != null;
+                        }}
+                        onCancel={cancel}
+                        saveButtonLabel="Save"
+                        cancelButtonLabel="Cancel"
+                        attributes={{
+                          name: "password",
+                          id: 4,
+                        }}
+                        value={blockList[index].decryptedPassword}
+                        placeholder={blockList[index].decryptedPassword}
+                      />
+                    </div>
                     {item.securityQuestions &&
                       item.securityQuestions.length > 0 && (
                         <div>
