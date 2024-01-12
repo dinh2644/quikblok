@@ -1,9 +1,8 @@
 const { hashPassword, comparePassword } = require("../helpers/auth");
+const { encrypt, decrypt } = require("../helpers/EncryptionHandler");
 const { createSecretToken } = require("../util/SecretToken");
 const { sendEmail } = require("../util/SendEmail");
 const { sendResetPasswordLink } = require("../util/SendResetPasswordLink");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const Block = require("../models/Blocks");
 const User = require("../models/Users");
 const Token = require("../models/Token");
@@ -27,6 +26,10 @@ const getUserInfo = async (req, res) => {
     console.error(error);
     res.status(500).json({ message: error });
   }
+};
+
+const decryptPassword = (req, res) => {
+  res.send(decrypt(req.body));
 };
 
 // Register endpoint
@@ -381,15 +384,18 @@ const createBlock = async (req, res) => {
       securityQuestions,
     } = req.body;
 
+    const encryptedPassword = encrypt(password);
+
     const newBlock = await Block.create({
       postedBy: req.user._id,
       blockName,
       name,
       email,
       username,
-      password,
+      password: encryptedPassword.password,
       picture,
       securityQuestions,
+      iv: encryptedPassword.iv,
     });
 
     res
@@ -453,4 +459,5 @@ module.exports = {
   updatePassword,
   forgotPassword,
   resetPassword,
+  decryptPassword,
 };

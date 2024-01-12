@@ -21,6 +21,7 @@ const blockSchema = new mongoose.Schema({
   password: String,
   picture: String,
   securityQuestions: [securityQuestionSchema],
+  iv: String,
 });
 
 const Block = mongoose.model("blocks", blockSchema);

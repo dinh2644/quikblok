@@ -32,25 +32,3 @@ app.use(cookieParser());
 app.use(express.urlencoded({ limit: "100mb", extended: true }));
 
 app.use("/", require("./routes/authRoutes"));
-
-// app.put("/updateBlock/:blockId", async (req, res) => {
-//   const blockId = req.params.blockId;
-//   const { block } = req.body;
-
-//   try {
-//     const updatedBlock = await Block.findByIdAndUpdate(
-//       blockId,
-//       { block }, // Update the "picture" field with the new base64 data
-//       { new: true } // Return the updated block document
-//     ).exec();
-
-//     if (!updatedBlock) {
-//       return res.status(404).json({ message: "Block not found" });
-//     }
-
-//     res.json({ message: "Block picture updated successfully", block: updatedBlock });
-//   } catch (err) {
-//     console.error("Error updating block picture:", err);
-//     res.status(500).json({ message: "Internal server error" });
-//   }
-// });

@@ -17,6 +17,7 @@ const {
   updatePassword,
   forgotPassword,
   resetPassword,
+  decryptPassword,
 } = require("../controller/authController");
 const { userVerification } = require("../middlewares/AuthMiddleware");
 
@@ -29,6 +30,7 @@ router.post("/newEmailVerification", userVerification, newEmailVerification);
 router.post("/forgotPassword", forgotPassword);
 router.post("/resetPassword", resetPassword);
 router.post("/createBlock", userVerification, createBlock);
+router.post("/decryptPassword", decryptPassword);
 
 // get
 router.get("/getBlock", userVerification, getBlock);

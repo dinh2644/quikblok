@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import "../assets/Blocks.css";
 import defaultImgPlaceholder from "../assets/placeholder.png";
 import SadEmoji from "../assets/sad.png";
@@ -5,7 +6,6 @@ import NewBlock1 from "../components/NewBlock1";
 import EasyEdit, { Types } from "react-easy-edit";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { useState } from "react";
 
 interface BlocksProp {
   listOfBlocks: any[];
@@ -18,10 +18,48 @@ interface BlockInfoProp {
   username: string;
   password: string;
   securityQuestions: object[]; // todo: fix to include this in save()
+  decryptedPassword?: string;
 }
 
 const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
-  const [blockStates, setBlockStates] = useState<BlockInfoProp[]>(listOfBlocks);
+  const [blockStates, setBlockStates] = useState<BlockInfoProp[]>(
+    listOfBlocks.map(() => ({
+      name: "",
+      email: "",
+      username: "",
+      password: "",
+      securityQuestions: [],
+    }))
+  );
+
+  useEffect(() => {
+    const decryptAllPasswords = async () => {
+      const decryptedBlocks = await Promise.all(
+        listOfBlocks.map(async (block, index) => {
+          try {
+            const { data } = await axios.post("/decryptPassword", {
+              password: block.password,
+              iv: block.iv,
+            });
+
+            if (data.error) {
+              console.error(data.error);
+              return { ...block, decryptedPassword: "********" }; // Placeholder value if decryption fails
+            } else {
+              return { ...block, decryptedPassword: data };
+            }
+          } catch (error) {
+            console.error(error);
+            return { ...block, decryptedPassword: "********" }; // Placeholder value if an error occurs
+          }
+        })
+      );
+
+      setBlockStates(decryptedBlocks);
+    };
+
+    decryptAllPasswords();
+  }, [listOfBlocks]);
 
   // Save line edit
   const save = async (
@@ -60,6 +98,7 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
     <>
       <div className="container">
         <div className="row">
+          {/* Map blocks */}
           {listOfBlocks.length > 0 ? (
             listOfBlocks.map((item, index: number) => (
               <div
@@ -99,6 +138,7 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
 
           {listOfBlocks.length > 0 && <NewBlock1 />}
 
+          {/* Map respective modal for each block */}
           {listOfBlocks.map((item, index: number) => (
             <div
               key={index}
@@ -200,8 +240,8 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
                         name: "password",
                         id: 4,
                       }}
-                      value={blockStates[index].password}
-                      placeholder={item.password}
+                      value={blockStates[index].decryptedPassword}
+                      placeholder={blockStates[index].decryptedPassword}
                     />
                     {item.securityQuestions &&
                       item.securityQuestions.length > 0 && (
