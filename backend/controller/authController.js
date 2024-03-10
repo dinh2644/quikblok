@@ -120,7 +120,7 @@ const loginUser = async (req, res, next) => {
 
     // check if user exists
     if (!user) {
-      return res.status(404).json({
+      return res.json({
         error: "No user found!",
       });
     }
@@ -145,9 +145,7 @@ const loginUser = async (req, res, next) => {
     // check if passwords match
     const passwordMatch = await comparePassword(password, user.password);
     if (!passwordMatch) {
-      return res
-        .status(401)
-        .json({ message: "Incorrect password or username" });
+      return res.json({ error: "Incorrect password or username" });
     }
 
     // create token after successfully logging in
@@ -156,10 +154,10 @@ const loginUser = async (req, res, next) => {
       withCredentials: true,
       httpOnly: false,
     });
-    res.status(201).json({
+    res.status(200).json({
       message: "User logged in successfully",
       success: true,
-      token: token, // for postman testing
+      token: token,
     });
 
     next();
@@ -259,7 +257,7 @@ const newEmailVerification = async (req, res) => {
     const link = `${process.env.BASE_URL}/verify/${token.token}`;
     await sendEmail(email, link);
 
-    res.status(200).json({
+    res.status(201).json({
       message: "A new verification link has been sent to your email.",
       success: true,
     });

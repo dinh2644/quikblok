@@ -49,7 +49,7 @@ const NewBlock1 = () => {
           picture,
           securityQuestions,
         })
-        .then((response) => {
+        .then(() => {
           closeModal();
           setBlockName("");
           setName("");
@@ -70,10 +70,10 @@ const NewBlock1 = () => {
     }
   };
   const closeModal = () => {
-    let modal = document.getElementById("staticBackdrop");
+    const modal = document.getElementById("staticBackdrop");
     modal?.classList.remove("show");
 
-    let cancelButton = modal?.querySelector(
+    const cancelButton = modal?.querySelector(
       '[data-bs-dismiss="modal"]'
     ) as HTMLElement;
     if (cancelButton) {

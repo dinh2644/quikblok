@@ -62,8 +62,11 @@ const ProfilePage = ({ userData }: IdProp) => {
       );
 
       if (response.status === 200) {
+        window.location.reload();
+
         navigate("/");
-        console.log("Logged out successfully");
+
+        console.log("Logged out successfully"); // do toast for this
       } else {
         console.error("Logout failed");
       }
@@ -242,10 +245,40 @@ const ProfilePage = ({ userData }: IdProp) => {
                 </a>
                 <button
                   className="list-group-item list-group-item-action text-danger font-weight-bold"
-                  onClick={handleLogout}
+                  type="button"
+                  data-bs-toggle="modal"
+                  data-bs-target="#logoutModal"
                 >
                   Log out
                 </button>
+              </div>
+            </div>
+
+            <div
+              className="modal fade"
+              id="logoutModal"
+              tabIndex={-1}
+              aria-labelledby="exampleModalLabel"
+              aria-hidden="true"
+            >
+              {/* Logout modal */}
+              <div className="modal-dialog modal-dialog-centered ">
+                <div className="modal-content rounded-3 text-center logoutModalShape">
+                  <div
+                    className="modal-header border-0 "
+                    style={{ margin: "0 auto", marginBottom: "-10px" }}
+                  >
+                    <h3 className="mt-1">Are you sure you want to log out?</h3>
+                  </div>
+                  <div className="modal-body logoutBody">
+                    <button className="logoutBtn" onClick={handleLogout}>
+                      Log Out
+                    </button>
+                    <button className="cancelBtn" data-bs-dismiss="modal">
+                      CANCEL
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -342,6 +375,13 @@ const ProfilePage = ({ userData }: IdProp) => {
                           type="reset"
                           className="btn btn-default"
                           value="Update Information"
+                          onClick={() => {
+                            setPersonalInfo({
+                              firstName: "",
+                              lastName: "",
+                              username: "",
+                            });
+                          }}
                         >
                           Cancel
                         </button>
@@ -487,7 +527,7 @@ const ProfilePage = ({ userData }: IdProp) => {
                           className="btn btn-default"
                           value="Update Information"
                           onClick={() => {
-                            setConfirmEmail("");
+                            setConfirmPassword("");
                             setPasswordInfo({ password: "", oldPassword: "" });
                           }}
                         >

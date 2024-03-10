@@ -28,6 +28,7 @@ const Login = () => {
         },
         { withCredentials: true }
       );
+
       if (data.error) {
         toast.error(data.error);
       } else {
@@ -35,6 +36,7 @@ const Login = () => {
           username: "",
           password: "",
         });
+
         setTimeout(() => {
           navigate("/Home");
           window.location.reload();
@@ -45,6 +47,7 @@ const Login = () => {
       console.error(error);
     }
   };
+
   return (
     <>
       <section>

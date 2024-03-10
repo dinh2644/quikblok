@@ -7,30 +7,42 @@ import EasyEdit, { Types } from "react-easy-edit";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-interface BlocksProp {
-  listOfBlocks: any[];
-  handleDeleteBlock: (blockId: string) => void;
-}
-
 interface BlockInfoProp {
+  blockName: string;
   name: string;
   email: string;
   username: string;
   password: string;
-  securityQuestions: object[]; // todo: fix to include this in save()
+  securityQuestions: SecurityQuestion[]; // todo: fix to include this in save()
   decryptedPassword?: string;
   iv: string;
+  picture: string;
+  _id: string;
+}
+
+interface BlocksProp {
+  listOfBlocks: BlockInfoProp[];
+  handleDeleteBlock: (blockId: string) => void;
+}
+
+interface SecurityQuestion {
+  question: string;
+  answer: string;
 }
 
 const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
   const [blockList, setBlockList] = useState<BlockInfoProp[]>(
     listOfBlocks.map(() => ({
+      blockName: "",
       name: "",
       email: "",
       username: "",
       password: "",
-      securityQuestions: [],
+      securityQuestions: [{ question: "", answer: "" }],
       iv: "",
+      picture: "",
+      _id: "",
+      null: null,
     }))
   );
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -38,7 +50,7 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
   useEffect(() => {
     const decryptAllPasswords = async () => {
       const decryptedBlocks = await Promise.all(
-        listOfBlocks.map(async (block, index) => {
+        listOfBlocks.map(async (block) => {
           try {
             const { data } = await axios.post("/decryptPassword", {
               password: block.password,
@@ -79,6 +91,7 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
   ) => {
     try {
       const updatedBlocks = [...blockList];
+
       updatedBlocks[index] = {
         ...updatedBlocks[index],
         [key]: value,
@@ -88,11 +101,49 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
 
       const { data } = await axios.put(
         `/updateBlock/${listOfBlocks[index]._id}`,
-        updatedBlocks[index]
+        {
+          ...updatedBlocks[index],
+        }
       );
       if (data.error) {
         toast.error("Failed to update block.");
 
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Save line edit for security questions
+  type UpdateType = string | null;
+  const saveSecurityQuestions = async (
+    value: string,
+    blockIndex: number,
+    sqIndex: number,
+    updateType: UpdateType
+  ) => {
+    try {
+      const updatedBlocks = [...blockList];
+
+      if (updateType === "question") {
+        updatedBlocks[blockIndex].securityQuestions[sqIndex].question = value;
+      } else if (updateType === "answer") {
+        updatedBlocks[blockIndex].securityQuestions[sqIndex].answer = value;
+      }
+
+      setBlockList(updatedBlocks);
+
+      const { data } = await axios.put(
+        `/updateBlock/${updatedBlocks[blockIndex]._id}`,
+        {
+          ...updatedBlocks[blockIndex],
+          securityQuestions: updatedBlocks[blockIndex].securityQuestions,
+        }
+      );
+
+      if (data.error) {
+        toast.error("Failed to update block.");
         return;
       }
     } catch (error) {
@@ -168,7 +219,25 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
                       className="modal-title"
                       id={`staticBackdropLabel${item._id}`}
                     >
-                      {item.blockName}
+                      <EasyEdit
+                        type={Types.TEXT}
+                        onSave={(value: string) => {
+                          save(value, index, "blockName");
+                        }}
+                        onValidate={(value: string) => {
+                          return value != null;
+                        }}
+                        onCancel={cancel}
+                        saveButtonLabel="Save"
+                        cancelButtonLabel="Cancel"
+                        attributes={{
+                          name: "blockName",
+                          id: 0,
+                        }}
+                        value={blockList[index].blockName}
+                        placeholder={item.blockName}
+                      />
+                      {index}
                     </h5>
                     <button
                       type="button"
@@ -263,19 +332,65 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
                       item.securityQuestions.length > 0 && (
                         <div>
                           {item.securityQuestions.map(
-                            (item: any, index: number) => (
-                              <div key={index}>
-                                <p>
+                            (item: SecurityQuestion, sqIndex: number) => (
+                              <div key={sqIndex}>
+                                <p className="my-1">
                                   <strong>
-                                    Security Question {index + 1}:
+                                    Security Question {sqIndex + 1}:
                                   </strong>
                                 </p>
                                 <ul className="list-inline">
                                   <li>
-                                    <strong>Q:</strong> {item.question}
+                                    <strong>Q:</strong> {sqIndex}
+                                    <EasyEdit
+                                      type={Types.TEXT}
+                                      onSave={(value: string) => {
+                                        saveSecurityQuestions(
+                                          value,
+                                          index,
+                                          sqIndex,
+                                          "question"
+                                        );
+                                      }}
+                                      onValidate={(value: string) => {
+                                        return value != null;
+                                      }}
+                                      onCancel={cancel}
+                                      saveButtonLabel="Save"
+                                      cancelButtonLabel="Cancel"
+                                      attributes={{
+                                        name: "question",
+                                        id: sqIndex,
+                                      }}
+                                      value={item.question}
+                                      placeholder={item.question}
+                                    />
                                   </li>
                                   <li>
-                                    <strong>A:</strong> {item.answer}
+                                    <strong>A:</strong>{" "}
+                                    <EasyEdit
+                                      type={Types.TEXT}
+                                      onSave={(value: string) => {
+                                        saveSecurityQuestions(
+                                          value,
+                                          index,
+                                          sqIndex,
+                                          "answer"
+                                        );
+                                      }}
+                                      onValidate={(value: string) => {
+                                        return value != null;
+                                      }}
+                                      onCancel={cancel}
+                                      saveButtonLabel="Save"
+                                      cancelButtonLabel="Cancel"
+                                      attributes={{
+                                        name: "answer",
+                                        id: sqIndex,
+                                      }}
+                                      value={item.answer}
+                                      placeholder={item.answer}
+                                    />
                                   </li>
                                 </ul>
                               </div>

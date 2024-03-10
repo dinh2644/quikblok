@@ -18,6 +18,7 @@ const Register = () => {
     password: "",
   });
 
+  // handle registration
   const handleRegisterUser = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const { email, firstName, lastName, username, password } = data;

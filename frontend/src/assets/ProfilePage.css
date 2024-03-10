@@ -1,17 +1,51 @@
-
 .account-details .detail {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
-  
+
 .account-details h4 {
-    font-size: 20px;
-    margin-bottom: 5px;
-    color: #333;
+  font-size: 20px;
+  margin-bottom: 5px;
+  color: #333;
 }
-  
+
 .account-details p {
-    font-size: 18px;
-    margin: 0;
-    color: #666;
+  font-size: 18px;
+  margin: 0;
+  color: #666;
 }
-  
+
+.logoutModalShape {
+  border-radius: 10px !important;
+}
+
+.logoutBody {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: fit-content;
+}
+
+.logoutBody .logoutBtn {
+  padding: 13px 65px;
+  background-color: #d10000;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 22px;
+  transition: 0.3s;
+  border-radius: 20px;
+}
+
+.logoutBody .cancelBtn {
+  margin-top: 20px;
+
+  background: none;
+  border: none;
+  color: #d10000;
+  font-weight: 500;
+  cursor: pointer;
+
+  transition: 0.3s;
+}
