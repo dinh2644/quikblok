@@ -9,6 +9,8 @@ interface sqTypes {
   answer: string;
 }
 
+// THIS COMPONENT IS FOR WHEN THERE ARE NO BLOCKS INNITIALLY
+
 const NewBlock1 = () => {
   const [blockName, setBlockName] = useState("");
   const [name, setName] = useState("");
@@ -188,6 +190,7 @@ const NewBlock1 = () => {
                   </label>
                   <input
                     type="email"
+                    pattern="/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/"
                     className="form-control"
                     id="emailInput"
                     aria-describedby="emailHelp"

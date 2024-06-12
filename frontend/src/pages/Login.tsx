@@ -85,7 +85,7 @@ const Login = () => {
                       }
                     />
                   </div>
-                  <Link to="/forgotPassword">Forgot Password</Link>
+                  <Link to="/forgotPassword" style={{ textDecoration: 'none', fontSize: '15px', paddingLeft: '3px' }}>Forgot Password</Link>
 
                   <div className="text-center">
                     <button

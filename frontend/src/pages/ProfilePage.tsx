@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import "../assets/ProfilePage.css";
+import { Link } from "react-router-dom";
 
 interface IdProp {
   userData: {
@@ -209,36 +210,32 @@ const ProfilePage = ({ userData }: IdProp) => {
               <div className="list-group">
                 <a
                   href="#"
-                  className={`list-group-item list-group-item-action ${
-                    activeTab === "accountDetails" ? "active" : ""
-                  }`}
+                  className={`list-group-item list-group-item-action ${activeTab === "accountDetails" ? "active" : ""
+                    }`}
                   onClick={() => handleTabClick("accountDetails")}
                 >
                   Your Account
                 </a>
                 <a
                   href="#"
-                  className={`list-group-item list-group-item-action ${
-                    activeTab === "personalDetails" ? "active" : ""
-                  }`}
+                  className={`list-group-item list-group-item-action ${activeTab === "personalDetails" ? "active" : ""
+                    }`}
                   onClick={() => handleTabClick("personalDetails")}
                 >
                   Personal
                 </a>
                 <a
                   href="#"
-                  className={`list-group-item list-group-item-action ${
-                    activeTab === "changeEmail" ? "active" : ""
-                  }`}
+                  className={`list-group-item list-group-item-action ${activeTab === "changeEmail" ? "active" : ""
+                    }`}
                   onClick={() => handleTabClick("changeEmail")}
                 >
                   Email
                 </a>
                 <a
                   href="#"
-                  className={`list-group-item list-group-item-action ${
-                    activeTab === "changePassword" ? "active" : ""
-                  }`}
+                  className={`list-group-item list-group-item-action ${activeTab === "changePassword" ? "active" : ""
+                    }`}
                   onClick={() => handleTabClick("changePassword")}
                 >
                   Password
@@ -510,6 +507,9 @@ const ProfilePage = ({ userData }: IdProp) => {
                         />
                       </div>
                     </div>
+
+                    <Link to="/forgotPassword" style={{ textDecoration: 'none', fontSize: '15px', paddingLeft: '3px' }}>Forgot Password</Link>
+
 
                     <div className="form-group">
                       <label className="col-md-3 control-label"></label>

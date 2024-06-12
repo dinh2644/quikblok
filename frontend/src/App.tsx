@@ -15,6 +15,8 @@ import PrivateRoutes from "./components/PrivateRoutes";
 import EmailVerify from "./pages/EmailVerified";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import PublicRoutes from "./components/PublicRoutes";
+
 
 const currentYear = new Date().getFullYear();
 
@@ -39,6 +41,7 @@ const App = () => {
     email: "",
     username: "",
   });
+  console.log(userData);
 
   useEffect(() => {
     const verifyCookie = async () => {
@@ -59,21 +62,26 @@ const App = () => {
     <Router>
       <Toaster position="bottom-center" toastOptions={{ duration: 2000 }} />
       <Routes>
-        <Route path="/" element={<Register />} />
-        <Route path="/Login" element={<Login />} />
-        <Route path="/verify/:token" element={<EmailVerify />} />
-        <Route path="/forgotPassword" element={<ForgotPassword />}></Route>
 
         {/* Accessible through email link only */}
         <Route path="/resetPassword/:token" element={<ResetPassword />}></Route>
+        <Route path="/forgotPassword" element={<ForgotPassword />} />
+        {/* PUBLIC ROUTES */}
+        <Route element={<PublicRoutes />}>
+          <Route path="/" element={<Register />} />
+          <Route path="/Login" element={<Login />} />
+          <Route path="/verify/:token" element={<EmailVerify />} />
 
+        </Route>
+
+        {/* PRIVATE ROUTES */}
         <Route element={<PrivateRoutes userData={userData} />}>
           <Route path="/Home" element={<Home />} />
           <Route
             path="/Profile"
             element={<ProfilePage userData={userData} />}
           />
-          <Route path="/Bin" element={<RecycleBinPage />} />{" "}
+          <Route path="/Bin" element={<RecycleBinPage />} />
         </Route>
       </Routes>
       <Footer year={currentYear} />
