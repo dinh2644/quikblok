@@ -3,12 +3,25 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../assets/Navbar.css";
+import React, { useContext } from 'react';
+import { SearchValueContext } from '../pages/Home';
 
-interface usernameProp {
-  username: string;
+
+interface UserData {
+  firstName: string;
 }
 
-const Navbar = ({ username }: usernameProp) => {
+interface NavbarProps {
+  userData: UserData;
+}
+
+const Navbar = ({ userData }: NavbarProps) => {
+  const { searchValue, setSearchValue } = useContext(SearchValueContext);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+  };
+
   const navigate = useNavigate();
 
   const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -39,7 +52,7 @@ const Navbar = ({ username }: usernameProp) => {
             QuikBlok
           </Link>
 
-          <SearchBar />
+          <SearchBar searchValue = {searchValue} handleSearchChange = {handleSearchChange}/>
 
           <div className="dropdown">
             <div className="dropdown">
@@ -49,7 +62,7 @@ const Navbar = ({ username }: usernameProp) => {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                Welcome, {username}
+                Welcome, {userData.firstName}
               </div>
               <ul
                 className="dropdown-menu"

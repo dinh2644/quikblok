@@ -1,15 +1,24 @@
+import { useState } from "react";
 import "../assets/Navbar.css";
 
-const SearchBar = () => {
+interface SearchValueProps{
+  searchValue: string
+  handleSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+}
+
+const SearchBar = ({searchValue, handleSearchChange} : SearchValueProps) => {
+  
   return (
     <>
       <form className="d-flex" style={{ width: "15rem" }}>
         <input
           className="form-control shadow-none"
           type="search"
-          placeholder="Search"
+          placeholder="Search Block"
           aria-label="Search"
           id="searchQueryInput"
+          onChange={handleSearchChange}
+          value={searchValue} 
         />
         <button
           className="btn btn-outline-success"

@@ -47,6 +47,7 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
   );
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
+  // Automatically decrypt passwords in each block for user's eyes only
   useEffect(() => {
     const decryptAllPasswords = async () => {
       const decryptedBlocks = await Promise.all(
@@ -234,7 +235,7 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
                           name: "blockName",
                           id: 0,
                         }}
-                        value={blockList[index].blockName}
+                        value={blockList[index]?.blockName}
                         placeholder={item.blockName}
                       />
                       {index}
@@ -263,7 +264,7 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
                         name: "name",
                         id: 1,
                       }}
-                      value={blockList[index].name}
+                      value={blockList[index]?.name}
                       placeholder={item.name}
                     />
                     <strong>Email:</strong>{" "}
@@ -282,7 +283,7 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
                         name: "email",
                         id: 2,
                       }}
-                      value={blockList[index].email}
+                      value={blockList[index]?.email}
                       placeholder={item.email}
                     />
                     <strong>Username:</strong>{" "}
@@ -301,7 +302,7 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
                         name: "username",
                         id: 3,
                       }}
-                      value={blockList[index].username}
+                      value={blockList[index]?.username}
                       placeholder={item.username}
                     />
                     <strong>Password:</strong>{" "}
@@ -324,8 +325,8 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
                           name: "password",
                           id: 4,
                         }}
-                        value={blockList[index].decryptedPassword}
-                        placeholder={blockList[index].decryptedPassword}
+                        value={blockList[index]?.decryptedPassword}
+                        placeholder={blockList[index]?.decryptedPassword}
                       />
                     </div>
                     {item.securityQuestions &&

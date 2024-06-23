@@ -41,7 +41,6 @@ const App = () => {
     email: "",
     username: "",
   });
-  console.log(userData);
 
   useEffect(() => {
     const verifyCookie = async () => {
@@ -75,8 +74,8 @@ const App = () => {
         </Route>
 
         {/* PRIVATE ROUTES */}
-        <Route element={<PrivateRoutes userData={userData} />}>
-          <Route path="/Home" element={<Home />} />
+        <Route element={<PrivateRoutes />}>
+          <Route path="/Home" element={<Home userData={userData}/>} />
           <Route
             path="/Profile"
             element={<ProfilePage userData={userData} />}
