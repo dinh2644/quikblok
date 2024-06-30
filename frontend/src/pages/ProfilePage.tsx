@@ -5,6 +5,7 @@ import { toast } from "react-hot-toast";
 import "../assets/ProfilePage.css";
 import { Link } from "react-router-dom";
 
+
 interface IdProp {
   userData: {
     _id: string;
@@ -63,13 +64,14 @@ const ProfilePage = ({ userData }: IdProp) => {
       );
 
       if (response.status === 200) {
-        window.location.reload();
-
-        navigate("/");
-
-        console.log("Logged out successfully"); // do toast for this
+        setTimeout(() => {
+          navigate("/");
+          window.location.reload();
+        }, 1000);
+        toast.success("Logged out successfully")
+        
       } else {
-        console.error("Logout failed");
+        toast.error("Logout failed")
       }
     } catch (error) {
       console.error(error);
@@ -248,9 +250,14 @@ const ProfilePage = ({ userData }: IdProp) => {
                 >
                   Log out
                 </button>
+
+                <Link className="nav-link list-group-item list-group-item-action" to={"/home"}>
+                  Back
+                </Link>
               </div>
             </div>
 
+            {/* Logout modal */}
             <div
               className="modal fade"
               id="logoutModal"
@@ -258,7 +265,6 @@ const ProfilePage = ({ userData }: IdProp) => {
               aria-labelledby="exampleModalLabel"
               aria-hidden="true"
             >
-              {/* Logout modal */}
               <div className="modal-dialog modal-dialog-centered ">
                 <div className="modal-content rounded-3 text-center logoutModalShape">
                   <div
@@ -268,7 +274,7 @@ const ProfilePage = ({ userData }: IdProp) => {
                     <h3 className="mt-1">Are you sure you want to log out?</h3>
                   </div>
                   <div className="modal-body logoutBody">
-                    <button className="logoutBtn" onClick={handleLogout}>
+                    <button className="logoutBtn" onClick={handleLogout} data-bs-dismiss="modal">
                       Log Out
                     </button>
                     <button className="cancelBtn" data-bs-dismiss="modal">
@@ -541,7 +547,6 @@ const ProfilePage = ({ userData }: IdProp) => {
             </div>
           </div>
         </div>
-        <hr />
       </section>
     </>
   );

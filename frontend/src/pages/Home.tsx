@@ -1,7 +1,7 @@
 import Blocks from "../components/Blocks";
 import NewBlock from "../components/NewBlock";
 import "../assets/HomePage.css";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast/headless";
 import Loading from "../components/Loading";
@@ -28,7 +28,7 @@ export const SearchValueContext = createContext<SearchContextType>({
 const Home = ({userData}: HomeProps) => {
   const [listOfBlocks, setListOfBlocks] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [searchValue, setSearchValue] = useState("")
+  const [searchValue, setSearchValue] = useState<string>("")
 
   // Fetch blocks
   useEffect(() => {
@@ -69,9 +69,7 @@ const Home = ({userData}: HomeProps) => {
       .catch((err) => {
         console.error("Error deleting block: ", err);
       });
-  };
-
-    
+  };    
     
   return (
     <>

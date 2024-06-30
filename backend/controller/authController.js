@@ -124,6 +124,7 @@ const loginUser = async (req, res, next) => {
         error: "No user found!",
       });
     }
+
     // resend verification email if user is not verified
     if (!user.verified) {
       let token = await Token.findOne({ userId: user._id });
@@ -136,10 +137,11 @@ const loginUser = async (req, res, next) => {
       // send mail
       const link = `${process.env.BASE_URL}/verify/${token.token}`;
       await sendEmail(user.email, link);
-
-      return res.status(400).send({
-        message: "A verification link has been resent to your email.",
-      });
+      
+      // res.status(400) prevents users from logging in
+      return res.json({
+        error: "Email not verified. A verification link has been resent.",
+      });    
     }
 
     // check if passwords match

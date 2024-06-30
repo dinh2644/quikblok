@@ -1,13 +1,15 @@
-import { useState } from "react";
 import "../assets/Navbar.css";
+import React, { useContext } from 'react';
+import { SearchValueContext } from '../pages/Home';
 
-interface SearchValueProps{
-  searchValue: string
-  handleSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-}
 
-const SearchBar = ({searchValue, handleSearchChange} : SearchValueProps) => {
-  
+const SearchBar = () => {
+  const { searchValue, setSearchValue } = useContext(SearchValueContext);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+  };
+
   return (
     <>
       <form className="d-flex" style={{ width: "15rem" }}>
