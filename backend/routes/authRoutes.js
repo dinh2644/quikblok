@@ -7,6 +7,7 @@ const {
   loginUser,
   updatePersonalInfo,
   logoutUser,
+  deleteAccount,
   getBlock,
   createBlock,
   updateBlock,
@@ -44,5 +45,6 @@ router.put("/updateBlock/:id", userVerification, updateBlock);
 
 // delete
 router.delete("/deleteBlock/:id", deleteBlock);
+router.delete("/deleteAccount/:id",deleteAccount);
 
 module.exports = router;

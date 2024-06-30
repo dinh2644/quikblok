@@ -43,13 +43,10 @@ const Navbar = ({ userData }: NavbarProps) => {
     }
   };
 
-
-  
-
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <div className="container" style={{ maxWidth: "1800px" }}>
+        <div className="container-fluid" style={{ maxWidth: "1800px" }}>
           <Link to="/Home" className="navbar-brand link-unstyled">
             QuikBlok
           </Link>

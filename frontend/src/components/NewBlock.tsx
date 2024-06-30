@@ -147,7 +147,7 @@ const NewBlock = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="staticBackdropLabel">
-                Modal title
+                New Block
               </h5>
               <button
                 type="button"

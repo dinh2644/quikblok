@@ -176,6 +176,21 @@ const logoutUser = async (req, res) => {
   res.json({ message: "Logout successful" });
 };
 
+const deleteAccount = async (req,res) => {
+  const accountId = req.params.id;
+  try {
+    const deletedAccount = await User.findByIdAndDelete(accountId).exec();
+    if (!deletedAccount) {
+      res.json({ message: "Account not found" });
+    } else {
+      res.json({ message: "Account deleted successfully" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error });
+  }
+}
+
 // Get user's block
 const getBlock = async (req, res) => {
   try {
@@ -444,7 +459,7 @@ const updateBlock = async (req, res) => {
 const deleteBlock = async (req, res) => {
   const blockId = req.params.id;
   try {
-    const deletedBlock = Block.findByIdAndDelete(blockId).exec();
+    const deletedBlock = await Block.findByIdAndDelete(blockId).exec();
     if (!deletedBlock) {
       res.status(404).json({ message: "Block not found" });
     } else {
@@ -462,6 +477,7 @@ module.exports = {
   loginUser,
   updatePersonalInfo,
   logoutUser,
+  deleteAccount,
   getBlock,
   createBlock,
   updateBlock,

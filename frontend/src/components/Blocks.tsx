@@ -238,7 +238,7 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
                         value={blockList[index]?.blockName}
                         placeholder={item.blockName}
                       />
-                      {index}
+                   
                     </h5>
                     <button
                       type="button"

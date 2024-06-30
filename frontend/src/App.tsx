@@ -65,12 +65,12 @@ const App = () => {
         {/* Accessible through email link only */}
         <Route path="/resetPassword/:token" element={<ResetPassword />}></Route>
         <Route path="/forgotPassword" element={<ForgotPassword />} />
+
         {/* PUBLIC ROUTES */}
         <Route element={<PublicRoutes />}>
           <Route path="/" element={<Register />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/verify/:token" element={<EmailVerify />} />
-
         </Route>
 
         {/* PRIVATE ROUTES */}
@@ -82,6 +82,7 @@ const App = () => {
           />
           <Route path="/Bin" element={<RecycleBinPage />} />
         </Route>
+        
       </Routes>
       <Footer year={currentYear} />
     </Router>

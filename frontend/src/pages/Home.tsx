@@ -78,7 +78,7 @@ const Home = ({userData}: HomeProps) => {
       ) : (
         <SearchValueContext.Provider value={{searchValue,setSearchValue}}>
         <div>
-          <Navbar userData={userData}/>
+        <Navbar userData={userData}/>
         <section>
           <div className="container" style={{ maxWidth: "1800px" }}>
             <div className="row">

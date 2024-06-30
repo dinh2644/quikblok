@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import "../assets/ProfilePage.css";
 import { Link } from "react-router-dom";
+import ProfileNavbar from "../components/ProfileNavbar";
 
 
 interface IdProp {
@@ -203,8 +204,9 @@ const ProfilePage = ({ userData }: IdProp) => {
   return (
     <>
       <section>
-        <div className="container">
-          <h1>Edit Profile</h1>
+      <ProfileNavbar/>
+        <div className="container"> 
+          <h1 style={{marginTop: "15px"}}>Edit Profile</h1>      
           <hr />
           <div className="row">
             {/* Left column - Tabs */}
@@ -251,9 +253,7 @@ const ProfilePage = ({ userData }: IdProp) => {
                   Log out
                 </button>
 
-                <Link className="nav-link list-group-item list-group-item-action" to={"/home"}>
-                  Back
-                </Link>
+                
               </div>
             </div>
 
@@ -295,18 +295,22 @@ const ProfilePage = ({ userData }: IdProp) => {
                     <div className="detail">
                       <h4>First Name:</h4>
                       <p>{userData.firstName}</p>
+                      <hr style={{marginTop: "5px"}}/>
                     </div>
                     <div className="detail">
                       <h4>Last Name:</h4>
                       <p>{userData.lastName}</p>
+                      <hr style={{marginTop: "5px"}}/>
                     </div>
                     <div className="detail">
                       <h4>Username:</h4>
                       <p>{userData.username}</p>
+                      <hr style={{marginTop: "5px"}}/>
                     </div>
                     <div className="detail">
                       <h4>Email:</h4>
                       <p>{userData.email}</p>
+                      <hr style={{marginTop: "5px"}}/>
                     </div>
                   </div>
                 </>
