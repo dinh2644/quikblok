@@ -2,8 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useCookies } from "react-cookie";
+import { Link } from "react-router-dom";
 
 const ForgotPassword = () => {
+  const [cookies] = useCookies(["token"]);
   const [email, setEmail] = useState<string>("");
   const navigate = useNavigate();
 
@@ -20,7 +23,11 @@ const ForgotPassword = () => {
         toast.error(data.error);
         return;
       } else {
-        navigate("/Login");
+        setTimeout(() => {
+          navigate("/Home");
+          window.location.reload();
+        }, 2000);
+        toast.success("Password reset email sent!")
       }
     } catch (error) {
       console.error("Error sending email:", error);
@@ -49,11 +56,14 @@ const ForgotPassword = () => {
             </div>
             <button
               type="submit"
-              className="btn btn-success w-100 rounded-0"
+              className="btn btn-primary w-100 rounded-0"
               onClick={handleSubmit}
             >
               Send
             </button>
+            <Link to={cookies.token ? "/Profile" : "/"} className="btn btn-secondary w-100 rounded-0 mt-1">
+                Go Back
+            </Link>
           </form>
         </div>
       </div>

@@ -1,6 +1,5 @@
 import SearchBar from "./SearchBar";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../assets/Navbar.css";
 import { toast } from "react-hot-toast";
@@ -15,10 +14,8 @@ interface NavbarProps {
 }
 
 const Navbar = ({ userData }: NavbarProps) => {
-
-
-  const navigate = useNavigate();
-
+ 
+  // Handle log out
   const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
@@ -29,11 +26,7 @@ const Navbar = ({ userData }: NavbarProps) => {
       );
 
       if (response.status === 200) {
-        setTimeout(() => {
-          navigate("/");
-          window.location.reload();
-        }, 1000);
-        toast.success("Logged out successfully")
+        window.location.href = "/";
 
       } else {
         toast.error("Log out failed")
@@ -61,7 +54,7 @@ const Navbar = ({ userData }: NavbarProps) => {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                Welcome, {userData.firstName}
+                Hello, {userData.firstName}
               </div>
               <ul
                 className="dropdown-menu"

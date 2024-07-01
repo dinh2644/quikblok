@@ -13,6 +13,11 @@ const ResetPassword = () => {
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
+      if (!password || password.length < 6) {
+        toast.error("New password must be at least 6 characters long.");
+        return;
+      }
+
       const { data } = await axios.post("/resetPassword", {
         password,
         resetToken: token,
@@ -22,7 +27,11 @@ const ResetPassword = () => {
         toast.error(data.error);
         return;
       } else {
-        navigate("/Login");
+        setTimeout(() => {
+          navigate("/Home");
+          window.location.reload();
+        }, 2000);
+        toast.success("Password successfully updated!")
       }
     } catch (error) {
       console.error("Error resetting password:", error);
@@ -51,7 +60,7 @@ const ResetPassword = () => {
             </div>
             <button
               type="submit"
-              className="btn btn-success w-100 rounded-0"
+              className="btn btn-primary w-100 rounded-0"
               onClick={handleSubmit}
             >
               Update

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
@@ -18,36 +18,50 @@ interface IdProp {
   };
 }
 
-interface PersonalInfoType {
-  [key: string]: string;
-}
-interface EmailInfoType {
-  [key: string]: string;
-}
-interface PasswordType {
+interface StateObjectType {
   [key: string]: string;
 }
 
 const ProfilePage = ({ userData }: IdProp) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("accountDetails");
+  const [noOfBlocks, setNoOfBlocks] = useState<number>(0);
   // personal info
-  const [personalInfo, setPersonalInfo] = useState<PersonalInfoType>({
+  const [personalInfo, setPersonalInfo] = useState<StateObjectType>({
     firstName: "",
     lastName: "",
     username: "",
   });
   // email
-  const [emailInfo, setEmailInfo] = useState<EmailInfoType>({
+  const [emailInfo, setEmailInfo] = useState<StateObjectType>({
     email: "",
   });
   const [confirmEmail, setConfirmEmail] = useState<string>("");
   // password
-  const [passwordInfo, setPasswordInfo] = useState<PasswordType>({
+  const [passwordInfo, setPasswordInfo] = useState<StateObjectType>({
     password: "",
     oldPassword: "",
   });
   const [confirmPassword, setConfirmPassword] = useState<string>("");
+  // delete account
+  const [deletePassword, setDeletePassword] = useState<StateObjectType>({
+    deletePassword: ""
+  });
+  const [confirmDelete, setConfirmDelete] = useState<string>("");
+
+  // Get no. of blocks for display
+  useEffect(()=>{
+    const getNoOfBlocks = async() =>{
+      try {
+        const response = await axios.get("/getNoOfBlocks");
+        setNoOfBlocks(response.data.count);
+
+      } catch (error) {
+        console.error("Can't get number of blocks", error);
+      }
+    } 
+    getNoOfBlocks();
+  }, [])
 
   // handle tab click
   const handleTabClick = (tabName: string) => {
@@ -65,11 +79,7 @@ const ProfilePage = ({ userData }: IdProp) => {
       );
 
       if (response.status === 200) {
-        setTimeout(() => {
-          navigate("/");
-          window.location.reload();
-        }, 1000);
-        toast.success("Logged out successfully")
+        window.location.href = "/";
         
       } else {
         toast.error("Logout failed")
@@ -100,6 +110,12 @@ const ProfilePage = ({ userData }: IdProp) => {
         [name]: value,
       };
     });
+    setDeletePassword((prev)=>{
+      return {
+        ...prev,
+        [name]: value,
+      }
+    })
   };
 
   // update personal info
@@ -201,6 +217,48 @@ const ProfilePage = ({ userData }: IdProp) => {
     }
   };
 
+  // delete account
+  const handleDeleteAccount = async (e: React.MouseEvent<HTMLButtonElement>)=>{
+    e.preventDefault();
+    try {
+
+      if(deletePassword.deletePassword.trim() !== confirmDelete.trim()){
+        toast.error("Confirm password does not match. Try again.");
+        return;
+      }
+
+      
+
+      const {data} = await axios.delete("/deleteAccount", {data: { password: deletePassword.deletePassword }})
+
+      if(data.error){
+        toast.error(data.error);
+        return;
+      }else{
+        await axios.post(
+          "/logout",
+          {},
+          { withCredentials: true }
+        );
+
+        setTimeout(() => {
+          navigate("/");
+          window.location.reload();
+        }, 2000);
+
+        setDeletePassword({deletePassword: ""})
+        setConfirmDelete("")
+        toast('Account Deleted! Sorry to see you go.', {
+          icon: '🥺',
+        });
+      }
+      
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  }
+  
+
   return (
     <>
       <section>
@@ -244,6 +302,14 @@ const ProfilePage = ({ userData }: IdProp) => {
                 >
                   Password
                 </a>
+                <a
+                  href="#"
+                  className={`list-group-item list-group-item-action ${activeTab === "deleteAccount" ? "active" : ""
+                    }`}
+                  onClick={() => handleTabClick("deleteAccount")}
+                >
+                  Delete Account
+                </a>
                 <button
                   className="list-group-item list-group-item-action text-danger font-weight-bold"
                   type="button"
@@ -283,7 +349,7 @@ const ProfilePage = ({ userData }: IdProp) => {
                   </div>
                 </div>
               </div>
-            </div>
+            </div>          
 
             {/* Edit form column */}
             <div className="col-md-9 personal-info">
@@ -310,6 +376,11 @@ const ProfilePage = ({ userData }: IdProp) => {
                     <div className="detail">
                       <h4>Email:</h4>
                       <p>{userData.email}</p>
+                      <hr style={{marginTop: "5px"}}/>
+                    </div>
+                    <div className="detail">
+                      <h4>No. Of Blocks</h4>
+                      <p>{noOfBlocks}</p>
                       <hr style={{marginTop: "5px"}}/>
                     </div>
                   </div>
@@ -390,7 +461,7 @@ const ProfilePage = ({ userData }: IdProp) => {
                             });
                           }}
                         >
-                          Cancel
+                          Clear
                         </button>
                       </div>
                     </div>
@@ -446,7 +517,7 @@ const ProfilePage = ({ userData }: IdProp) => {
                           value="Update Information"
                           onClick={handleUpdateEmail}
                         >
-                          Save
+                          Update
                         </button>
                         <button
                           type="reset"
@@ -459,7 +530,7 @@ const ProfilePage = ({ userData }: IdProp) => {
                             setConfirmEmail("");
                           }}
                         >
-                          Cancel
+                          Clear
                         </button>
                       </div>
                     </div>
@@ -530,7 +601,7 @@ const ProfilePage = ({ userData }: IdProp) => {
                           value="Update Information"
                           onClick={handleUpdatePassword}
                         >
-                          Save
+                          Update
                         </button>
                         <button
                           type="reset"
@@ -541,11 +612,77 @@ const ProfilePage = ({ userData }: IdProp) => {
                             setPasswordInfo({ password: "", oldPassword: "" });
                           }}
                         >
-                          Cancel
+                          Clear
                         </button>
                       </div>
                     </div>
                   </form>
+                </>
+              )}
+              {/* Delete Account */}
+              {activeTab === "deleteAccount" && (
+                <>
+                  <h3>Delete Account</h3>
+                  <form className="form-horizontal" role="form">
+                    <div className="form-group">
+                      <label className="col-md-3 control-label">
+                        Enter Current Password:
+                      </label>
+                      <div className="col-md-8">
+                        <input
+                          className="form-control"
+                          type="password"
+                          name="deletePassword"
+                          id="deletePassword"
+                          value={deletePassword.deletePassword}
+                          onChange={handleChange}
+                        />
+                      </div>
+                    </div>
+                   
+                    <div className="form-group">
+                      <label className="col-md-3 control-label">
+                        Confirm password:
+                      </label>
+                      <div className="col-md-8">
+                        <input
+                          className="form-control"
+                          type="password"
+                          name="confirmDelete"
+                          value={confirmDelete}
+                          onChange={(e) => {
+                            setConfirmDelete(e.target.value);
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-group">
+                      <label className="col-md-3 control-label"></label>
+                      <div className="col-md-8">
+                        <button
+                          type="submit"
+                          className="btn btn-danger"
+                          value="Update Information"
+                          onClick={handleDeleteAccount}
+                        >
+                          Delete My Account
+                        </button>
+                        <button
+                          type="reset"
+                          className="btn btn-default"
+                          value="Update Information"
+                          onClick={() => {
+                            setConfirmDelete("");
+                            setDeletePassword({ deletePassword: ""});
+                          }}
+                        >
+                          Clear
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                  <p style={{fontSize: "15px", opacity: "50%"}}>This action is permanent and irreversible.</p>
                 </>
               )}
             </div>

@@ -23,6 +23,11 @@ const Register = () => {
     e.preventDefault();
     const { email, firstName, lastName, username, password } = data;
     try {
+      if(!email || !firstName || !lastName || !username || !password){
+        toast.error("Inputs cannot be empty!")
+        return;
+      }
+     
       const { data } = await axios.post("/register", {
         email,
         firstName,
@@ -48,6 +53,17 @@ const Register = () => {
     }
   };
 
+
+  const handleEmailChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+    const email = e.target.value;
+    setData({ ...data, email });
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) =>{
+    const password = e.target.value;
+    setData({...data,password});
+  }
+
   return (
     <section>
       <div className="container">
@@ -65,10 +81,8 @@ const Register = () => {
                     id="Email"
                     aria-describedby="emailHelp"
                     placeholder="Email"
-                    value={data.email}
-                    onChange={(e) =>
-                      setData({ ...data, email: e.target.value })
-                    }
+                    value={data.email}                   
+                    onChange={handleEmailChange}
                   />
                 </div>
                 <div className="mb-3">
@@ -114,9 +128,7 @@ const Register = () => {
                     id="Password"
                     placeholder="Password"
                     value={data.password}
-                    onChange={(e) =>
-                      setData({ ...data, password: e.target.value })
-                    }
+                    onChange={handlePasswordChange}
                   />
                 </div>
                 <div className="text-center">

@@ -37,10 +37,7 @@ const Login = () => {
           password: "",
         });
 
-        setTimeout(() => {
-          navigate("/Home");
-          window.location.reload();
-        }, 1000);
+        window.location.href = "/Home";
         toast.success("Login successful. Welcome!");
       }
     } catch (error) {

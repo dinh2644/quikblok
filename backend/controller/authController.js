@@ -38,6 +38,17 @@ const decryptPassword = (req, res) => {
   }
 };
 
+const validatePassword = (password) => {
+  // From: https://stackoverflow.com/questions/70140205/passwordincluding-numerics-alphabets-8-words-at-least
+  const passwordRegex = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,})/;
+  return passwordRegex.test(password);
+};
+const validateEmail = (email) => {
+  // From: https://www.regular-expressions.info/
+  const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
+  return emailRegex.test(email);
+};
+
 // Register endpoint
 const registerUser = async (req, res, next) => {
   try {
@@ -51,6 +62,12 @@ const registerUser = async (req, res, next) => {
     if (emailExist) {
       return res.json({ error: "Email is taken already!" });
     }
+    // Check for email validation
+    if(!validateEmail(email)){
+      return res.json({
+        error: "Email must be in the format 'example@example.com'."
+      })
+    }
     // Check if username is taken
     const userNameExist = await User.findOne({ username });
     if (userNameExist) {
@@ -59,9 +76,9 @@ const registerUser = async (req, res, next) => {
       });
     }
     // Check for password strength
-    if (!password || password.length < 6) {
+    if (!validatePassword(password)) {
       return res.json({
-        error: "Password is required and should be at least 6 characters long!",
+        error: "Password must be at least 6 characters long, including 1 uppercase letter, 1 lowercase letter, and 1 digit.",
       });
     }
 
@@ -176,15 +193,37 @@ const logoutUser = async (req, res) => {
   res.json({ message: "Logout successful" });
 };
 
+// Delete account
 const deleteAccount = async (req,res) => {
-  const accountId = req.params.id;
   try {
-    const deletedAccount = await User.findByIdAndDelete(accountId).exec();
-    if (!deletedAccount) {
-      res.json({ message: "Account not found" });
-    } else {
-      res.json({ message: "Account deleted successfully" });
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ error: "Unauthorized" });
     }
+
+    const { password: inputtedPassword } = req.body;
+
+    const passwordMatch = await comparePassword(
+      inputtedPassword.trim(),
+      req.user.password.trim()
+    );
+    
+    if (!passwordMatch) {
+      return res.json({
+        error: "Current password is not correct.",
+      });
+    }
+   
+    const [deletedAccount, deletedBlocks] = await Promise.all([
+      User.findByIdAndDelete(req.user._id).exec(),
+      Block.deleteMany({ postedBy: req.user._id }).exec()
+    ]);
+
+    if (!deletedAccount) {
+      return res.json({ message: "Account not found" });
+    }
+
+    res.json({ message: "Account and associated blocks deleted successfully" });
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error });
@@ -459,6 +498,10 @@ const updateBlock = async (req, res) => {
 const deleteBlock = async (req, res) => {
   const blockId = req.params.id;
   try {
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
     const deletedBlock = await Block.findByIdAndDelete(blockId).exec();
     if (!deletedBlock) {
       res.status(404).json({ message: "Block not found" });
@@ -471,6 +514,23 @@ const deleteBlock = async (req, res) => {
   }
 };
 
+// Get number of blocks a user has
+const getNoOfBlocks = async(req,res) => {
+  try {
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const count = await Block.countDocuments({postedBy: req.user._id});
+    res.json({ count });
+
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error });
+  }
+}
+
 module.exports = {
   registerUser,
   getUserInfo,
@@ -482,6 +542,7 @@ module.exports = {
   createBlock,
   updateBlock,
   deleteBlock,
+  getNoOfBlocks,
   verifyUser,
   updateEmail,
   newEmailVerification,

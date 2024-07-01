@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
-import BackButton from "../assets/back-button.png";
 
 const ProfileNavbar = () => {
+    const handleNavigateHome = () => {
+        window.location.href = "/home";
+        
+      };
+
     return (
         <>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -10,13 +14,9 @@ const ProfileNavbar = () => {
                         QuikBlok
                     </Link>
 
-                    <Link to="/home" style={{ textDecoration: 'none', color: 'inherit' }}>
-                        <img
-                            src={BackButton}
-                            alt="Back arrow"
-                            width={50}
-                        />
-                    </Link>
+                    <div onClick={handleNavigateHome} style={{ textDecoration: 'none', color: 'inherit', cursor: "pointer"}}>
+                        <div style={{fontSize: "25px"}}>Go Back</div>
+                    </div>
 
                 </div>
             </nav>

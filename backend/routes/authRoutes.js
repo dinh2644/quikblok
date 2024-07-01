@@ -12,6 +12,7 @@ const {
   createBlock,
   updateBlock,
   deleteBlock,
+  getNoOfBlocks,
   verifyUser,
   updateEmail,
   newEmailVerification,
@@ -36,6 +37,7 @@ router.post("/decryptPassword", decryptPassword);
 // get
 router.get("/getBlock", userVerification, getBlock);
 router.get("/verify/:token", verifyUser);
+router.get("/getNoOfBlocks", userVerification, getNoOfBlocks);
 
 // update
 router.put("/updatePersonalInfo", userVerification, updatePersonalInfo);
@@ -44,7 +46,7 @@ router.put("/updatePassword", userVerification, updatePassword);
 router.put("/updateBlock/:id", userVerification, updateBlock);
 
 // delete
-router.delete("/deleteBlock/:id", deleteBlock);
-router.delete("/deleteAccount/:id",deleteAccount);
+router.delete("/deleteBlock/:id", userVerification, deleteBlock);
+router.delete("/deleteAccount",userVerification, deleteAccount);
 
 module.exports = router;
