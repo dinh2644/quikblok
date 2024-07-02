@@ -476,14 +476,28 @@ const updateBlock = async (req, res) => {
 
     const blockId = req.params.id;
 
-    const encryptedPassword = encrypt(req.body.password);
-    req.body = {
-      ...req.body,
-      password: encryptedPassword.password,
-      iv: encryptedPassword.iv,
-    };
+    // creates copy of all data sent from frontend
+    const updateData = { ...req.body };
 
-    const updatedBlockInfo = await Block.findByIdAndUpdate(blockId, req.body, {
+    // if password is being updated
+    if (updateData.password) {
+      const currentBlock = await Block.findById(blockId);
+      const decryptedStoredPassword = decrypt(currentBlock);
+      // if changed password is different from current one, encrypt and
+      // update the new password
+      if (updateData.password !== decryptedStoredPassword) {
+        const encryptedPassword = encrypt(updateData.password);
+        updateData.password = encryptedPassword.password;
+        updateData.iv = encryptedPassword.iv;
+      } else {
+        // if updated password is unchanged, delete from update payload 
+        // to prevent unnecessary updates
+        delete updateData.password;
+        delete updateData.iv;
+      }
+    }
+    
+    const updatedBlockInfo = await Block.findByIdAndUpdate(blockId, updateData, {
       new: true,
     });
 

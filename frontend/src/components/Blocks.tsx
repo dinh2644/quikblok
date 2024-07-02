@@ -13,7 +13,7 @@ interface BlockInfoProp {
   email: string;
   username: string;
   password: string;
-  securityQuestions: SecurityQuestion[]; // todo: fix to include this in save()
+  securityQuestions: SecurityQuestion[]; 
   decryptedPassword?: string;
   iv: string;
   picture: string;
@@ -31,27 +31,14 @@ interface SecurityQuestion {
 }
 
 const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
-  const [blockList, setBlockList] = useState<BlockInfoProp[]>(
-    listOfBlocks.map(() => ({
-      blockName: "",
-      name: "",
-      email: "",
-      username: "",
-      password: "",
-      securityQuestions: [{ question: "", answer: "" }],
-      iv: "",
-      picture: "",
-      _id: "",
-      null: null,
-    }))
-  );
+  const [blockList, setBlockList] = useState<BlockInfoProp[]>(listOfBlocks);
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   // Automatically decrypt passwords in each block for user's eyes only
   useEffect(() => {
     const decryptAllPasswords = async () => {
       const decryptedBlocks = await Promise.all(
-        listOfBlocks.map(async (block) => {
+        blockList.map(async (block) => {
           try {
             const { data } = await axios.post("/decryptPassword", {
               password: block.password,
@@ -82,7 +69,7 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
       setBlockList(decryptedBlocks);
     };
     decryptAllPasswords();
-  }, [listOfBlocks]);
+  }, []);
 
   // Save line edit
   const save = async (
@@ -91,24 +78,26 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
     key: keyof BlockInfoProp
   ) => {
     try {
+      // Update state first
       const updatedBlocks = [...blockList];
-
-      updatedBlocks[index] = {
-        ...updatedBlocks[index],
-        [key]: value,
-      };
-
+      updatedBlocks[index] = {...updatedBlocks[index], [key]: value,};
       setBlockList(updatedBlocks);
+
+      // object w/ fields that will be updated 
+      // i.e email: <NEWVALUE>, password: <NEWVALUE>, etc
+      const updateData: Partial<BlockInfoProp> = { [key]: value };
+
+      if (key === 'password') {
+        updateData.password = value;
+        updateData.iv = listOfBlocks[index].iv;
+      }
 
       const { data } = await axios.put(
         `/updateBlock/${listOfBlocks[index]._id}`,
-        {
-          ...updatedBlocks[index],
-        }
+        updateData
       );
       if (data.error) {
         toast.error("Failed to update block.");
-
         return;
       }
     } catch (error) {
@@ -162,8 +151,8 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
       <div className="container">
         <div className="row">
           {/* Map blocks */}
-          {listOfBlocks.length > 0 ? (
-            listOfBlocks.map((item, index: number) => (
+          {blockList.length > 0 ? (
+            blockList.map((item, index: number) => (
               <div
                 className="col-xxl-2 col-xl-2 col-lg-3 col-md-3 col-sm-4 col-xs-6"
                 key={index}
