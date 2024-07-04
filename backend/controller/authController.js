@@ -97,7 +97,7 @@ const registerUser = async (req, res, next) => {
     }).save();
 
     // send mail
-    const link = `${process.env.BASE_URL}/verify/${token.token}`;
+    const link = `${process.env.FRONTEND_URL}/preverify/${token.token}`;
     await sendEmail(email, link);
 
     res.status(201).json({
@@ -119,10 +119,20 @@ const verifyUser = async (req, res) => {
     const token = await Token.findOne({
       token: req.params.token,
     });
-    console.log(token);
+   
+    if (!token) {
+      return res.status(400).json({ message: "Invalid or expired token" });
+    }
+
     await User.updateOne({ _id: token.userId }, { $set: { verified: true } });
-    await Token.findByIdAndRemove(token._id);
-    res.send("Email verified");
+    
+    res
+      .status(201)
+      .json({ message: "Email Verified" });
+
+      setTimeout(async () => {
+        await Token.findOneAndDelete({ _id: token._id });
+      }, 1000); 
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error });

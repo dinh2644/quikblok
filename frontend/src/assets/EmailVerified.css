@@ -28,3 +28,16 @@ p {
 .login-button:hover {
   background-color: #0056b3;
 }
+
+.full-page-message {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  z-index: 9999;
+}

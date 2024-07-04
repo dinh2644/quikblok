@@ -8,7 +8,6 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import ProfilePage from "./pages/ProfilePage";
-import RecycleBinPage from "./pages/RecycleBinPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import PrivateRoutes from "./components/PrivateRoutes";
@@ -16,6 +15,7 @@ import EmailVerify from "./pages/EmailVerified";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import PublicRoutes from "./components/PublicRoutes";
+import PageNotFound from "./pages/PageNotFound";
 
 
 const currentYear = new Date().getFullYear();
@@ -45,7 +45,7 @@ const App = () => {
   useEffect(() => {
     const verifyCookie = async () => {
       const { data } = await axios.post(
-        "http://localhost:8000",
+        "/",
         {},
         { withCredentials: true }
       );
@@ -70,7 +70,7 @@ const App = () => {
         <Route element={<PublicRoutes />}>
           <Route path="/" element={<Register />} />
           <Route path="/Login" element={<Login />} />
-          <Route path="/verify/:token" element={<EmailVerify />} />
+          <Route path="/preverify/:token" element={<EmailVerify />} /> {/* This is only available to verified users */}
         </Route>
 
         {/* PRIVATE ROUTES */}
@@ -79,10 +79,10 @@ const App = () => {
           <Route
             path="/Profile"
             element={<ProfilePage userData={userData} />}
-          />
-          <Route path="/Bin" element={<RecycleBinPage />} />
+          />       
         </Route>
-        
+        {/* Handle Unknown Routes */}
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
       <Footer year={currentYear} />
     </Router>
