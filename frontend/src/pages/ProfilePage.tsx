@@ -331,7 +331,7 @@ const ProfilePage = ({ userData }: IdProp) => {
               aria-labelledby="exampleModalLabel"
               aria-hidden="true"
             >
-              <div className="modal-dialog modal-dialog-centered ">
+              <div className="modal-dialog modal-dialog-centered">
                 <div className="modal-content rounded-3 text-center logoutModalShape">
                   <div
                     className="modal-header border-0 "
@@ -422,7 +422,7 @@ const ProfilePage = ({ userData }: IdProp) => {
                       </div>
                     </div>
 
-                    <div className="form-group">
+                    <div className="form-group mb-3">
                       <label className="col-md-3 control-label">
                         Username:
                       </label>
@@ -439,13 +439,15 @@ const ProfilePage = ({ userData }: IdProp) => {
                     </div>
 
                     <div className="form-group">
-                      <label className="col-md-3 control-label"></label>
-                      <div className="col-md-8">
+                 
+                      <div className="col-md-8 ">
                         <button
                           type="submit"
                           className="btn btn-primary"
                           value="Update Information"
                           onClick={handleUpdatePersonalInfo}
+                          style={{marginRight: "10px"}}
+                         
                         >
                           Update
                         </button>
@@ -461,7 +463,7 @@ const ProfilePage = ({ userData }: IdProp) => {
                             });
                           }}
                         >
-                          Clear
+                         Clear 
                         </button>
                       </div>
                     </div>
@@ -490,7 +492,7 @@ const ProfilePage = ({ userData }: IdProp) => {
                       </div>
                     </div>
 
-                    <div className="form-group">
+                    <div className="form-group mb-3 ">
                       <label className="col-md-3 control-label">
                         Confirm Email:
                       </label>
@@ -509,13 +511,14 @@ const ProfilePage = ({ userData }: IdProp) => {
                     </div>
 
                     <div className="form-group">
-                      <label className="col-md-3 control-label"></label>
+                      
                       <div className="col-md-8">
                         <button
                           type="submit"
                           className="btn btn-primary"
                           value="Update Information"
                           onClick={handleUpdateEmail}
+                          style={{marginRight: "10px"}}
                         >
                           Update
                         </button>
@@ -592,14 +595,15 @@ const ProfilePage = ({ userData }: IdProp) => {
                     <Link to="/forgotPassword" style={{ textDecoration: 'none', fontSize: '15px', paddingLeft: '3px' }}>Forgot Password</Link>
 
 
-                    <div className="form-group">
-                      <label className="col-md-3 control-label"></label>
+                    <div className="form-group mt-3">
+                     
                       <div className="col-md-8">
                         <button
                           type="submit"
                           className="btn btn-primary"
                           value="Update Information"
                           onClick={handleUpdatePassword}
+                          style={{marginRight: "10px"}}
                         >
                           Update
                         </button>
@@ -640,7 +644,7 @@ const ProfilePage = ({ userData }: IdProp) => {
                       </div>
                     </div>
                    
-                    <div className="form-group">
+                    <div className="form-group mb-3">
                       <label className="col-md-3 control-label">
                         Confirm password:
                       </label>
@@ -658,13 +662,14 @@ const ProfilePage = ({ userData }: IdProp) => {
                     </div>
 
                     <div className="form-group">
-                      <label className="col-md-3 control-label"></label>
+                     
                       <div className="col-md-8">
                         <button
                           type="submit"
                           className="btn btn-danger"
                           value="Update Information"
                           onClick={handleDeleteAccount}
+                           style={{marginRight: "10px"}}
                         >
                           Delete My Account
                         </button>
@@ -682,7 +687,7 @@ const ProfilePage = ({ userData }: IdProp) => {
                       </div>
                     </div>
                   </form>
-                  <p style={{fontSize: "15px", opacity: "50%"}}>This action is permanent and irreversible.</p>
+                  <p className="mt-2" style={{fontSize: "15px", opacity: "50%"}}>This action is permanent and irreversible.</p>
                 </>
               )}
             </div>

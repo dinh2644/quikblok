@@ -8,6 +8,25 @@ import Loading from "../components/Loading";
 import Navbar from "../components/Navbar";
 import React, {createContext,Dispatch,SetStateAction} from "react";
 
+
+interface BlockInfoProp {
+  blockName: string;
+  name: string;
+  email: string;
+  username: string;
+  password: string;
+  securityQuestions: SecurityQuestion[]; 
+  decryptedPassword?: string;
+  iv: string;
+  picture: string;
+  _id: string;
+}
+
+interface SecurityQuestion {
+  question: string;
+  answer: string;
+}
+
 interface UserData {
   firstName: string;
 }
@@ -26,7 +45,7 @@ export const SearchValueContext = createContext<SearchContextType>({
 });
 
 const Home = ({userData}: HomeProps) => {
-  const [listOfBlocks, setListOfBlocks] = useState<any[]>([]);
+  const [listOfBlocks, setListOfBlocks] = useState<BlockInfoProp[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchValue, setSearchValue] = useState<string>("")
 
@@ -60,7 +79,7 @@ const Home = ({userData}: HomeProps) => {
       .delete(`/deleteBlock/${blockId}`)
       .then(() => {
         const updatedBlockList = listOfBlocks.filter(
-          (block) => block.id !== blockId
+          (block) => block._id !== blockId
         );
         setListOfBlocks(updatedBlockList);
         toast.success("Block deleted");

@@ -457,7 +457,7 @@ const createBlock = async (req, res) => {
       securityQuestions,
       iv: encryptedPassword.iv,
     });
-
+    
     res
       .status(201)
       .json({ message: "Block created successfully", block: newBlock });

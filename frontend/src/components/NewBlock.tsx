@@ -8,65 +8,88 @@ interface sqTypes {
   answer: string;
 }
 
-const NewBlock = () => {
-  const [blockName, setBlockName] = useState("");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [picture, setPicture] = useState("");
-  const [securityQuestions, setSecurityQuestions] = useState<sqTypes[]>([]);
+interface BlockObjectType{
+  [key: string]: string;
+}
 
+const NewBlock = () => {
+  const [blockInfo, setBlockInfo] = useState<BlockObjectType>({
+    blockName: "",
+    name: "",
+    email: "",
+    username: "",
+    password: "",
+    picture: "",
+  })
+  const [securityQuestions, setSecurityQuestions] = useState<sqTypes[]>([]); 
+  
+  // Block input 
+  const handleChange = (e:React.ChangeEvent<HTMLInputElement>) =>{
+    const {name, value} = e.target;
+    setBlockInfo((prev) => {
+     return {
+      ...prev,
+      [name]: value,
+     } 
+    })
+  }
+
+  // Security Questions events
   const handleAddSecurityQuestion = (
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
     e.preventDefault();
     setSecurityQuestions([...securityQuestions, { question: "", answer: "" }]);
   };
-
   const handleQuestionChange = (index: number, newQuestion: string) => {
     const updatedSecurityQuestions = [...securityQuestions];
     updatedSecurityQuestions[index].question = newQuestion;
     setSecurityQuestions(updatedSecurityQuestions);
   };
-
   const handleAnswerChange = (index: number, newAnswer: string) => {
     const updatedSecurityQuestions = [...securityQuestions];
     updatedSecurityQuestions[index].answer = newAnswer;
     setSecurityQuestions(updatedSecurityQuestions);
   };
 
-  const handleCreateBlock = (e: React.MouseEvent<HTMLButtonElement>) => {
+  // Handle create block
+  const handleCreateBlock = async(e: React.MouseEvent<HTMLButtonElement>) => {
+    
     e.preventDefault();
-    if (blockName != "") {
-      axios
-        .post("/createBlock", {
-          blockName,
-          name,
-          email,
-          username,
-          password,
-          picture,
-          securityQuestions,
-        })
-        .then(() => {
-          closeModal();
-          setBlockName("");
-          setName("");
-          setEmail("");
-          setUsername("");
-          setPassword("");
-          setPicture("");
-          setSecurityQuestions([]);
-          toast.success(`${blockName} block created!`);
-          window.location.reload();
-        })
-        .catch((err) => {
-          console.error("Error in creating block: ", err);
-          toast.error("Error creating block");
+    try {
+      if (!blockInfo.blockName || !blockInfo.name || !blockInfo.email || !blockInfo.password || !blockInfo.username || 
+        blockInfo.blockName.trim() === "" || blockInfo.name.trim() === "" || blockInfo.email.trim() === "" || 
+        blockInfo.password.trim() === "" || blockInfo.username.trim() === "") {
+      toast.error("All fields are required and cannot be empty");
+      return;
+    }
+      const response = await axios.post("/createBlock",  {
+        blockName: blockInfo.blockName,
+        name: blockInfo.name,
+        email: blockInfo.email,
+        username: blockInfo.username,
+        password: blockInfo.password,
+        picture: blockInfo.picture,
+        securityQuestions: securityQuestions
+      } )
+
+      if (response.status === 201) {
+        closeModal();
+        setBlockInfo({
+          blockName: "",
+          name: "",
+          email: "",
+          username: "",
+          password: "",
+          picture: "",
         });
-    } else {
-      toast.error("Fields cannot be empty!");
+        setSecurityQuestions([]);
+        toast.success(`${blockInfo.blockName} block created!`);
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Error creating block");
     }
   };
 
@@ -86,7 +109,7 @@ const NewBlock = () => {
     const file = e.target.files?.[0];
     if (file) {
       const base64 = await convertBase64(file);
-      setPicture(base64);
+      setBlockInfo({picture: base64});
     }
   };
 
@@ -110,13 +133,21 @@ const NewBlock = () => {
   };
 
   const cancelClick = () => {
-    setBlockName("");
-    setName("");
-    setEmail("");
-    setUsername("");
-    setPassword("");
-    setPicture("");
-    setSecurityQuestions([]);
+     setBlockInfo({
+          blockName: "",
+          name: "",
+          email: "",
+          username: "",
+          password: "",
+          picture: "",
+        });
+        setSecurityQuestions([])
+
+        const fileInput = document.getElementById('setpictureInput') as HTMLInputElement;
+        if (fileInput) {
+          const emptyFileList = new DataTransfer().files;
+          fileInput.files = emptyFileList;
+        }
   };
 
   return (
@@ -167,8 +198,9 @@ const NewBlock = () => {
                     type="text"
                     className="form-control"
                     id="blockName"
-                    onChange={(e) => setBlockName(e.target.value)}
-                    value={blockName}
+                    name="blockName"
+                    onChange={handleChange}               
+                    value={blockInfo.blockName}
                   />
                 </div>
                 <div className="mb-3">
@@ -179,8 +211,9 @@ const NewBlock = () => {
                     type="text"
                     className="form-control"
                     id="nameInput"
-                    onChange={(e) => setName(e.target.value)}
-                    value={name}
+                    name="name"
+                    onChange={handleChange}               
+                    value={blockInfo.name}
                   />
                 </div>
                 <div className="mb-3">
@@ -192,8 +225,9 @@ const NewBlock = () => {
                     className="form-control"
                     id="emailInput"
                     aria-describedby="emailHelp"
-                    onChange={(e) => setEmail(e.target.value)}
-                    value={email}
+                    name="email"
+                    onChange={handleChange}               
+                    value={blockInfo.email}
                   />
                 </div>
                 <div className="mb-3">
@@ -204,8 +238,9 @@ const NewBlock = () => {
                     type="text"
                     className="form-control"
                     id="usernameInput"
-                    onChange={(e) => setUsername(e.target.value)}
-                    value={username}
+                    name="username"
+                    onChange={handleChange}               
+                    value={blockInfo.username}
                   />
                 </div>
                 <div className="mb-3">
@@ -216,8 +251,9 @@ const NewBlock = () => {
                     type="password"
                     className="form-control"
                     id="passwordInput"
-                    onChange={(e) => setPassword(e.target.value)}
-                    value={password}
+                    name="password"
+                    onChange={handleChange}               
+                    value={blockInfo.password}
                   />
                 </div>
                 <div className="mb-3">
@@ -262,7 +298,7 @@ const NewBlock = () => {
                     />
                   </div>
                 ))}
-                <button type="button" onClick={handleAddSecurityQuestion}>
+                <button className="btn btn-secondary" type="button" onClick={handleAddSecurityQuestion}>
                   Add Security Question
                 </button>
               </form>
