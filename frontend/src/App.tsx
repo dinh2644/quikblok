@@ -65,13 +65,12 @@ const App = () => {
         {/* PUBLIC ROUTES */}
         <Route element={<PublicRoutes />}>
           <Route path="/" element={<Register />} />
-          
-         
+          <Route path="/Login" element={<Login />} />
         </Route>
-        <Route path="/Login" element={<Login />} />
+        <Route path="/Home" element={<Home userData={userData}/>} />
         {/* PRIVATE ROUTES */}
         <Route element={<PrivateRoutes />}>
-          <Route path="/Home" element={<Home userData={userData}/>} />
+          
           <Route
             path="/Profile"
             element={<ProfilePage userData={userData} />}
