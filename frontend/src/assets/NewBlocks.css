@@ -1,12 +1,12 @@
 .svg-circleplus {
-    height: 100px;
+    height: 125px !important;
     stroke: black;
   }
   
   .newBlockBtn {
     border: none;
     outline: none;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease; 
   }
   
   .newBlockBtn:hover {

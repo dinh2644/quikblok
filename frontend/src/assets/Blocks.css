@@ -45,28 +45,6 @@
 .BlocksModal .modal-footer .btn:focus {
   opacity: 0.8;
 }
-
-.no-content-message {
-  text-align: center;
-  margin: 50px auto;
-  padding: 20px;
-  max-width: 600px;
-  border-radius: 8px;
-  user-select: none;
-}
-
-.no-content-message h2 {
-  color: #333;
-  font-size: 24px;
-  margin-bottom: 10px;
-}
-
-.no-content-message p {
-  color: #666;
-  font-size: 16px;
-  line-height: 1.6;
-}
-
 .inlineInput {
   background-color: transparent;
   border: 0;
@@ -76,4 +54,75 @@
 .inlineInput:hover {
   background-color: #d3d3d3;
   cursor: pointer;
+}
+
+
+/* MODAL */
+.modal{
+  transition: all .2s;
+  
+}
+
+
+.BlocksModal .modal-content {
+  border: none;
+  box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
+  background-color: #fff; /* Light gray background */
+  transition: box-shadow 0.3s ease-in-out;
+  font-family: 'Arial', sans-serif; /* Example font */
+}
+
+.BlocksModal .modal-header {
+  border-bottom: none;
+  background-color: #fff;  /* White background for header */
+  padding: 20px;
+}
+
+.BlocksModal .modal-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.BlocksModal .modal-body {
+  padding: 20px;
+}
+
+.BlocksModal .modal-body strong {
+  font-weight: 600;
+}
+
+.BlocksModal .modal-footer {
+  border-top: none;
+  background-color: #ffffff; /* White background for footer */
+  padding: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.BlocksModal .btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.BlocksModal .btn-secondary {
+  color: #333;
+  background-color: #e0e0e0; /* Light gray */
+  border-color: #e0e0e0;
+}
+
+.BlocksModal .btn-danger {
+  color: #ffffff;
+  background-color: #dc3545; /* Red */
+  border-color: #dc3545;
+}
+
+.BlocksModal .btn:hover,
+.BlocksModal .btn:focus {
+  opacity: 0.8;
+}
+
+.modal-footer .btn + .btn {
+  margin-left: 10px;
 }

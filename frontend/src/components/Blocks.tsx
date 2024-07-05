@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "../assets/Blocks.css";
 import defaultImgPlaceholder from "../assets/placeholder.png";
-import SadEmoji from "../assets/sad.png";
+
 import NewBlock1 from "../components/NewBlock1";
 import EasyEdit, { Types } from "react-easy-edit";
 import axios from "axios";
@@ -38,7 +38,7 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
   useEffect(() => {
     const decryptAllPasswords = async () => {
       const decryptedBlocks = await Promise.all(
-        blockList.map(async (block) => {
+        listOfBlocks.map(async (block) => {
           try {
             const { data } = await axios.post("/decryptPassword", {
               password: block.password,
@@ -69,7 +69,7 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
       setBlockList(decryptedBlocks);
     };
     decryptAllPasswords();
-  }, []);
+  }, [listOfBlocks]);
 
   // Save line edit
   const save = async (
@@ -151,8 +151,7 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
       <div className="container">
         <div className="row">
           {/* Map blocks */}
-          {blockList.length > 0 ? (
-            blockList.map((item, index: number) => (
+          {blockList.map((item, index: number) => (
               <div
                 className="col-xxl-2 col-xl-2 col-lg-3 col-md-3 col-sm-4 col-xs-6"
                 key={index}
@@ -173,20 +172,7 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
                 </div>
               </div>
             ))
-          ) : (
-            <div className="no-content-message">
-              <img
-                src={SadEmoji}
-                alt="Sad emoji"
-                width={100}
-                className="mb-4"
-              />
-              <p style={{ fontSize: "var(--mediumTxt)" }}>
-                It seems you haven't created any blocks yet. Click the plus sign
-                to create one now!
-              </p>
-            </div>
-          )}
+          }
 
           {listOfBlocks.length > 0 && <NewBlock1 />}
 
@@ -331,7 +317,7 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
                                 </p>
                                 <ul className="list-inline">
                                   <li>
-                                    <strong>Q:</strong> {sqIndex}
+                                    <strong>Q:</strong>
                                     <EasyEdit
                                       type={Types.TEXT}
                                       onSave={(value: string) => {

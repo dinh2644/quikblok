@@ -1,12 +1,13 @@
 import Blocks from "../components/Blocks";
-import NewBlock from "../components/NewBlock";
 import "../assets/HomePage.css";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast/headless";
 import Loading from "../components/Loading";
 import Navbar from "../components/Navbar";
-import React, {createContext,Dispatch,SetStateAction} from "react";
+import React, { createContext, Dispatch, SetStateAction } from "react";
+import SadEmoji from "../assets/sad.png";
+import NewBlock from "../components/NewBlock";
 
 
 interface BlockInfoProp {
@@ -15,7 +16,7 @@ interface BlockInfoProp {
   email: string;
   username: string;
   password: string;
-  securityQuestions: SecurityQuestion[]; 
+  securityQuestions: SecurityQuestion[];
   decryptedPassword?: string;
   iv: string;
   picture: string;
@@ -32,22 +33,23 @@ interface UserData {
 }
 
 interface HomeProps {
-  userData: UserData; 
+  userData: UserData;
 }
 
-interface SearchContextType{
+interface SearchContextType {
   searchValue: string
   setSearchValue: Dispatch<SetStateAction<string>>;
 }
 export const SearchValueContext = createContext<SearchContextType>({
   searchValue: "",
-  setSearchValue: () => {}
+  setSearchValue: () => { }
 });
 
-const Home = ({userData}: HomeProps) => {
+const Home = ({ userData }: HomeProps) => {
   const [listOfBlocks, setListOfBlocks] = useState<BlockInfoProp[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchValue, setSearchValue] = useState<string>("")
+
 
   // Fetch blocks
   useEffect(() => {
@@ -66,12 +68,13 @@ const Home = ({userData}: HomeProps) => {
   }, []);
 
   // Filtered data
-  const filteredData = listOfBlocks.filter((data)=>{
-    return(
+  const filteredData = listOfBlocks.filter((data) => {
+    return (
       searchValue.toLowerCase() === "" ||
       (data.blockName && data.blockName.toLowerCase().includes(searchValue.toLowerCase()))
     )
   })
+
 
   // Delete blocks
   const handleDeleteBlock = (blockId: string) => {
@@ -88,32 +91,62 @@ const Home = ({userData}: HomeProps) => {
       .catch((err) => {
         console.error("Error deleting block: ", err);
       });
-  };    
-    
+  };
+ 
+
   return (
     <>
       {isLoading ? (
         <Loading />
       ) : (
-        <SearchValueContext.Provider value={{searchValue,setSearchValue}}>
-        <div>
-        <Navbar userData={userData}/>
-        <section>
-          <div className="container" style={{ maxWidth: "1800px" }}>
-            <div className="row">
-              <Blocks
-                listOfBlocks={filteredData}
-                handleDeleteBlock={handleDeleteBlock}
-              />
-            </div>
-            <div className="row">
-              <div className="col d-flex justify-content-center">
-                {listOfBlocks.length > 0 ? null : <NewBlock />}
+        <SearchValueContext.Provider value={{ searchValue, setSearchValue }}>
+          <div>
+            <Navbar userData={userData} />
+            <section>
+              <div className="container" style={{ maxWidth: "1800px" }}>
+                <div className="row">
+                  <Blocks
+                    listOfBlocks={filteredData}
+                    handleDeleteBlock={handleDeleteBlock}
+                  />
+                </div>
+                <div>
+                  {listOfBlocks.length > 0 ? (
+                    filteredData.length > 0 ? (
+                      null
+                    ) : (
+                      <p className="text-center mt-5">No Results...</p>
+                    )
+                  ) : (
+                    <>
+                      <div className="row mt-5">
+                        <div className="col-12">
+                          <div className="no-content-message">
+                            <img
+                              src={SadEmoji}
+                              alt="Sad emoji"
+                              width={100}
+                              className="mb-4"
+                            />
+                            <p style={{ fontSize: "var(--mediumTxt)" }}>
+                              It seems you haven't created any blocks yet. Click the plus sign
+                              to create one now!
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="d-flex justify-content-center">
+                          <NewBlock />
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+
               </div>
-            </div>
+            </section>
           </div>
-        </section>
-        </div>
         </SearchValueContext.Provider>
       )}
     </>

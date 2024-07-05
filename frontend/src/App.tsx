@@ -17,9 +17,6 @@ import ResetPassword from "./pages/ResetPassword";
 import PublicRoutes from "./components/PublicRoutes";
 import PageNotFound from "./pages/PageNotFound";
 
-
-const currentYear = new Date().getFullYear();
-
 axios.defaults.baseURL = "http://localhost:8000";
 axios.defaults.withCredentials = true;
 
@@ -79,12 +76,14 @@ const App = () => {
           <Route
             path="/Profile"
             element={<ProfilePage userData={userData} />}
-          />       
+          />
+
         </Route>
         {/* Handle Unknown Routes */}
         <Route path="*" element={<PageNotFound />} />
+
       </Routes>
-      <Footer year={currentYear} />
+      
     </Router>
   );
 };

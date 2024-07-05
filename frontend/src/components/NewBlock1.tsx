@@ -12,7 +12,7 @@ interface sqTypes {
 interface BlockObjectType{
   [key: string]: string;
 }
-// THIS COMPONENT IS FOR WHEN THERE ARE NO BLOCKS INNITIALLY
+// THIS COMPONENT IS FOR WHEN THERE ARE BLOCKS PRESENT 
 
 const NewBlock1 = () => {
   const [blockInfo, setBlockInfo] = useState<BlockObjectType>({
@@ -109,7 +109,7 @@ const NewBlock1 = () => {
     const file = e.target.files?.[0];
     if (file) {
       const base64 = await convertBase64(file);
-      setBlockInfo({picture: base64});
+      setBlockInfo({...blockInfo, picture: base64});
     }
   };
 

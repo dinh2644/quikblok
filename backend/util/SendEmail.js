@@ -20,9 +20,7 @@ module.exports.sendEmail = async (email, link) => {
       text: "Welcome",
       html: `<div><a href=${link}>Click here to activate your account.</a></div>`,
     });
-    console.log("Email sent successfully");
   } catch (error) {
-    console.log("Email not sent!");
     console.log(error);
     return error;
   }

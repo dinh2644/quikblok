@@ -22,6 +22,7 @@ const NewBlock = () => {
     picture: "",
   })
   const [securityQuestions, setSecurityQuestions] = useState<sqTypes[]>([]); 
+ 
   
   // Block input 
   const handleChange = (e:React.ChangeEvent<HTMLInputElement>) =>{
@@ -109,7 +110,7 @@ const NewBlock = () => {
     const file = e.target.files?.[0];
     if (file) {
       const base64 = await convertBase64(file);
-      setBlockInfo({picture: base64});
+      setBlockInfo({...blockInfo, picture: base64});
     }
   };
 
