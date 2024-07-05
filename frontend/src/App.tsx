@@ -5,7 +5,6 @@ import "./App.css";
 import axios from "axios";
 import { Toaster } from "react-hot-toast";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import ProfilePage from "./pages/ProfilePage";
 import Login from "./pages/Login";
@@ -62,12 +61,12 @@ const App = () => {
         {/* Accessible through email link only */}
         <Route path="/resetPassword/:token" element={<ResetPassword />}></Route>
         <Route path="/forgotPassword" element={<ForgotPassword />} />
-
+        <Route path="/preverify/:token" element={<EmailVerify />} /> 
         {/* PUBLIC ROUTES */}
         <Route element={<PublicRoutes />}>
           <Route path="/" element={<Register />} />
           <Route path="/Login" element={<Login />} />
-          <Route path="/preverify/:token" element={<EmailVerify />} /> {/* This is only available to verified users */}
+         
         </Route>
 
         {/* PRIVATE ROUTES */}

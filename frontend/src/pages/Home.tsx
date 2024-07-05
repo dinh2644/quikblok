@@ -5,7 +5,7 @@ import axios from "axios";
 import toast from "react-hot-toast/headless";
 import Loading from "../components/Loading";
 import Navbar from "../components/Navbar";
-import React, { createContext, Dispatch, SetStateAction } from "react";
+import { createContext, Dispatch, SetStateAction } from "react";
 import SadEmoji from "../assets/sad.png";
 import NewBlock from "../components/NewBlock";
 

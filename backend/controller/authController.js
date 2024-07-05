@@ -161,8 +161,8 @@ const loginUser = async (req, res, next) => {
           token: crypto.randomBytes(16).toString("hex"),
         }).save();
       }
-      // send mail
-      const link = `${process.env.BASE_URL}/verify/${token.token}`;
+      // send mail 
+      const link = `${process.env.FRONTEND_URL}/preverify/${token.token}`;
       await sendEmail(user.email, link);
       
       // res.status(400) prevents users from logging in
@@ -320,7 +320,7 @@ const newEmailVerification = async (req, res) => {
     }).save();
 
     // send mail
-    const link = `${process.env.BASE_URL}/verify/${token.token}`;
+    const link = `${process.env.FRONTEND_URL}/preverify/${token.token}`;
     await sendEmail(email, link);
 
     res.status(201).json({

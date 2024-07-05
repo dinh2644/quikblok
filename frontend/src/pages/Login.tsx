@@ -2,14 +2,14 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+
 
 interface UserInfo {
   [key: string]: string;
 }
 
 const Login = () => {
-  const navigate = useNavigate();
+
   const [data, setData] = useState<UserInfo>({
     username: "",
     password: "",
