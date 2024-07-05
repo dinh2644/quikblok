@@ -67,15 +67,14 @@ const App = () => {
           <Route path="/" element={<Register />} />
           <Route path="/Login" element={<Login />} />
         </Route>
-        <Route path="/Home" element={<Home userData={userData}/>} />
+        
         {/* PRIVATE ROUTES */}
         <Route element={<PrivateRoutes />}>
-          
+          <Route path="/Home" element={<Home userData={userData}/>} />
           <Route
             path="/Profile"
             element={<ProfilePage userData={userData} />}
           />
-
         </Route>
         {/* Handle Unknown Routes */}
         <Route path="*" element={<PageNotFound />} />
