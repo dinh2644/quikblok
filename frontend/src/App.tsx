@@ -63,19 +63,19 @@ const App = () => {
         <Route path="/forgotPassword" element={<ForgotPassword />} />
         <Route path="/preverify/:token" element={<EmailVerify />} /> 
         {/* PUBLIC ROUTES */}
-        {/* <Route element={<PublicRoutes />}> */}
+        <Route element={<PublicRoutes />}>
           <Route path="/" element={<Register />} />
           <Route path="/Login" element={<Login />} />
-        {/* </Route> */}
+        </Route>
         
         {/* PRIVATE ROUTES */}
-        {/* <Route element={<PrivateRoutes />}> */}
+        <Route element={<PrivateRoutes />}>
           <Route path="/Home" element={<Home userData={userData}/>} />
           <Route
             path="/Profile"
             element={<ProfilePage userData={userData} />}
           />
-        {/* </Route> */}
+        </Route>
         {/* Handle Unknown Routes */}
         <Route path="*" element={<PageNotFound />} />
 
