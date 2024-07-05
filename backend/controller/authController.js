@@ -183,6 +183,7 @@ const loginUser = async (req, res, next) => {
       withCredentials: true,
       secure: true, // for https
       sameSite: 'None',
+      path: "/"
     }).send();
 
   } catch (error) {
