@@ -50,7 +50,7 @@ const validateEmail = (email) => {
 };
 
 // Register endpoint
-const registerUser = async (req, res, next) => {
+const registerUser = async (req, res) => {
   try {
     // Check if all fields has input
     const { email, firstName, lastName, username, password } = req.body;
@@ -106,7 +106,7 @@ const registerUser = async (req, res, next) => {
       user,
     });
 
-    next();
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error });
@@ -181,17 +181,10 @@ const loginUser = async (req, res, next) => {
     const token = createSecretToken(user._id);
     res.cookie("token", token, {
       withCredentials: true,
-      httpOnly: false,
       secure: true, // for https
       sameSite: 'None',
-    });
-    res.status(200).json({
-      message: "User logged in successfully",
-      success: true,
-      token: token,
-    });
+    }).send();
 
-    next();
   } catch (error) {
     console.error(error);
     console.error(error);

@@ -16,9 +16,6 @@ const corsOptions = {
 // Apply CORS middleware
 app.use(cors(corsOptions));
 
-// Handle preflight requests
-//app.options('*', cors(corsOptions));
-
 // Other middleware
 app.use(express.json({ limit: "100mb" }));
 app.use(cookieParser());
@@ -37,7 +34,7 @@ mongoose
   .catch((err) => console.error("Connection failed", err));
 
 // Start server
-app.get("/", (req, res) => res.send("Express on Vercel"));
+app.get("/", (req, res) => res.send("Express on Render"));
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
