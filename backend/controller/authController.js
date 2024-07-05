@@ -184,7 +184,7 @@ const loginUser = async (req, res, next) => {
       expires: new Date(Date.now() + 14*24*60*60*1000),
       secure: true,
       sameSite: 'none'
-    }).status(200),json({
+    }).status(200).json({
       token,
       success: true
     });
