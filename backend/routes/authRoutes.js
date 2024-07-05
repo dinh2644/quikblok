@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const cors = require("cors");
 const {
   registerUser,
   getUserInfo,
@@ -22,13 +21,7 @@ const {
   decryptPassword,
 } = require("../controller/authController");
 const { userVerification } = require("../middlewares/AuthMiddleware");
-router.use(
-  cors({
-    origin: [`${process.env.FRONTEND_URL}`],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
+
 
 // post
 router.post("/", userVerification, getUserInfo);
