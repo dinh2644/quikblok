@@ -1,5 +1,5 @@
 const express = require("express");
-const dotenv = require("dotenv").config();
+require("dotenv").config();
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
@@ -8,11 +8,10 @@ const PORT = 8000;
 
 // CORS configuration
 const corsOptions = {
-  origin: [`${process.env.FRONTEND_URL}`],
+  origin: process.env.FRONTEND_URL,
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 };
-
 // Apply CORS middleware
 app.use(cors(corsOptions));
 

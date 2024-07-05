@@ -16,7 +16,7 @@ import ResetPassword from "./pages/ResetPassword";
 import PublicRoutes from "./components/PublicRoutes";
 import PageNotFound from "./pages/PageNotFound";
 
-axios.defaults.baseURL = "https://quikblok.onrender.com";
+axios.defaults.baseURL = "http://localhost:8000";
 axios.defaults.withCredentials = true;
 
 interface UserData {
@@ -62,13 +62,13 @@ const App = () => {
         <Route path="/resetPassword/:token" element={<ResetPassword />}></Route>
         <Route path="/forgotPassword" element={<ForgotPassword />} />
         <Route path="/preverify/:token" element={<EmailVerify />} /> 
-        {/* PUBLIC ROUTES */}
+        {/* CAN ONLY ACCESS WITH NO COOKIES */}
         <Route element={<PublicRoutes />}>
           <Route path="/" element={<Register />} />
           <Route path="/Login" element={<Login />} />
         </Route>
         
-        {/* PRIVATE ROUTES */}
+        {/* CAN ONLY ACCESS WITH COOKIES */}
         <Route element={<PrivateRoutes />}>
           <Route path="/Home" element={<Home userData={userData}/>} />
           <Route

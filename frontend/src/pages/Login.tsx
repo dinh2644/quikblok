@@ -25,8 +25,7 @@ const Login = () => {
         {
           username,
           password,
-        },
-        { withCredentials: true }
+        } 
       );
 
       if (data.error) {
