@@ -16,7 +16,7 @@ import ResetPassword from "./pages/ResetPassword";
 import PublicRoutes from "./components/PublicRoutes";
 import PageNotFound from "./pages/PageNotFound";
 
-axios.defaults.baseURL = "http://localhost:8000";
+axios.defaults.baseURL = "https://quikblok-server.vercel.app";
 axios.defaults.withCredentials = true;
 
 interface UserData {
