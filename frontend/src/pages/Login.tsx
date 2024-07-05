@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 
@@ -9,6 +9,7 @@ interface UserInfo {
 }
 
 const Login = () => {
+  const navigate = useNavigate();
 
   const [data, setData] = useState<UserInfo>({
     username: "",
@@ -37,7 +38,7 @@ const Login = () => {
           password: "",
         });
 
-        window.location.href = "/Home";
+        navigate("/Home");
         toast.success("Login successful. Welcome!");
       }
     } catch (error) {
