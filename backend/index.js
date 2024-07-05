@@ -37,7 +37,9 @@ mongoose
   .catch((err) => console.error("Connection failed", err));
 
 // Start server
+app.get("/", (req, res) => res.send("Express on Vercel"));
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
 
+module.exports = app;
