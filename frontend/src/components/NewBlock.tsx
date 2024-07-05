@@ -58,10 +58,8 @@ const NewBlock = () => {
     
     e.preventDefault();
     try {
-      if (!blockInfo.blockName || !blockInfo.name || !blockInfo.email || !blockInfo.password || !blockInfo.username || 
-        blockInfo.blockName.trim() === "" || blockInfo.name.trim() === "" || blockInfo.email.trim() === "" || 
-        blockInfo.password.trim() === "" || blockInfo.username.trim() === "") {
-      toast.error("All fields are required and cannot be empty");
+      if (!blockInfo.blockName || !blockInfo.name) {
+      toast.error("Must at least have block name.");
       return;
     }
       const response = await axios.post("/createBlock",  {
