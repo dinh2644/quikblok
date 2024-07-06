@@ -7,13 +7,14 @@ const app = express();
 const PORT = 8000;
 
 // CORS configuration
-const corsOptions = {
-  origin: process.env.FRONTEND_URL,
+// Apply CORS middleware
+app.use(cors({
+  origin: [process.env.FRONTEND_URL],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
-};
-// Apply CORS middleware
-app.use(cors(corsOptions));
+  exposedHeaders: ["Set-Cookie"], 
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"]
+}));
 
 // Other middleware
 app.use(express.json({ limit: "100mb" }));
@@ -22,6 +23,7 @@ app.use(express.urlencoded({ limit: "100mb", extended: true }));
 
 // Routes
 app.use("/", require("./routes/authRoutes"));
+
 
 // Database connection
 mongoose
