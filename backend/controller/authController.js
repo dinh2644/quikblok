@@ -100,15 +100,11 @@ const registerUser = async (req, res) => {
     const link = `${process.env.FRONTEND_URL}/preverify/${token.token}`;
     await sendEmail(email, link);
 
-    // create token after successfully logging in
-    const token1 = createSecretToken(user._id);
-    res.cookie("token", token1, {
-      httpOnly: false,
-      expires: new Date(Date.now() + 14*24*60*60*1000),
-      secure: true,
-      sameSite: 'none'
-    })
-    .send();
+    res.status(201).json({
+      message: "A verification link has been sent to your email.",
+      success: true,
+      user,
+    });
 
 
   } catch (error) {
