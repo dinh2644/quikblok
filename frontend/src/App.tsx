@@ -9,11 +9,11 @@ import Home from "./pages/Home";
 import ProfilePage from "./pages/ProfilePage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import PrivateRoutes from "./components/PrivateRoutes";
+//import PrivateRoutes from "./components/PrivateRoutes";
 import EmailVerify from "./pages/EmailVerified";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
-import PublicRoutes from "./components/PublicRoutes";
+//import PublicRoutes from "./components/PublicRoutes";
 import PageNotFound from "./pages/PageNotFound";
 
 axios.defaults.baseURL = "https://quikblok.onrender.com";
