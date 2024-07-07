@@ -98,7 +98,7 @@ const Login = () => {
                     className="form-text text-center mb-5 text-dark"
                   >
                     Not Registered?{" "}
-                    <Link to="/" className="text-dark fw-bold">
+                    <Link to="/register" className="text-dark fw-bold">
                       Create an account
                     </Link>
                   </div>

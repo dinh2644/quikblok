@@ -12,12 +12,13 @@ import "./App.css";
 const AuthenticatedApp = React.lazy(() => import('./pages/AuthenticatedApp'));
 const UnauthenticatedApp = React.lazy(() => import('./pages/UnauthenticatedApp'));
 
+//axios.defaults.baseURL = "http://localhost:8000";
 axios.defaults.baseURL = "https://quikblok.onrender.com";
 axios.defaults.withCredentials = true;
 
 const App = () => {
   const { user } = useAuthContext();
-
+  
   return (
     <Router>
       <Toaster position="bottom-center" toastOptions={{ duration: 2000 }} />
