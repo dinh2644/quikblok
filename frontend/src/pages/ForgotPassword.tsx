@@ -2,11 +2,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { useCookies } from "react-cookie";
 import { Link } from "react-router-dom";
+import {User} from "../context/AuthContext";
 
-const ForgotPassword = () => {
-  const [cookies] = useCookies(["token"]);
+interface UserProps{
+  user: User | null
+}
+
+const ForgotPassword = ({user}: UserProps) => {
   const [email, setEmail] = useState<string>("");
   const navigate = useNavigate();
 
@@ -23,8 +26,9 @@ const ForgotPassword = () => {
         toast.error(data.error);
         return;
       } else {
+        const isLoggedIn = user ? "/profile" : "/login"
         setTimeout(() => {
-          navigate("/Home");
+          navigate(isLoggedIn);
           window.location.reload();
         }, 2000);
         toast.success("Password reset email sent!")
@@ -61,7 +65,7 @@ const ForgotPassword = () => {
             >
               Send
             </button>
-            <Link to={cookies.token ? "/Profile" : "/"} className="btn btn-secondary w-100 rounded-0 mt-1">
+            <Link to={user ? "/profile" : "/login"} className="btn btn-secondary w-100 rounded-0 mt-1">
                 Go Back
             </Link>
           </form>

@@ -8,6 +8,7 @@ import Navbar from "../components/Navbar";
 import { createContext, Dispatch, SetStateAction } from "react";
 import SadEmoji from "../assets/sad.png";
 import NewBlock from "../components/NewBlock";
+import {User} from "../context/AuthContext";
 
 
 interface BlockInfoProp {
@@ -28,12 +29,8 @@ interface SecurityQuestion {
   answer: string;
 }
 
-interface UserData {
-  firstName: string;
-}
-
 interface HomeProps {
-  userData: UserData;
+  userData: User | null;
 }
 
 interface SearchContextType {

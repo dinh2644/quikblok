@@ -24,7 +24,6 @@ const { userVerification } = require("../middlewares/AuthMiddleware");
 
 
 // post
-router.post("/", userVerification, getUserInfo);
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/logout", logoutUser);
@@ -32,9 +31,10 @@ router.post("/newEmailVerification", userVerification, newEmailVerification);
 router.post("/forgotPassword", forgotPassword);
 router.post("/resetPassword", resetPassword);
 router.post("/createBlock", userVerification, createBlock);
-router.post("/decryptPassword", decryptPassword);
+router.post("/decryptPassword", userVerification, decryptPassword);
 
 // get
+router.get("/", userVerification, getUserInfo);
 router.get("/getBlock", userVerification, getBlock);
 router.get("/verify/:token", verifyUser);
 router.get("/getNoOfBlocks", userVerification, getNoOfBlocks);

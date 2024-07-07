@@ -1,15 +1,15 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast } from "react-hot-toast";
-
+import { useAuthContext } from "../hooks/useAuthContext";
 
 interface UserInfo {
   [key: string]: string;
 }
 
 const Login = () => {
-
+  const { dispatch } = useAuthContext();
+  const navigate = useNavigate()
   const [data, setData] = useState<UserInfo>({
     username: "",
     password: "",
@@ -26,19 +26,19 @@ const Login = () => {
           username,
           password,
         }
-         
+
       );
 
       if (data.error) {
-        toast.error(data.error);
+        console.error(data.error);
       } else {
         setData({
           username: "",
           password: "",
         });
-
-        window.location.href = "/Home";
-        toast.success("Login successful. Welcome!");
+        localStorage.setItem('user', JSON.stringify(data.userInfo));
+        dispatch({ type: 'LOGIN', payload: data.userInfo })
+        navigate("/")
       }
     } catch (error) {
       console.error(error);

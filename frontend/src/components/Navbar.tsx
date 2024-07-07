@@ -1,20 +1,20 @@
 import SearchBar from "./SearchBar";
-import { Link } from "react-router-dom";
-import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 import "../assets/Navbar.css";
-import { toast } from "react-hot-toast";
+import { useAuthContext } from "../hooks/useAuthContext";
+import { User } from "../context/AuthContext";
+import toast from "react-hot-toast";
+import axios from "axios";
 
-
-interface UserData {
-  firstName: string;
-}
 
 interface NavbarProps {
-  userData: UserData;
+  userData: User | null;
 }
 
 const Navbar = ({ userData }: NavbarProps) => {
- 
+  const { dispatch } = useAuthContext();
+  const navigate = useNavigate();
+
   // Handle log out
   const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -26,8 +26,9 @@ const Navbar = ({ userData }: NavbarProps) => {
       );
 
       if (response.status === 200) {
-        window.location.href = "/";
-
+        localStorage.removeItem('user')
+        dispatch({ type: 'LOGOUT' })
+        navigate("/login")
       } else {
         toast.error("Log out failed")
       }
@@ -35,6 +36,7 @@ const Navbar = ({ userData }: NavbarProps) => {
       console.error(error);
     }
   };
+
 
   return (
     <>
@@ -54,7 +56,7 @@ const Navbar = ({ userData }: NavbarProps) => {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                Hello, {userData.firstName}
+                Hello, {userData?.firstName}
               </div>
               <ul
                 className="dropdown-menu"
@@ -69,7 +71,7 @@ const Navbar = ({ userData }: NavbarProps) => {
                   <button className="dropdown-item text-danger" type="button"
                     data-bs-toggle="modal"
                     data-bs-target="#logoutModal"
-                    >
+                  >
                     Log out
                   </button>
                 </li>

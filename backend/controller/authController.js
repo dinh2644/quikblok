@@ -11,18 +11,13 @@ const crypto = require("crypto");
 // retrieve relative information for fetching in frontend
 const getUserInfo = async (req, res) => {
   try {
-    if (!req.user || !req.user._id) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
+    // if (!req.user || !req.user._id) {
+    //   return res.status(401).json({ error: "Unauthorized" });
+    // } 
 
-    const userInfo = req.user;
+    return res.json({ userInfo: req.user });
 
-    if (userInfo) {
-      return res.json({ userInfo: userInfo });
-    } else {
-      return res.json({ message: "User is not found." });
-    }
-  } catch (error) {
+    } catch (error) {
     console.error(error);
     res.status(500).json({ message: error });
   }
@@ -185,8 +180,10 @@ const loginUser = async (req, res, next) => {
       secure: true,
       sameSite: 'none'
     })
-    .send();
-
+    
+    res.status(200).json({
+      userInfo: user
+    });
 
   } catch (error) {
     console.error(error);
@@ -204,9 +201,9 @@ const logoutUser = async (req, res) => {
 // Delete account
 const deleteAccount = async (req,res) => {
   try {
-    if (!req.user || !req.user._id) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
+    // if (!req.user || !req.user._id) {
+    //   return res.status(401).json({ error: "Unauthorized" });
+    // }
 
     const { password: inputtedPassword } = req.body;
 
@@ -241,16 +238,14 @@ const deleteAccount = async (req,res) => {
 // Get user's block
 const getBlock = async (req, res) => {
   try {
-    if (!req.user || !req.user._id) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
+    // if (!req.user || !req.user._id) {
+    //   return res.status(401).json({ error: "Unauthorized" });
+    // }
 
-    const userId = req.user._id;
-
-    const myBlocks = await Block.find({ postedBy: userId }).populate(
+    const myBlocks = await Block.find({ postedBy: req.user._id }).populate(
       "postedBy",
       "_id name"
-    );
+    ) 
 
     res.json({ myBlocks });
   } catch (error) {
@@ -262,9 +257,9 @@ const getBlock = async (req, res) => {
 // Update user info
 const updatePersonalInfo = async (req, res) => {
   try {
-    if (!req.user || !req.user._id) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
+    // if (!req.user || !req.user._id) {
+    //   return res.status(401).json({ error: "Unauthorized" });
+    // }
 
     const updatedPseronalInfo = await User.findByIdAndUpdate(
       req.user._id,
@@ -284,9 +279,9 @@ const updatePersonalInfo = async (req, res) => {
 // Update user's email
 const updateEmail = async (req, res) => {
   try {
-    if (!req.user || !req.user._id) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
+    // if (!req.user || !req.user._id) {
+    //   return res.status(401).json({ error: "Unauthorized" });
+    // }
 
     // unverify user
     await User.findByIdAndUpdate(req.user._id, { $set: { verified: false } });
@@ -305,9 +300,9 @@ const updateEmail = async (req, res) => {
 // Send new verification email
 const newEmailVerification = async (req, res) => {
   try {
-    if (!req.user || !req.user._id) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
+    // if (!req.user || !req.user._id) {
+    //   return res.status(401).json({ error: "Unauthorized" });
+    // }
 
     const { email } = req.body;
 
@@ -334,9 +329,9 @@ const newEmailVerification = async (req, res) => {
 // Update user's password
 const updatePassword = async (req, res) => {
   try {
-    if (!req.user || !req.user._id) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
+    // if (!req.user || !req.user._id) {
+    //   return res.status(401).json({ error: "Unauthorized" });
+    // }
 
     const { password: newPassword, oldPassword } = req.body;
 
@@ -438,9 +433,9 @@ const resetPassword = async (req, res) => {
 // Create block
 const createBlock = async (req, res) => {
   try {
-    if (!req.user || !req.user._id) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
+    // if (!req.user || !req.user._id) {
+    //   return res.status(401).json({ error: "Unauthorized" });
+    // }
 
     const {
       blockName,
@@ -478,9 +473,9 @@ const createBlock = async (req, res) => {
 // Update block
 const updateBlock = async (req, res) => {
   try {
-    if (!req.user || !req.user._id) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
+    // if (!req.user || !req.user._id) {
+    //   return res.status(401).json({ error: "Unauthorized" });
+    // }
 
     const blockId = req.params.id;
 
@@ -520,9 +515,9 @@ const updateBlock = async (req, res) => {
 const deleteBlock = async (req, res) => {
   const blockId = req.params.id;
   try {
-    if (!req.user || !req.user._id) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
+    // if (!req.user || !req.user._id) {
+    //   return res.status(401).json({ error: "Unauthorized" });
+    // }
 
     const deletedBlock = await Block.findByIdAndDelete(blockId).exec();
     if (!deletedBlock) {
@@ -539,9 +534,9 @@ const deleteBlock = async (req, res) => {
 // Get number of blocks a user has
 const getNoOfBlocks = async(req,res) => {
   try {
-    if (!req.user || !req.user._id) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
+    // if (!req.user || !req.user._id) {
+    //   return res.status(401).json({ error: "Unauthorized" });
+    // }
 
     const count = await Block.countDocuments({postedBy: req.user._id});
     res.json({ count });

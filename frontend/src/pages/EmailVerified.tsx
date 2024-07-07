@@ -2,13 +2,18 @@ import {useState, useEffect} from 'react'
 import "../assets/EmailVerified.css";
 import {useParams, useNavigate } from "react-router-dom";
 import axios from 'axios';
+import {User} from "../context/AuthContext";
 
+interface UserProps{
+  user: User | null
+}
 
-const EmailVerify = () => {
+const EmailVerify = ({user}:UserProps) => {
   const { token } = useParams();
   const navigate = useNavigate();
   const handleLogin = () => {
-    navigate("/login");
+    const isLoggedIn = user ? "/profile" : "/login" 
+    navigate(isLoggedIn);
   };
   const [verificationStatus, setVerificationStatus] = useState<string>('pending');
  console.log(verificationStatus);

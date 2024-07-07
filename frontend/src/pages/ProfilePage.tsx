@@ -5,17 +5,11 @@ import { toast } from "react-hot-toast";
 import "../assets/ProfilePage.css";
 import { Link } from "react-router-dom";
 import ProfileNavbar from "../components/ProfileNavbar";
-
+import {User} from "../context/AuthContext";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 interface IdProp {
-  userData: {
-    _id: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    username: string;
-  };
+ userData: User | null 
 }
 
 interface StateObjectType {
@@ -48,6 +42,7 @@ const ProfilePage = ({ userData }: IdProp) => {
     deletePassword: ""
   });
   const [confirmDelete, setConfirmDelete] = useState<string>("");
+  const { dispatch } = useAuthContext();
 
   // Get no. of blocks for display
   useEffect(()=>{
@@ -79,8 +74,9 @@ const ProfilePage = ({ userData }: IdProp) => {
       );
 
       if (response.status === 200) {
-        window.location.href = "/";
-        
+        localStorage.removeItem('user')
+        dispatch({ type: 'LOGOUT' })
+      navigate("/login")        
       } else {
         toast.error("Logout failed")
       }
@@ -242,7 +238,7 @@ const ProfilePage = ({ userData }: IdProp) => {
         );
 
         setTimeout(() => {
-          navigate("/");
+          navigate("/register");
           window.location.reload();
         }, 2000);
 
@@ -360,22 +356,22 @@ const ProfilePage = ({ userData }: IdProp) => {
                     <h3>Your Account Details</h3>
                     <div className="detail">
                       <h4>First Name:</h4>
-                      <p>{userData.firstName}</p>
+                      <p>{userData?.firstName}</p>
                       <hr style={{marginTop: "5px"}}/>
                     </div>
                     <div className="detail">
                       <h4>Last Name:</h4>
-                      <p>{userData.lastName}</p>
+                      <p>{userData?.lastName}</p>
                       <hr style={{marginTop: "5px"}}/>
                     </div>
                     <div className="detail">
                       <h4>Username:</h4>
-                      <p>{userData.username}</p>
+                      <p>{userData?.username}</p>
                       <hr style={{marginTop: "5px"}}/>
                     </div>
                     <div className="detail">
                       <h4>Email:</h4>
-                      <p>{userData.email}</p>
+                      <p>{userData?.email}</p>
                       <hr style={{marginTop: "5px"}}/>
                     </div>
                     <div className="detail">
