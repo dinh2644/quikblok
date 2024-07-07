@@ -22,7 +22,7 @@ const App = () => {
   return (
     <Router>
       <Toaster position="bottom-center" toastOptions={{ duration: 2000 }} />
-        {user ? <AuthenticatedApp /> : <UnauthenticatedApp />}
+        {user ? <AuthenticatedApp/> : <UnauthenticatedApp />}
     </Router>
   );
 };

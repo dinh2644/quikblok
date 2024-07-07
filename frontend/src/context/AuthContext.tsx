@@ -56,7 +56,6 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({ childr
     }
   }, []);
 
-  console.log('AuthContext state:', state)
   
   return (
     <AuthContext.Provider value={{ ...state, dispatch }}>

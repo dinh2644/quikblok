@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import Login from './Login';
 import Register from './Register';
@@ -8,7 +8,7 @@ import EmailVerify from './EmailVerified';
 import PageNotFound from './PageNotFound';
 import { useAuthContext } from '../hooks/useAuthContext';
 
-const UnauthenticatedApp: React.FC = () => {
+const UnauthenticatedApp = () => {
     const { user } = useAuthContext();
     const navigate = useNavigate()
 

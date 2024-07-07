@@ -7,13 +7,14 @@ import toast from "react-hot-toast";
 import axios from "axios";
 
 
-interface NavbarProps {
-  userData: User | null;
+interface UserProps {
+  user: User | null;
 }
 
-const Navbar = ({ userData }: NavbarProps) => {
+const Navbar = ({ user }: UserProps) => {
   const { dispatch } = useAuthContext();
   const navigate = useNavigate();
+  
 
   // Handle log out
   const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -42,7 +43,7 @@ const Navbar = ({ userData }: NavbarProps) => {
     <>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container-fluid" style={{ maxWidth: "1800px" }}>
-          <Link to="/Home" className="navbar-brand link-unstyled">
+          <Link to="/" className="navbar-brand link-unstyled">
             QuikBlok
           </Link>
 
@@ -56,7 +57,7 @@ const Navbar = ({ userData }: NavbarProps) => {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                Hello, {userData?.firstName}
+                Hello, {user?.firstName}
               </div>
               <ul
                 className="dropdown-menu"

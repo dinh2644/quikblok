@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuthContext } from "../hooks/useAuthContext";
+import toast from "react-hot-toast";
 
 interface UserInfo {
   [key: string]: string;
@@ -31,6 +32,7 @@ const Login = () => {
 
       if (data.error) {
         console.error(data.error);
+        toast.error(data.error)
       } else {
         setData({
           username: "",

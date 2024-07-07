@@ -1,4 +1,3 @@
-import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Home from './Home';
 import ProfilePage from './ProfilePage';
@@ -9,18 +8,20 @@ import ResetPassword from './ResetPassword';
 import EmailVerify from './EmailVerified';
 
 
-const AuthenticatedApp: React.FC = () => {
+const AuthenticatedApp = () => {
   const { user } = useAuthContext();
 
   return (
+    <>
     <Routes>
-      <Route path="/" element={<Home userData={user} />} />
-      <Route path="/profile" element={<ProfilePage userData={user} />} />
+      <Route path="/" element={<Home/>} />
+      <Route path="/profile" element={<ProfilePage  />} />
       <Route path="/forgotPassword" element={<ForgotPassword user={user} />} />
       <Route path="/resetPassword/:token" element={<ResetPassword />} />
       <Route path="/preverify/:token" element={<EmailVerify user={user}/>} />
       <Route path="*" element={<PageNotFound user={user}/>} />
     </Routes>
+    </>
   );
 };
 

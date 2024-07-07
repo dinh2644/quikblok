@@ -10,7 +10,7 @@ const ProfileNavbar = () => {
         <>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <div className="container-fluid" style={{ maxWidth: "1800px" }}>
-                    <Link to="/Home" className="navbar-brand link-unstyled">
+                    <Link to="/" className="navbar-brand link-unstyled">
                         QuikBlok
                     </Link>
 

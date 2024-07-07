@@ -169,7 +169,7 @@ const loginUser = async (req, res, next) => {
     // check if passwords match
     const passwordMatch = await comparePassword(password, user.password);
     if (!passwordMatch) {
-      return res.json({ error: "Incorrect password or username" });
+      return res.json({ error: "Incorrect password!" });
     }
 
     // create token after successfully logging in
@@ -241,7 +241,7 @@ const getBlock = async (req, res) => {
     // if (!req.user || !req.user._id) {
     //   return res.status(401).json({ error: "Unauthorized" });
     // }
-
+    
     const myBlocks = await Block.find({ postedBy: req.user._id }).populate(
       "postedBy",
       "_id name"
@@ -387,7 +387,7 @@ const forgotPassword = async (req, res) => {
   const resetToken = user.getResetPasswordToken();
   await user.save();
 
-  const link = `http://localhost:5173/resetPassword/${resetToken}`;
+  const link = `${process.env.FRONTEND_URL}/resetPassword/${resetToken}`;
   await sendResetPasswordLink(email, link);
 
   res

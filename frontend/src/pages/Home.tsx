@@ -8,7 +8,7 @@ import Navbar from "../components/Navbar";
 import { createContext, Dispatch, SetStateAction } from "react";
 import SadEmoji from "../assets/sad.png";
 import NewBlock from "../components/NewBlock";
-import {User} from "../context/AuthContext";
+import { User } from "../context/AuthContext";
 
 
 interface BlockInfoProp {
@@ -29,10 +29,6 @@ interface SecurityQuestion {
   answer: string;
 }
 
-interface HomeProps {
-  userData: User | null;
-}
-
 interface SearchContextType {
   searchValue: string
   setSearchValue: Dispatch<SetStateAction<string>>;
@@ -42,11 +38,27 @@ export const SearchValueContext = createContext<SearchContextType>({
   setSearchValue: () => { }
 });
 
-const Home = ({ userData }: HomeProps) => {
+const Home = () => {
   const [listOfBlocks, setListOfBlocks] = useState<BlockInfoProp[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchValue, setSearchValue] = useState<string>("")
+  const [user, setUser] = useState<User | null>(null)
 
+  // Fetch user
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get("/");
+
+        setUser(response.data.userInfo)
+
+      } catch (error) {
+        console.error("Error fetching user:", error);
+        toast.error("Failed to fetch user");
+      }
+    }
+    fetchUser();
+  }, [])
 
   // Fetch blocks
   useEffect(() => {
@@ -54,8 +66,10 @@ const Home = ({ userData }: HomeProps) => {
     const fetchBlocks = async () => {
       try {
         const response = await axios.get("/getBlock");
+
         setIsLoading(false);
         setListOfBlocks(response.data.myBlocks);
+
       } catch (error) {
         console.error("Error fetching blocks:", error);
         toast.error("Failed to fetch blocks");
@@ -65,7 +79,7 @@ const Home = ({ userData }: HomeProps) => {
   }, []);
 
   // Filtered data
-  const filteredData = listOfBlocks.filter((data) => {
+  const filteredData = listOfBlocks?.filter((data) => {
     return (
       searchValue.toLowerCase() === "" ||
       (data.blockName && data.blockName.toLowerCase().includes(searchValue.toLowerCase()))
@@ -89,7 +103,7 @@ const Home = ({ userData }: HomeProps) => {
         console.error("Error deleting block: ", err);
       });
   };
- 
+
 
   return (
     <>
@@ -98,7 +112,7 @@ const Home = ({ userData }: HomeProps) => {
       ) : (
         <SearchValueContext.Provider value={{ searchValue, setSearchValue }}>
           <div>
-            <Navbar userData={userData} />
+            <Navbar user={user} />
             <section>
               <div className="container" style={{ maxWidth: "1800px" }}>
                 <div className="row">
