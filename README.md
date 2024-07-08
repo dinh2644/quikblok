@@ -1,5 +1,2 @@
 # quikblok
-A password manager project
-In development
-
-Description: A CRUD site where users can create blocks to store their account information using MERN stack.
+A minimal app designed to help users easily store their account information in an accessible way. This CRUD site allows users to create blocks to store their account information utilizing the MERN stack.
