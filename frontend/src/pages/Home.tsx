@@ -8,7 +8,7 @@ import Navbar from "../components/Navbar";
 import { createContext, Dispatch, SetStateAction } from "react";
 import SadEmoji from "../assets/sad.png";
 import NewBlock from "../components/NewBlock";
-import { User } from "../context/AuthContext";
+
 
 
 interface BlockInfoProp {
@@ -42,7 +42,7 @@ const Home = () => {
   const [listOfBlocks, setListOfBlocks] = useState<BlockInfoProp[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchValue, setSearchValue] = useState<string>("")
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<string>("")
 
   // Fetch user
   useEffect(() => {
@@ -50,7 +50,7 @@ const Home = () => {
       try {
         const response = await axios.get("/");
 
-        setUser(response.data.userInfo)
+        setUser(response.data.userInfo.firstName)
 
       } catch (error) {
         console.error("Error fetching user:", error);
@@ -58,7 +58,7 @@ const Home = () => {
       }
     }
     fetchUser();
-  }, [])
+  }, [user])
 
   // Fetch blocks
   useEffect(() => {
@@ -160,6 +160,10 @@ const Home = () => {
           </div>
         </SearchValueContext.Provider>
       )}
+
+      <div className="text-muted text-center" style={{fontSize: "20px"}}>
+      &copy; {new Date().getFullYear()} QuikBlok. All rights reserved.
+      </div>
     </>
   );
 };

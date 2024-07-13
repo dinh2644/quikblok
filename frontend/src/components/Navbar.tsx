@@ -1,21 +1,19 @@
 import SearchBar from "./SearchBar";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "../assets/Navbar.css";
-import { useAuthContext } from "../hooks/useAuthContext";
-import { User } from "../context/AuthContext";
+
 import toast from "react-hot-toast";
 import axios from "axios";
+import { useState } from "react";
 
-
-interface UserProps {
-  user: User | null;
+interface NavbarProps {
+  user: string;
 }
 
-const Navbar = ({ user }: UserProps) => {
-  const { dispatch } = useAuthContext();
-  const navigate = useNavigate();
-  
 
+const Navbar = ({user}: NavbarProps) => { 
+  const [firstName ] = useState<string>(user)
+  
   // Handle log out
   const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -26,10 +24,10 @@ const Navbar = ({ user }: UserProps) => {
         { withCredentials: true }
       );
 
-      if (response.status === 200) {
-        localStorage.removeItem('user')
-        dispatch({ type: 'LOGOUT' })
-        navigate("/login")
+      if (response.status === 200) { 
+        localStorage.removeItem('token')
+        window.location.reload()
+       
       } else {
         toast.error("Log out failed")
       }
@@ -47,17 +45,19 @@ const Navbar = ({ user }: UserProps) => {
             QuikBlok
           </Link>
 
+          <div className="searchBar">
           <SearchBar />
+          </div>
 
           <div className="dropdown">
-            <div className="dropdown">
+            <div className="dropdown dropDownParent">
               <div
                 className="dropdown-toggle welcomeDropdown"
                 id="dropdownMenuButton1"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                Hello, {user?.firstName}
+                Hello, {firstName}
               </div>
               <ul
                 className="dropdown-menu"

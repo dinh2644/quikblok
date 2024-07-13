@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useAuthContext } from "../hooks/useAuthContext";
 import toast from "react-hot-toast";
 
 interface UserInfo {
@@ -9,7 +8,6 @@ interface UserInfo {
 }
 
 const Login = () => {
-  const { dispatch } = useAuthContext();
   const navigate = useNavigate()
   const [data, setData] = useState<UserInfo>({
     username: "",
@@ -38,8 +36,7 @@ const Login = () => {
           username: "",
           password: "",
         });
-        localStorage.setItem('user', JSON.stringify(data.userInfo));
-        dispatch({ type: 'LOGIN', payload: data.userInfo })
+        localStorage.setItem('token', data.token)
         navigate("/")
       }
     } catch (error) {
@@ -68,7 +65,7 @@ const Login = () => {
                       placeholder="Username"
                       value={data.username}
                       onChange={(e) =>
-                        setData({ ...data, username: e.target.value })
+                        setData({ ...data, username: e.target.value.trim() })
                       }
                     />
                   </div>

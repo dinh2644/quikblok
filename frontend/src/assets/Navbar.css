@@ -32,4 +32,17 @@
   #searchQuerySubmit:hover {
     cursor: pointer;
   }
+ 
   
+  @media (max-width: 382px) {
+   .container-fluid{
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+   }
+   
+   .welcomeDropdown{
+    margin-top: 10px;
+   }
+
+  }

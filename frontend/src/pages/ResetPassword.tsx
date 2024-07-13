@@ -3,7 +3,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 
+
 const ResetPassword = () => {
+  const isLoggedIn = localStorage.getItem('token')
+
   const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();
   const { token } = useParams();
@@ -28,7 +31,8 @@ const ResetPassword = () => {
         return;
       } else {
         setTimeout(() => {
-          navigate("/Home");
+          const loggedIn = isLoggedIn ? "/profile" : "/login"
+          navigate(loggedIn);
           window.location.reload();
         }, 2000);
         toast.success("Password successfully updated!")

@@ -5,8 +5,6 @@ import { toast } from "react-hot-toast";
 import "../assets/ProfilePage.css";
 import { Link } from "react-router-dom";
 import ProfileNavbar from "../components/ProfileNavbar";
-import {User} from "../context/AuthContext";
-import { useAuthContext } from "../hooks/useAuthContext";
 
 interface StateObjectType {
   [key: string]: string;
@@ -14,7 +12,9 @@ interface StateObjectType {
 
 const ProfilePage = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<{[key: string]: any}>({
+    firstName: ""
+  })
   const [activeTab, setActiveTab] = useState("accountDetails");
   const [noOfBlocks, setNoOfBlocks] = useState<number>(0);
   // personal info
@@ -39,7 +39,6 @@ const ProfilePage = () => {
     deletePassword: ""
   });
   const [confirmDelete, setConfirmDelete] = useState<string>("");
-  const { dispatch } = useAuthContext();
 
   // Fetch user
   useEffect(()=>{
@@ -88,7 +87,7 @@ const ProfilePage = () => {
 
       if (response.status === 200) {
         localStorage.removeItem('user')
-        dispatch({ type: 'LOGOUT' })
+        localStorage.removeItem('token')
       navigate("/login")        
       } else {
         toast.error("Logout failed")
@@ -235,9 +234,7 @@ const ProfilePage = () => {
         toast.error("Confirm password does not match. Try again.");
         return;
       }
-
-      
-
+  
       const {data} = await axios.delete("/deleteAccount", {data: { password: deletePassword.deletePassword }})
 
       if(data.error){
@@ -246,14 +243,12 @@ const ProfilePage = () => {
       }else{
         await axios.post(
           "/logout",
-          {},
-          { withCredentials: true }
         );
 
+        localStorage.removeItem('token')
         setTimeout(() => {
-          navigate("/register");
-          window.location.reload();
-        }, 2000);
+          navigate("/login")
+        }, 1000);
 
         setDeletePassword({deletePassword: ""})
         setConfirmDelete("")
@@ -702,7 +697,9 @@ const ProfilePage = () => {
             </div>
           </div>
         </div>
-      </section>
+        
+   </section>
+
     </>
   );
 };

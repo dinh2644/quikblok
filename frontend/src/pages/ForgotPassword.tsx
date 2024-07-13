@@ -3,13 +3,11 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
-import {User} from "../context/AuthContext";
 
-interface UserProps{
-  user: User | null
-}
 
-const ForgotPassword = ({user}: UserProps) => {
+const ForgotPassword = () => {
+  const isLoggedIn = localStorage.getItem('token')
+
   const [email, setEmail] = useState<string>("");
   const navigate = useNavigate();
 
@@ -26,9 +24,9 @@ const ForgotPassword = ({user}: UserProps) => {
         toast.error(data.error);
         return;
       } else {
-        const isLoggedIn = user ? "/profile" : "/login"
+        const loggedIn = isLoggedIn ? "/profile" : "/login"
         setTimeout(() => {
-          navigate(isLoggedIn);
+          navigate(loggedIn);
           window.location.reload();
         }, 2000);
         toast.success("Password reset email sent!")
@@ -40,8 +38,8 @@ const ForgotPassword = ({user}: UserProps) => {
 
   return (
     <>
-      <div className="d-flex justify-content-center align-items-center bg-secondary vh-100">
-        <div className="bg-white p-3 rounded w-25">
+      <div className="d-flex justify-content-center align-items-center bg-secondary vh-100 w-100">
+        <div className="bg-white p-3 rounded ">
           <h4>Forgot Password</h4>
           <form>
             <div className="mb-3">
@@ -65,7 +63,7 @@ const ForgotPassword = ({user}: UserProps) => {
             >
               Send
             </button>
-            <Link to={user ? "/profile" : "/login"} className="btn btn-secondary w-100 rounded-0 mt-1">
+            <Link to={isLoggedIn ? "/profile" : "/login"} className="btn btn-secondary w-100 rounded-0 mt-1">
                 Go Back
             </Link>
           </form>
