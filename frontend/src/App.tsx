@@ -56,7 +56,7 @@ const App = () => {
     };
 
     verifyCookie();
-  }, [cookies, removeCookie]);
+  }, []);
 
   // Prevents non-logged in users from accessing x routes
   const PrivateRoute: React.FC<RouteProps> = ({ element }) => {
