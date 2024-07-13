@@ -42,6 +42,7 @@ const App = () => {
         if (data) {
           setIsAuthenticated(true);
         } else {
+          setCookie('token', data.token)
           setIsAuthenticated(false);
           removeCookie('token');
         }
@@ -55,7 +56,7 @@ const App = () => {
     };
 
     verifyCookie();
-  }, []);
+  }, [cookies, removeCookie]);
 
   // Prevents non-logged in users from accessing x routes
   const PrivateRoute: React.FC<RouteProps> = ({ element }) => {
