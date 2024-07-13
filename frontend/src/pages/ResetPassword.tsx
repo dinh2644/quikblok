@@ -3,9 +3,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 
+interface IsAuthenticatedProps{
+  isAuthenticated: boolean
+}
 
-const ResetPassword = () => {
-  const isLoggedIn = localStorage.getItem('token')
+const ResetPassword = ({isAuthenticated} : IsAuthenticatedProps) => {
 
   const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();
@@ -31,7 +33,7 @@ const ResetPassword = () => {
         return;
       } else {
         setTimeout(() => {
-          const loggedIn = isLoggedIn ? "/profile" : "/login"
+          const loggedIn = isAuthenticated ? "/profile" : "/login"
           navigate(loggedIn);
           window.location.reload();
         }, 2000);

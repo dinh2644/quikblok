@@ -14,6 +14,7 @@ import EmailVerify from './pages/EmailVerified';
 import PageNotFound from './pages/PageNotFound';
 import Home from './pages/Home';
 import ProfilePage from './pages/ProfilePage';
+import { useCookies } from 'react-cookie';
 
 //axios.defaults.baseURL = "http://localhost:8000";
 axios.defaults.baseURL = "https://quikblok.onrender.com";
@@ -24,15 +25,36 @@ interface RouteProps {
 }
 
 const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    return localStorage.getItem('token') !== null;
-  });
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [cookies, setCookie, removeCookie] = useCookies(['token']);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    setIsAuthenticated(token !== null);
-    setIsLoading(false);
+    const verifyCookie = async () => {
+      if (!cookies.token) {
+        setIsAuthenticated(false);
+        setIsLoading(false); 
+        return;
+      }
+
+      try {
+        const { data } = await axios.get("/");
+        if (data) {
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+          removeCookie('token');
+        }
+      } catch (error) {
+        console.error("Error verifying token:", error);
+        setIsAuthenticated(false);
+        removeCookie('token');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    verifyCookie();
   }, []);
 
   // Prevents non-logged in users from accessing x routes
@@ -44,13 +66,12 @@ const App = () => {
   // Prevents logged in users from going back to /login and /register routes
   const OnlyUnauthenticated: React.FC<RouteProps> = ({ element }) => {
     if (isLoading) return <div>Loading...</div>;
-    return isAuthenticated ? <PageNotFound/> : element;
+    return isAuthenticated ? <PageNotFound isAuthenticated={isAuthenticated}/> : element;
   };
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
-  console.log(isAuthenticated);
   
   return (
     <>
@@ -62,12 +83,11 @@ const App = () => {
         <Route path="/" element={<PrivateRoute element={<Home />} />} />
         <Route path="/profile" element={<PrivateRoute element={<ProfilePage />} />} />
         {/* Other */}
-        <Route path="*" element={<PageNotFound />} />
-        <Route path="/forgotPassword" element={<ForgotPassword />} />
-        <Route path="/resetPassword/:token" element={<ResetPassword />} />
-        <Route path="/preverify/:token" element={<EmailVerify />} />
+        <Route path="*" element={<PageNotFound isAuthenticated={isAuthenticated} />} />
+        <Route path="/forgotPassword" element={<ForgotPassword isAuthenticated={isAuthenticated}/>} />
+        <Route path="/resetPassword/:token" element={<ResetPassword isAuthenticated={isAuthenticated}/>} />
+        <Route path="/preverify/:token" element={<EmailVerify isAuthenticated={isAuthenticated}/>} />
       </Routes>
-
     </>
 
 

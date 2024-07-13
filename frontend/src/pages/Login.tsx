@@ -36,8 +36,7 @@ const Login = () => {
           username: "",
           password: "",
         });
-        localStorage.setItem('token', data.token)
-        navigate("/")
+       window.location.href = "/"
       }
     } catch (error) {
       console.error(error);

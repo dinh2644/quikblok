@@ -25,11 +25,10 @@ const Navbar = ({user}: NavbarProps) => {
       );
 
       if (response.status === 200) { 
-        localStorage.removeItem('token')
-        window.location.reload()
+        window.location.href = "/login"
        
       } else {
-        toast.error("Log out failed")
+        toast.error("Logout failed")
       }
     } catch (error) {
       console.error(error);

@@ -4,9 +4,11 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 
+interface IsAuthenticatedProps{
+  isAuthenticated: boolean
+}
 
-const ForgotPassword = () => {
-  const isLoggedIn = localStorage.getItem('token')
+const ForgotPassword = ({isAuthenticated} : IsAuthenticatedProps) => {
 
   const [email, setEmail] = useState<string>("");
   const navigate = useNavigate();
@@ -24,7 +26,7 @@ const ForgotPassword = () => {
         toast.error(data.error);
         return;
       } else {
-        const loggedIn = isLoggedIn ? "/profile" : "/login"
+        const loggedIn = isAuthenticated ? "/profile" : "/login"
         setTimeout(() => {
           navigate(loggedIn);
           window.location.reload();
@@ -63,7 +65,7 @@ const ForgotPassword = () => {
             >
               Send
             </button>
-            <Link to={isLoggedIn ? "/profile" : "/login"} className="btn btn-secondary w-100 rounded-0 mt-1">
+            <Link to={isAuthenticated ? "/profile" : "/login"} className="btn btn-secondary w-100 rounded-0 mt-1">
                 Go Back
             </Link>
           </form>

@@ -3,13 +3,16 @@ import "../assets/EmailVerified.css";
 import {useParams, useNavigate } from "react-router-dom";
 import axios from 'axios';
 
-const EmailVerify = () => {
-  const isLoggedIn = localStorage.getItem('token')
+interface IsAuthenticatedProps{
+  isAuthenticated: boolean
+}
+
+const EmailVerify = ({isAuthenticated} : IsAuthenticatedProps) => {
 
   const { token } = useParams();
   const navigate = useNavigate();
   const handleLogin = () => {
-    const loggedIn = isLoggedIn ? "/profile" : "/login" 
+    const loggedIn = isAuthenticated ? "/profile" : "/login" 
     navigate(loggedIn);
   };
   const [verificationStatus, setVerificationStatus] = useState<string>('pending');

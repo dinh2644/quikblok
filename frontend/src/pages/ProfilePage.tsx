@@ -86,9 +86,7 @@ const ProfilePage = () => {
       );
 
       if (response.status === 200) {
-        localStorage.removeItem('user')
-        localStorage.removeItem('token')
-      navigate("/login")        
+       window.location.href = "/login"  
       } else {
         toast.error("Logout failed")
       }
