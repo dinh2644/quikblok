@@ -24,6 +24,9 @@ interface StateObjectType {
 
 const ProfilePage = ({userData}: UserProps) => {
   const navigate = useNavigate();
+  const [user, setUser] = useState<{[key: string]: any}>({
+    firstName: ""
+  })
   const [activeTab, setActiveTab] = useState("accountDetails");
   const [noOfBlocks, setNoOfBlocks] = useState<number>(0);
   // personal info

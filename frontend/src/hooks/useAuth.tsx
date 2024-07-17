@@ -24,14 +24,24 @@ const useAuth = () => {
       } else {
         setIsAuthenticated(false);
         setUser({
-            firstName: ""
+            _id: "",
+    firstName: "",
+    password: "",
+    lastName: "",
+    email: "",
+    username: "",
         });
       }
     } catch (error) {
       console.error("Auth check failed:", error);
       setIsAuthenticated(false);
       setUser({
-        firstName: ""
+        _id: "",
+    firstName: "",
+    password: "",
+    lastName: "",
+    email: "",
+    username: "",
       });
     } finally {
       setLoading(false);
