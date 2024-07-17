@@ -19,8 +19,8 @@ import ProfilePage from './pages/ProfilePage';
 import Loading from './components/Loading';
 
 
-axios.defaults.baseURL = "http://localhost:8000";
-//axios.defaults.baseURL = "https://quikblok.onrender.com";
+//axios.defaults.baseURL = "http://localhost:8000";
+axios.defaults.baseURL = "https://quikblok.onrender.com";
 axios.defaults.withCredentials = true;
 
 interface RouteProps {
