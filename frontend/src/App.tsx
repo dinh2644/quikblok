@@ -50,7 +50,8 @@ const App = () => {
         <Route path="/register" element={<InvalidIfAuthenticated element={<Register />} />} />
 
         {/* Protected routes */}
-        <Route path="/" element={<PrivateRoute element={<Home user={user?.userInfo?.firstName} />} />} />
+        <Route path="/" element={isAuthenticated ? <Home user={user?.userInfo?.firstName}/> :<Login/>}/>
+        {/* <Route path="/" element={<PrivateRoute element={<Home user={user?.userInfo?.firstName} />} />} /> */}
         <Route path="/profile" element={<PrivateRoute element={<ProfilePage userData={user.userInfo} />} />} />
 
         {/* Other routes */}
