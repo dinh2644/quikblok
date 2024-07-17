@@ -3,7 +3,6 @@ import "../assets/HomePage.css";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast/headless";
-import Loading from "../components/Loading";
 import Navbar from "../components/Navbar";
 import { createContext, Dispatch, SetStateAction } from "react";
 import SadEmoji from "../assets/sad.png";
@@ -38,27 +37,15 @@ export const SearchValueContext = createContext<SearchContextType>({
   setSearchValue: () => { }
 });
 
-const Home = () => {
+interface UserProps{
+ user: string 
+}
+
+const Home = ({user}: UserProps) => {
   const [listOfBlocks, setListOfBlocks] = useState<BlockInfoProp[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchValue, setSearchValue] = useState<string>("")
-  const [user, setUser] = useState<string>("")
 
-  // Fetch user
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await axios.get("/");
-
-        setUser(response.data.userInfo.firstName)
-
-      } catch (error) {
-        console.error("Error fetching user:", error);
-        toast.error("Failed to fetch user");
-      }
-    }
-    fetchUser();
-  }, [user])
 
   // Fetch blocks
   useEffect(() => {
@@ -107,12 +94,9 @@ const Home = () => {
 
   return (
     <>
-      {isLoading ? (
-        <Loading />
-      ) : (
         <SearchValueContext.Provider value={{ searchValue, setSearchValue }}>
           <div>
-            <Navbar user={user} />
+            <Navbar user={user}/>
             <section>
               <div className="container" style={{ maxWidth: "1800px" }}>
                 <div className="row">
@@ -159,7 +143,7 @@ const Home = () => {
             </section>
           </div>
         </SearchValueContext.Provider>
-      )}
+  
 
       <div className="text-muted text-center" style={{fontSize: "20px"}}>
       &copy; {new Date().getFullYear()} QuikBlok. All rights reserved.

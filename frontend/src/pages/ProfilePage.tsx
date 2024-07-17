@@ -6,11 +6,23 @@ import "../assets/ProfilePage.css";
 import { Link } from "react-router-dom";
 import ProfileNavbar from "../components/ProfileNavbar";
 
+interface UserProps {
+  userData: {
+    _id: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    username: string;
+  };
+}
+
+
 interface StateObjectType {
   [key: string]: string;
 }
 
-const ProfilePage = () => {
+const ProfilePage = ({userData}: UserProps) => {
   const navigate = useNavigate();
   const [user, setUser] = useState<{[key: string]: any}>({
     firstName: ""
@@ -39,22 +51,6 @@ const ProfilePage = () => {
     deletePassword: ""
   });
   const [confirmDelete, setConfirmDelete] = useState<string>("");
-
-  // Fetch user
-  useEffect(()=>{
-    const fetchUser = async () =>{
-      try {
-        const response = await axios.get("/");
-        
-        setUser(response.data.userInfo)
-
-      } catch (error) {
-        console.error("Error fetching user:", error);
-        toast.error("Failed to fetch user");
-      }
-    }
-    fetchUser();
-  },[])
 
   // Get no. of blocks for display
   useEffect(()=>{
@@ -362,22 +358,22 @@ const ProfilePage = () => {
                     <h3>Your Account Details</h3>
                     <div className="detail">
                       <h4>First Name:</h4>
-                      <p>{user?.firstName}</p>
+                      <p>{userData?.firstName}</p>
                       <hr style={{marginTop: "5px"}}/>
                     </div>
                     <div className="detail">
                       <h4>Last Name:</h4>
-                      <p>{user?.lastName}</p>
+                      <p>{userData?.lastName}</p>
                       <hr style={{marginTop: "5px"}}/>
                     </div>
                     <div className="detail">
                       <h4>Username:</h4>
-                    <p>{user?.username}</p>
+                    <p>{userData?.username}</p>
                       <hr style={{marginTop: "5px"}}/>
                     </div>
                     <div className="detail">
                       <h4>Email:</h4>
-                      <p>{user?.email}</p>
+                      <p>{userData?.email}</p>
                       <hr style={{marginTop: "5px"}}/>
                     </div>
                     <div className="detail">

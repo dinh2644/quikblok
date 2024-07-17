@@ -6,12 +6,12 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { useState } from "react";
 
-interface NavbarProps {
-  user: string;
+interface UserProps {
+ user: string 
 }
 
 
-const Navbar = ({user}: NavbarProps) => { 
+const Navbar = ({user}: UserProps) => { 
   const [firstName ] = useState<string>(user)
   
   // Handle log out
