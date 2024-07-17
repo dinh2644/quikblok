@@ -1,7 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
 
-
 const useAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [user, setUser] = useState<{[key: string]: any}>({
@@ -13,23 +12,26 @@ const useAuth = () => {
     username: "",
   });
   const [loading, setLoading] = useState<boolean>(true);
- 
+
   const checkAuth = useCallback(async () => {
     try {
-      const { data } = await axios.get("/");
+      const { data } = await axios.get("/", { 
+        withCredentials: true,
+        validateStatus: (status) => status < 500 // Treat only 500+ errors as errors
+      });
+      
       if (data && data.userInfo) {
         setIsAuthenticated(true);
-      
-        setUser(data)
+        setUser(data);
       } else {
         setIsAuthenticated(false);
         setUser({
-            _id: "",
-    firstName: "",
-    password: "",
-    lastName: "",
-    email: "",
-    username: "",
+          _id: "",
+          firstName: "",
+          password: "",
+          lastName: "",
+          email: "",
+          username: "",
         });
       }
     } catch (error) {
@@ -37,11 +39,11 @@ const useAuth = () => {
       setIsAuthenticated(false);
       setUser({
         _id: "",
-    firstName: "",
-    password: "",
-    lastName: "",
-    email: "",
-    username: "",
+        firstName: "",
+        password: "",
+        lastName: "",
+        email: "",
+        username: "",
       });
     } finally {
       setLoading(false);
@@ -51,6 +53,8 @@ const useAuth = () => {
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
+
+ 
 
   return { isAuthenticated, user, loading, checkAuth };
 };

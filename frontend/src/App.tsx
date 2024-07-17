@@ -33,6 +33,7 @@ const App = () => {
   if(loading){
     return <Loading/>
   }
+console.log("isAuthenticated: ", isAuthenticated);
 
   const PrivateRoute: React.FC<RouteProps> = ({ element }) => {
     return isAuthenticated ? element : <PageNotFound isAuthenticated={isAuthenticated}/>;
