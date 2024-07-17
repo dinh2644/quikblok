@@ -79,7 +79,7 @@ const ProfilePage = ({userData}: UserProps) => {
       );
 
       if (response.status === 200) {
-       window.location.href = "/login"  
+       window.location.reload()  
       } else {
         toast.error("Logout failed")
       }
