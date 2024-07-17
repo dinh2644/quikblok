@@ -25,7 +25,7 @@ const Navbar = ({user}: UserProps) => {
       );
 
       if (response.status === 200) { 
-        window.location.reload()
+        window.location.href = "/"
        
       } else {
         toast.error("Logout failed")
