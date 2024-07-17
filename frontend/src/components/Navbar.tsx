@@ -1,38 +1,20 @@
 import SearchBar from "./SearchBar";
 import { Link } from "react-router-dom";
 import "../assets/Navbar.css";
-
-import toast from "react-hot-toast";
-import axios from "axios";
 import { useState } from "react";
 
 interface UserProps {
  user: string 
+ logout: () => void
 }
 
 
-const Navbar = ({user}: UserProps) => { 
+const Navbar = ({user, logout}: UserProps) => { 
   const [firstName ] = useState<string>(user)
   
   // Handle log out
-  const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(
-        "/logout",
-        {},
-        { withCredentials: true }
-      );
-
-      if (response.status === 200) { 
-        window.location.href = "/"
-       
-      } else {
-        toast.error("Logout failed")
-      }
-    } catch (error) {
-      console.error(error);
-    }
+  const handleLogout = () => {
+    logout()
   };
 
 

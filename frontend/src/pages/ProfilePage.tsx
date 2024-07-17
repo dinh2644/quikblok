@@ -6,15 +6,19 @@ import "../assets/ProfilePage.css";
 import { Link } from "react-router-dom";
 import ProfileNavbar from "../components/ProfileNavbar";
 
-interface UserProps {
-  userData: {
-    _id: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    username: string;
-  };
+interface UserProps { 
+  _id: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  username: string;
+
+}
+
+interface Props{
+  userData: UserProps,
+  logout: () => void
 }
 
 
@@ -22,7 +26,7 @@ interface StateObjectType {
   [key: string]: string;
 }
 
-const ProfilePage = ({userData}: UserProps) => {
+const ProfilePage = ({userData, logout}: Props) => {
   const navigate = useNavigate(); 
   const [activeTab, setActiveTab] = useState("accountDetails");
   const [noOfBlocks, setNoOfBlocks] = useState<number>(0);
@@ -69,23 +73,8 @@ const ProfilePage = ({userData}: UserProps) => {
   };
 
   // logout user
-  const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(
-        "/logout",
-        {},
-        { withCredentials: true }
-      );
-
-      if (response.status === 200) {
-       window.location.reload()  
-      } else {
-        toast.error("Logout failed")
-      }
-    } catch (error) {
-      console.error(error);
-    }
+  const handleLogout = () => {
+    logout();
   };
 
   // handle input change

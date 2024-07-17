@@ -19,8 +19,8 @@ import ProfilePage from './pages/ProfilePage';
 import Loading from './components/Loading';
 
 
-//axios.defaults.baseURL = "http://localhost:8000";
-axios.defaults.baseURL = "https://quikblok.onrender.com";
+axios.defaults.baseURL = "http://localhost:8000";
+//axios.defaults.baseURL = "https://quikblok.onrender.com";
 axios.defaults.withCredentials = true;
 
 interface RouteProps {
@@ -28,7 +28,7 @@ interface RouteProps {
 }
 
 const App = () => {
-  const {isAuthenticated, user, loading} = useAuth();
+  const {isAuthenticated, user, loading, logout} = useAuth();
 
   if(loading){
     return <Loading/>
@@ -51,9 +51,9 @@ console.log("isAuthenticated: ", isAuthenticated);
         <Route path="/register" element={<InvalidIfAuthenticated element={<Register />} />} />
 
         {/* Protected routes */}
-        <Route path="/" element={isAuthenticated ? <Home user={user?.userInfo?.firstName}/> :<Login/>}/>
+        <Route path="/" element={isAuthenticated ? <Home user={user?.userInfo?.firstName} logout={logout}/> :<Login/>}/>
         {/* <Route path="/" element={<PrivateRoute element={<Home user={user?.userInfo?.firstName} />} />} /> */}
-        <Route path="/profile" element={<PrivateRoute element={<ProfilePage userData={user.userInfo} />} />} />
+        <Route path="/profile" element={<PrivateRoute element={<ProfilePage userData={user.userInfo} logout={logout} />} />} />
 
         {/* Other routes */}
         <Route path="*" element={<PageNotFound isAuthenticated={isAuthenticated} />} />

@@ -196,7 +196,7 @@ const loginUser = async (req, res, next) => {
 // Logout user
 const logoutUser = async (req, res) => {
   res.clearCookie("token");
-  res.json({ message: "Logout successful" });
+  res.status(200).json({ message: "Logout successful" });
 };
 
 // Delete account

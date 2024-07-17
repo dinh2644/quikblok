@@ -38,10 +38,11 @@ export const SearchValueContext = createContext<SearchContextType>({
 });
 
 interface UserProps{
- user: string 
+ user: string
+ logout: () => void
 }
 
-const Home = ({user}: UserProps) => {
+const Home = ({user, logout}: UserProps) => {
   const [listOfBlocks, setListOfBlocks] = useState<BlockInfoProp[]>([]);
   const [searchValue, setSearchValue] = useState<string>("")
 
@@ -93,7 +94,7 @@ const Home = ({user}: UserProps) => {
     <>
         <SearchValueContext.Provider value={{ searchValue, setSearchValue }}>
           <div>
-            <Navbar user={user}/>
+            <Navbar user={user} logout={logout}/>
             <section>
               <div className="container" style={{ maxWidth: "1800px" }}>
                 <div className="row">
