@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect, useState } from 'react';
-import { Navigate, Route, Routes } from "react-router-dom";
+import {Route, Routes  } from "react-router-dom";
 import { Toaster } from 'react-hot-toast';
 import axios from "axios";
 // CSS
@@ -14,7 +14,7 @@ import EmailVerify from './pages/EmailVerified';
 import PageNotFound from './pages/PageNotFound';
 import Home from './pages/Home';
 import ProfilePage from './pages/ProfilePage';
-import { useCookies } from 'react-cookie';
+
 
 //axios.defaults.baseURL = "http://localhost:8000";
 axios.defaults.baseURL = "https://quikblok.onrender.com";
@@ -26,53 +26,34 @@ interface RouteProps {
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [cookies, setCookie, removeCookie] = useCookies(['token']);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const verifyCookie = async () => {
-      if (!cookies.token) {
-        setIsAuthenticated(false);
-        setIsLoading(false); 
-        return;
+ useEffect(()=>{
+  const fetchUser = async() =>{
+    try {
+      const {data} = await axios.get("/")
+      
+      if(data){
+        setIsAuthenticated(true)
+      }else{
+        setIsAuthenticated(false)
       }
 
-      try {
-        const { data } = await axios.get("/");
-        if (data) {
-          setIsAuthenticated(true);
-        } else {
-          setCookie('token', data.token)
-          setIsAuthenticated(false);
-          removeCookie('token');
-        }
-      } catch (error) {
-        console.error("Error verifying token:", error);
-        setIsAuthenticated(false);
-        removeCookie('token');
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    } catch (error) {
+      console.error(error);
+      
+    }
+  }
+  fetchUser();
+ },[])
 
-    verifyCookie();
-  }, []);
 
-  // Prevents non-logged in users from accessing x routes
+  // Prevents non-logged in users from accessing protected routes
   const PrivateRoute: React.FC<RouteProps> = ({ element }) => {
-    if (isLoading) return <div>Loading...</div>;
-    return isAuthenticated ? element : <Navigate to="/login"/>;
+    return isAuthenticated ? element : <PageNotFound isAuthenticated={isAuthenticated}/>;
   };
-
   // Prevents logged in users from going back to /login and /register routes
   const OnlyUnauthenticated: React.FC<RouteProps> = ({ element }) => {
-    if (isLoading) return <div>Loading...</div>;
     return isAuthenticated ? <PageNotFound isAuthenticated={isAuthenticated}/> : element;
   };
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
   
   return (
     <>

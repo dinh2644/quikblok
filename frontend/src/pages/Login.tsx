@@ -24,9 +24,7 @@ const Login = () => {
           username,
           password,
         }
-
       );
-
       if (data.error) {
         console.error(data.error);
         toast.error(data.error)
@@ -35,6 +33,7 @@ const Login = () => {
           username: "",
           password: "",
         });
+        
        window.location.href = "/"
       }
     } catch (error) {
