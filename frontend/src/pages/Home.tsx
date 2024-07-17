@@ -43,18 +43,15 @@ interface UserProps{
 
 const Home = ({user}: UserProps) => {
   const [listOfBlocks, setListOfBlocks] = useState<BlockInfoProp[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [searchValue, setSearchValue] = useState<string>("")
 
 
   // Fetch blocks
   useEffect(() => {
-    setIsLoading(true);
     const fetchBlocks = async () => {
       try {
         const response = await axios.get("/getBlock");
 
-        setIsLoading(false);
         setListOfBlocks(response.data.myBlocks);
 
       } catch (error) {
