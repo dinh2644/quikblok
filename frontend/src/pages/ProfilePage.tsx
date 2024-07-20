@@ -76,10 +76,7 @@ const ProfilePage = ({userData}: UserDataProps) => {
     try {
       await axios.post("/logout");
       localStorage.removeItem('token');
-      // setTimeout(() => {
-      //   navigate("/")
-        
-      // }, 199);
+
       window.location.href = "/"
     } catch (error) {
       console.error("Logout failed:", error);

@@ -13,8 +13,6 @@ const Login = () => {
     password: "",
   });
 
-  const navigate = useNavigate()
-
   // handle login
   const handleLoginUser = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -37,8 +35,7 @@ const Login = () => {
         });
         localStorage.setItem('token',data.token)
         window.location.href = "/home"
-        // window.location.reload();
-        // navigate("/home");
+     
       }
     } catch (error) {
       console.error(error);

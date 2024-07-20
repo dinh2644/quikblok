@@ -14,10 +14,7 @@ const Navbar = ({userData}: UserDataProps) => {
     try {
       await axios.post("/logout");
       localStorage.removeItem('token');
-      // setTimeout(() => {
-      //   navigate("/")
-        
-      // }, 200);
+
        window.location.href = "/"
        
     } catch (error) {
