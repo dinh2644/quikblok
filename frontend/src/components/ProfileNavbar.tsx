@@ -1,22 +1,19 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const ProfileNavbar = () => {
-    const Navigate = useNavigate();
-    const handleNavigateHome = () => {
-        Navigate("/")
-      };
 
     return (
         <>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <div className="container-fluid" style={{ maxWidth: "1800px" }}>
-                    <Link to="/" className="navbar-brand link-unstyled">
+                    <Link to="/home" className="navbar-brand link-unstyled">
                         QuikBlok
                     </Link>
-
-                    <div onClick={handleNavigateHome} style={{ textDecoration: 'none', color: 'inherit', cursor: "pointer"}}>
+                    
+                    <Link to="/home" style={{ textDecoration: 'none', color: 'inherit', cursor: "pointer",marginRight: "12px"}}>
                         <div style={{fontSize: "25px"}}>Go Back</div>
-                    </div>
+                    </Link>
+                    
 
                 </div>
             </nav>

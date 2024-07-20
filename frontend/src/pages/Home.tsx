@@ -7,6 +7,7 @@ import Navbar from "../components/Navbar";
 import { createContext, Dispatch, SetStateAction } from "react";
 import SadEmoji from "../assets/sad.png";
 import NewBlock from "../components/NewBlock";
+import Loading from "../components/Loading";
 
 
 
@@ -37,31 +38,32 @@ export const SearchValueContext = createContext<SearchContextType>({
   setSearchValue: () => { }
 });
 
-interface UserProps{
- user: string
- logout: () => void
+interface UserDataProps{
+  userData: string
 }
 
-const Home = ({user, logout}: UserProps) => {
+const Home = ({userData}: UserDataProps) => {
   const [listOfBlocks, setListOfBlocks] = useState<BlockInfoProp[]>([]);
-  const [searchValue, setSearchValue] = useState<string>("")
+  const [searchValue, setSearchValue] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
 
-  // Fetch blocks
+  // Fetch user's blocks
   useEffect(() => {
     const fetchBlocks = async () => {
       try {
-        const response = await axios.get("/getBlock");
-
-        setListOfBlocks(response.data.myBlocks);
-
+        const blockData = await axios.get("/getBlock");
+        setListOfBlocks(blockData.data.myBlocks);
+        setIsLoading(false)
       } catch (error) {
         console.error("Error fetching blocks:", error);
         toast.error("Failed to fetch blocks");
+      }finally{
+        setIsLoading(false)
       }
     };
     fetchBlocks();
-  }, []);
+  }, [listOfBlocks]);
 
   // Filtered data
   const filteredData = listOfBlocks?.filter((data) => {
@@ -70,7 +72,6 @@ const Home = ({user, logout}: UserProps) => {
       (data.blockName && data.blockName.toLowerCase().includes(searchValue.toLowerCase()))
     )
   })
-
 
   // Delete blocks
   const handleDeleteBlock = (blockId: string) => {
@@ -89,12 +90,15 @@ const Home = ({user, logout}: UserProps) => {
       });
   };
 
+ if(isLoading){
+  return <Loading/>;
+ } 
 
   return (
     <>
         <SearchValueContext.Provider value={{ searchValue, setSearchValue }}>
           <div>
-            <Navbar user={user} logout={logout}/>
+            <Navbar userData={userData}/>
             <section>
               <div className="container" style={{ maxWidth: "1800px" }}>
                 <div className="row">
@@ -143,7 +147,7 @@ const Home = ({user, logout}: UserProps) => {
         </SearchValueContext.Provider>
   
 
-      <div className="text-muted text-center" style={{fontSize: "20px"}}>
+      <div className="text-muted text-center" style={{fontSize: "18px"}}>
       &copy; {new Date().getFullYear()} QuikBlok. All rights reserved.
       </div>
     </>

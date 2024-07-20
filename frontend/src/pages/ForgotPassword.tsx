@@ -26,7 +26,7 @@ const ForgotPassword = ({isAuthenticated} : IsAuthenticatedProps) => {
         toast.error(data.error);
         return;
       } else {
-        const loggedIn = isAuthenticated ? "/profile" : "/login"
+        const loggedIn = isAuthenticated ? "/profile" : "/"
         setTimeout(() => {
           navigate(loggedIn);
           window.location.reload();

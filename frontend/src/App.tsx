@@ -1,8 +1,7 @@
-import React, { ReactElement } from 'react';
-import {Route, Routes } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import {Navigate, Route, Routes } from "react-router-dom";
 import { Toaster } from 'react-hot-toast';
 import axios from "axios";
-import useAuth from './hooks/useAuth';
 // CSS
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
@@ -16,50 +15,57 @@ import EmailVerify from './pages/EmailVerified';
 import PageNotFound from './pages/PageNotFound';
 import Home from './pages/Home';
 import ProfilePage from './pages/ProfilePage';
-import Loading from './components/Loading';
 
 
 //axios.defaults.baseURL = "http://localhost:8000";
 axios.defaults.baseURL = "https://quikblok.onrender.com";
 axios.defaults.withCredentials = true;
 
-interface RouteProps {
-  element: ReactElement;
-}
-
 const App = () => {
-  const {isAuthenticated, user, loading, logout} = useAuth();
+  const isAuthenticated = !!localStorage.getItem('token')
+  const [userData, setUserData] = useState<{[key:string]:any}>({
+    _id: "",
+    firstName: "",
+    password: "",
+    lastName: "",
+    email: "",
+    username: "",
+  })
+  console.log(isAuthenticated);
 
-  if(loading){
-    return <Loading/>
-  }
-console.log("isAuthenticated: ", isAuthenticated);
+  // Fetch user data
+  useEffect(()=>{
+    const fetchUserData = async()=>{
+      try {
+        const {data} = await axios.get("/");
+        if (data && data.userInfo) {
+          setUserData(data)
+        } 
+        
+      } catch (error) {
+        console.error(error);
+        
+      }
+    }
+    fetchUserData();
+  },[])
 
-  const PrivateRoute: React.FC<RouteProps> = ({ element }) => {
-    return isAuthenticated ? element : <PageNotFound isAuthenticated={isAuthenticated}/>;
-  };
-  const InvalidIfAuthenticated: React.FC<RouteProps> = ({ element }) => {
-    return isAuthenticated ? <PageNotFound isAuthenticated={isAuthenticated}/> : element;
-  };
-  
+
   return (
     <>
       <Toaster position="bottom-center" toastOptions={{ duration: 2000 }} />
-      <Routes>
-        {/* Auth routes */}
-        <Route path="/login" element={<InvalidIfAuthenticated element={<Login />} />} />
-        <Route path="/register" element={<InvalidIfAuthenticated element={<Register />} />} />
+      <Routes>       
 
-        {/* Protected routes */}
-        <Route path="/" element={isAuthenticated ? <Home user={user?.userInfo?.firstName} logout={logout}/> :<Login/>}/>
-        {/* <Route path="/" element={<PrivateRoute element={<Home user={user?.userInfo?.firstName} />} />} /> */}
-        <Route path="/profile" element={<PrivateRoute element={<ProfilePage userData={user.userInfo} logout={logout} />} />} />
+        <Route path="/" element={!isAuthenticated ? <Login /> : <Navigate to="/home"/>} />
+        <Route path="/register" element={!isAuthenticated ? <Register /> : <PageNotFound isAuthenticated={isAuthenticated}/>} />
+        <Route path="/profile" element={isAuthenticated ? <ProfilePage userData={userData?.userInfo} /> : <PageNotFound isAuthenticated={isAuthenticated}/>} />
+        <Route path='/home' element={isAuthenticated ? <Home userData={userData?.userInfo?.firstName}/> : <Navigate to="/"/>} />
 
-        {/* Other routes */}
         <Route path="*" element={<PageNotFound isAuthenticated={isAuthenticated} />} />
         <Route path="/forgotPassword" element={<ForgotPassword isAuthenticated={isAuthenticated} />} />
         <Route path="/resetPassword/:token" element={<ResetPassword isAuthenticated={isAuthenticated} />} />
         <Route path="/preverify/:token" element={<EmailVerify  isAuthenticated={isAuthenticated}/>} />
+
       </Routes>
     </>
    

@@ -16,7 +16,7 @@ const PageNotFound = ({isAuthenticated} : IsAuthenticatedProps) => {
           <span className="text-secondary ">Oops!</span> Page not found.
         </p>
         <p className="lead three">The page you’re looking for doesn’t exist.</p>
-        <Link className="btn btn-secondary four" to={isAuthenticated ? "/" : "/login"}>
+        <Link className="btn btn-secondary four" to={isAuthenticated ? "/home" : "/"}>
           <div style={{color: "white"}}>Return Home</div>
         </Link>
       </div>

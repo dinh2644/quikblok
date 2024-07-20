@@ -12,9 +12,9 @@ const SearchBar = () => {
 
   return (
     <>
-      <form className="d-flex" style={{ width: "15rem" }}>
+      <form className="d-flex searchBar" >
         <input
-          className="form-control shadow-none"
+          className="form-control shadow-none searchBarContent"
           type="search"
           placeholder="Search Block"
           aria-label="Search"

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link  } from "react-router-dom";
+import { Link, useNavigate  } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 
@@ -12,6 +12,8 @@ const Login = () => {
     username: "",
     password: "",
   });
+
+  const navigate = useNavigate()
 
   // handle login
   const handleLoginUser = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -33,8 +35,10 @@ const Login = () => {
           username: "",
           password: "",
         });
-        
-       window.location.href = "/"
+        localStorage.setItem('token',data.token)
+        window.location.href = "/home"
+        // window.location.reload();
+        // navigate("/home");
       }
     } catch (error) {
       console.error(error);

@@ -11,7 +11,7 @@ interface sqTypes {
 interface BlockObjectType{
   [key: string]: string;
 }
-
+//*** THIS COMPONENT IS THE CIRCLE PLUS SIGN WHEN THERE ARE NO EXISTING BLOCKS ***//
 const NewBlock = () => {
   const [blockInfo, setBlockInfo] = useState<BlockObjectType>({
     blockName: "",
@@ -84,7 +84,7 @@ const NewBlock = () => {
         });
         setSecurityQuestions([]);
         toast.success(`${blockInfo.blockName} block created!`);
-        window.location.reload();
+        
       }
     } catch (error) {
       console.error(error);

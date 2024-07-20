@@ -33,7 +33,7 @@ const ResetPassword = ({isAuthenticated} : IsAuthenticatedProps) => {
         return;
       } else {
         setTimeout(() => {
-          const loggedIn = isAuthenticated ? "/profile" : "/login"
+          const loggedIn = isAuthenticated ? "/profile" : "/"
           navigate(loggedIn);
           window.location.reload();
         }, 2000);

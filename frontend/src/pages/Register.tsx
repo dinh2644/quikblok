@@ -45,7 +45,7 @@ const Register = () => {
           username: "",
           password: "",
         });
-        navigate("/Login");
+        navigate("/");
         toast.success("A verification link has been sent to your email.");
       }
     } catch (error) {

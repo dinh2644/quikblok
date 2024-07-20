@@ -12,7 +12,7 @@ const EmailVerify = ({isAuthenticated} : IsAuthenticatedProps) => {
   const { token } = useParams();
   const navigate = useNavigate();
   const handleLogin = () => {
-    const loggedIn = isAuthenticated ? "/profile" : "/login" 
+    const loggedIn = isAuthenticated ? "/profile" : "/" 
     navigate(loggedIn);
   };
   const [verificationStatus, setVerificationStatus] = useState<string>('pending');

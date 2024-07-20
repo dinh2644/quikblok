@@ -15,12 +15,9 @@ const useAuth = () => {
   });
   const [loading, setLoading] = useState<boolean>(true);
 
-  const checkAuth = useCallback(async () => {
+  const checkAuth = async () => {
     try {
-      const { data } = await axios.get("/", { 
-        withCredentials: true,
-        validateStatus: (status) => status < 500 
-      });
+      const { data } = await axios.get("/");
       
       if (data && data.userInfo) {
         setIsAuthenticated(true);
@@ -50,25 +47,9 @@ const useAuth = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  };
 
-  const logout = useCallback(async () => {
-    try {
-      await axios.post("/logout", {}, { withCredentials: true });
-      setIsAuthenticated(false);
-      setUser({
-        _id: "",
-        firstName: "",
-        password: "",
-        lastName: "",
-        email: "",
-        username: "",
-      });
-    navigate("/login")
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
-  }, []);
+  
 
 
   useEffect(() => {
@@ -77,7 +58,7 @@ const useAuth = () => {
 
  
 
-  return { isAuthenticated, user, loading, checkAuth, logout };
+  return { isAuthenticated, user, loading, checkAuth };
 };
 
 export default useAuth;

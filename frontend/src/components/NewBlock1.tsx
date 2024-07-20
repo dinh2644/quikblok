@@ -12,7 +12,7 @@ interface sqTypes {
 interface BlockObjectType{
   [key: string]: string;
 }
-// THIS COMPONENT IS FOR WHEN THERE ARE BLOCKS PRESENT 
+//*** THIS COMPONENT IS THE PLUS SIGN WHEN THERE ARE EXISTING BLOCKS ***// 
 
 const NewBlock1 = () => {
   const [blockInfo, setBlockInfo] = useState<BlockObjectType>({
@@ -84,7 +84,7 @@ const NewBlock1 = () => {
         });
         setSecurityQuestions([]);
         toast.success(`${blockInfo.blockName} block created!`);
-        window.location.reload();
+      
       }
     } catch (error) {
       console.error(error);

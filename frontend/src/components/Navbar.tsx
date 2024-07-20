@@ -1,67 +1,69 @@
 import SearchBar from "./SearchBar";
-import { Link } from "react-router-dom";
+import { Link  } from "react-router-dom";
 import "../assets/Navbar.css";
-import { useState } from "react";
+import axios from "axios";
 
-interface UserProps {
- user: string 
- logout: () => void
+interface UserDataProps {
+  userData: string 
 }
 
 
-const Navbar = ({user, logout}: UserProps) => { 
-  const [firstName ] = useState<string>(user)
-  
+const Navbar = ({userData}: UserDataProps) => {   
   // Handle log out
-  const handleLogout = () => {
-    logout()
+  const handleLogout = async() => {
+    try {
+      await axios.post("/logout");
+      localStorage.removeItem('token');
+      // setTimeout(() => {
+      //   navigate("/")
+        
+      // }, 200);
+       window.location.href = "/"
+       
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
 
   return (
     <>
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <div className="container-fluid" style={{ maxWidth: "1800px" }}>
-          <Link to="/" className="navbar-brand link-unstyled">
-            QuikBlok
-          </Link>
+      <nav className="navbar navbar-expand-sm navbar-light bg-light">
+  <div className="container-fluid" style={{ maxWidth: "1800px" }}>
+    <Link to="/home" className="navbar-brand link-unstyled">
+      QuikBlok
+    </Link>
+    
+    <button className="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#n_bar" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span className="navbar-toggler-icon"></span>
+    </button>
 
-          <div className="searchBar">
+    <div className="collapse navbar-collapse" id="n_bar">
+        <div className="nav-item flex-grow-1 d-flex justify-content-center">
           <SearchBar />
-          </div>
-
+        </div>
+        <div className="nav-item">
           <div className="dropdown">
-            <div className="dropdown dropDownParent">
-              <div
-                className="dropdown-toggle welcomeDropdown"
-                id="dropdownMenuButton1"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Hello, {firstName}
-              </div>
-              <ul
-                className="dropdown-menu"
-                aria-labelledby="dropdownMenuButton1"
-              >
-                <li>
-                  <Link to="/Profile" className="dropdown-item">
-                    Profile
-                  </Link>
-                </li>
-                <li>
-                  <button className="dropdown-item text-danger" type="button"
-                    data-bs-toggle="modal"
-                    data-bs-target="#logoutModal"
-                  >
-                    Log out
-                  </button>
-                </li>
-              </ul>
+            <div className="dropdown-toggle welcomeDropdown" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+              Hello, {userData}
             </div>
+            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <li>
+                <Link to="/profile" className="dropdown-item">
+                  Profile
+                </Link>
+              </li>
+              <li>
+                <button className="dropdown-item text-danger" type="button" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                  Log out
+                </button>
+              </li>
+            </ul>
           </div>
         </div>
-      </nav>
+    </div>
+  </div>
+</nav>
       {/* Logout modal */}
       <div
         className="modal fade"

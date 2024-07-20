@@ -6,19 +6,17 @@ import "../assets/ProfilePage.css";
 import { Link } from "react-router-dom";
 import ProfileNavbar from "../components/ProfileNavbar";
 
-interface UserProps { 
-  _id: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  username: string;
-
+interface UserData { 
+  _id: "",
+  firstName: "",
+  password: "",
+  lastName: "",
+  email: "",
+  username: "",
 }
 
-interface Props{
-  userData: UserProps,
-  logout: () => void
+interface UserDataProps{
+  userData: UserData,
 }
 
 
@@ -26,8 +24,9 @@ interface StateObjectType {
   [key: string]: string;
 }
 
-const ProfilePage = ({userData, logout}: Props) => {
+const ProfilePage = ({userData}: UserDataProps) => {
   const navigate = useNavigate(); 
+
   const [activeTab, setActiveTab] = useState("accountDetails");
   const [noOfBlocks, setNoOfBlocks] = useState<number>(0);
   // personal info
@@ -53,12 +52,12 @@ const ProfilePage = ({userData, logout}: Props) => {
   });
   const [confirmDelete, setConfirmDelete] = useState<string>("");
 
-  // Get no. of blocks for display
+  // Get no. of blocks for display and user data
   useEffect(()=>{
     const getNoOfBlocks = async() =>{
       try {
-        const response = await axios.get("/getNoOfBlocks");
-        setNoOfBlocks(response.data.count);
+        const noOfBlocksData = await axios.get("/getNoOfBlocks");
+        setNoOfBlocks(noOfBlocksData.data.count);
 
       } catch (error) {
         console.error("Can't get number of blocks", error);
@@ -72,9 +71,19 @@ const ProfilePage = ({userData, logout}: Props) => {
     setActiveTab(tabName);
   };
 
-  // logout user
-  const handleLogout = () => {
-    logout();
+   // Handle log out
+   const handleLogout = async() => {
+    try {
+      await axios.post("/logout");
+      localStorage.removeItem('token');
+      // setTimeout(() => {
+      //   navigate("/")
+        
+      // }, 199);
+      window.location.href = "/"
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
   // handle input change
@@ -336,7 +345,7 @@ const ProfilePage = ({userData, logout}: Props) => {
             </div>          
 
             {/* Edit form column */}
-            <div className="col-md-9 personal-info">
+            <div className="col-md-9 inputContainer">
               {/* Account information */}
               {activeTab === "accountDetails" && (
                 <>
@@ -679,7 +688,9 @@ const ProfilePage = ({userData, logout}: Props) => {
         </div>
         
    </section>
-
+   <div className="text-muted text-center" style={{fontSize: "18px"}}>
+      &copy; {new Date().getFullYear()} QuikBlok. All rights reserved.
+      </div>
     </>
   );
 };
