@@ -31,8 +31,7 @@ const App = () => {
     email: "",
     username: "",
   })
-  console.log(isAuthenticated);
-
+  
   // Fetch user data
   useEffect(()=>{
     const fetchUserData = async()=>{
@@ -40,14 +39,17 @@ const App = () => {
         const {data} = await axios.get("/");
         if (data && data.userInfo) {
           setUserData(data)
-        } 
-        
+        }else if (data.status === false) {
+          localStorage.removeItem('token');
+          window.location.href="/"
+        }
       } catch (error) {
         console.error(error);
-        
       }
     }
-    fetchUserData();
+    if (isAuthenticated) {
+      fetchUserData();
+    }
   },[])
 
 
