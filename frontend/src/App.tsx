@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {Navigate, Route, Routes } from "react-router-dom";
 import { Toaster } from 'react-hot-toast';
 import axios from "axios";
@@ -23,7 +23,7 @@ axios.defaults.withCredentials = true;
 
 const App = () => {
   const isAuthenticated = !!localStorage.getItem('token')
-  const [userData, setUserData] = useState<{[key:string]:any}>({
+  const [userData ] = useState<{[key:string]:any}>({
     userInfo:{
       _id: "123",
       firstName: "John",
@@ -34,8 +34,8 @@ const App = () => {
 
     }
   })
-  
-  // Fetch user data
+
+
   // useEffect(()=>{
   //   const fetchUserData = async()=>{
   //     try {
