@@ -17,8 +17,8 @@ import Home from './pages/Home';
 import ProfilePage from './pages/ProfilePage';
 
 
-//axios.defaults.baseURL = "http://localhost:8000";
-axios.defaults.baseURL = "https://quikblok.onrender.com";
+axios.defaults.baseURL = "http://localhost:8000";
+//axios.defaults.baseURL = "https://quikblok.onrender.com";
 axios.defaults.withCredentials = true;
 
 const App = () => {
@@ -31,6 +31,7 @@ const App = () => {
     email: "",
     username: "",
   })
+ console.log(isAuthenticated);
   
   // Fetch user data
   useEffect(()=>{
@@ -40,17 +41,17 @@ const App = () => {
         if (data && data.userInfo) {
           setUserData(data)
         }
-        // }else if (data.status === false) {
-        //   localStorage.removeItem('token');
-        //   window.location.href="/"
-        // }
+        else if (data.status === false) {
+          localStorage.removeItem('token');
+          window.location.href="/"
+        }
       } catch (error) {
         console.error(error);
       }
     }
-    //if (isAuthenticated) {
+    if (isAuthenticated) {
       fetchUserData();
-   // }
+   }
   },[])
 
 

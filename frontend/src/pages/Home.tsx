@@ -63,7 +63,7 @@ const Home = ({userData}: UserDataProps) => {
       }
     };
     fetchBlocks();
-  }, [listOfBlocks]);
+  }, []);
 
   // Filtered data
   const filteredData = listOfBlocks?.filter((data) => {

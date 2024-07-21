@@ -175,7 +175,7 @@ const loginUser = async (req, res, next) => {
     // create token after successfully logging in
     const token = createSecretToken(user._id);
     res.cookie("token", token, {
-      httpOnly: false, 
+      httpOnly: true, 
       expires: new Date(Date.now() + 14*24*60*60*1000),
       secure: true,
       sameSite: 'none'
