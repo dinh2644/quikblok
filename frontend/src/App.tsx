@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useMemo } from 'react';
 import {Navigate, Route, Routes } from "react-router-dom";
 import { Toaster } from 'react-hot-toast';
 import axios from "axios";
@@ -22,7 +22,7 @@ axios.defaults.baseURL = "https://quikblok.onrender.com";
 axios.defaults.withCredentials = true;
 
 const App = () => {
-  const isAuthenticated = !!localStorage.getItem('token')
+  const isAuthenticated = useMemo(() => !!localStorage.getItem('token'), []);  
   const [userData, setUserData] = useState<{[key:string]:any}>({
     _id: "",
     firstName: "",
@@ -31,30 +31,28 @@ const App = () => {
     email: "",
     username: "",
   })
- console.log(isAuthenticated);
-  
+
   // Fetch user data
-  useEffect(()=>{
-    const fetchUserData = async()=>{
-      try {
-        const {data} = await axios.get("/");
-        if (data && data.userInfo) {
-          setUserData(data)
-        }
-        else if (data.status === false) {
-          localStorage.removeItem('token');
-          window.location.href="/"
-        }
-      } catch (error) {
-        console.error(error);
+  const fetchUserData = useCallback(async () => {
+    try {
+      const { data } = await axios.get("/");
+      if (data && data.userInfo) {
+        setUserData(data);                
+      } else if (data.status === false) {
+        localStorage.removeItem('token');
+        window.location.href = "/";
       }
+    } catch (error) {
+      console.error(error);
     }
+  }, []);
+
+  useEffect(()=>{
     if (isAuthenticated) {
       fetchUserData();
    }
   },[])
-
-
+ 
   return (
     <>
       <Toaster position="bottom-center" toastOptions={{ duration: 2000 }} />

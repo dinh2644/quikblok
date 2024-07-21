@@ -12,9 +12,14 @@ interface sqTypes {
 interface BlockObjectType{
   [key: string]: string;
 }
+
+interface FetchBlocksProp{
+  fetchBlocks: () => void;
+}
+
 //*** THIS COMPONENT IS THE PLUS SIGN WHEN THERE ARE EXISTING BLOCKS ***// 
 
-const NewBlock1 = () => {
+const NewBlock1 = ({fetchBlocks}: FetchBlocksProp) => {
   const [blockInfo, setBlockInfo] = useState<BlockObjectType>({
     blockName: "",
     name: "",
@@ -73,6 +78,7 @@ const NewBlock1 = () => {
       } )
 
       if(response.status === 201){
+        fetchBlocks();
         closeModal();
         setBlockInfo({
           blockName: "",

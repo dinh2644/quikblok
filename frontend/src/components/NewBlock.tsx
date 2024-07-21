@@ -11,8 +11,13 @@ interface sqTypes {
 interface BlockObjectType{
   [key: string]: string;
 }
+
+interface FetchBlocksProp{
+  fetchBlocks: () => void;
+}
+
 //*** THIS COMPONENT IS THE CIRCLE PLUS SIGN WHEN THERE ARE NO EXISTING BLOCKS ***//
-const NewBlock = () => {
+const NewBlock = ({fetchBlocks}: FetchBlocksProp) => {
   const [blockInfo, setBlockInfo] = useState<BlockObjectType>({
     blockName: "",
     name: "",
@@ -71,8 +76,8 @@ const NewBlock = () => {
         picture: blockInfo.picture,
         securityQuestions: securityQuestions
       } )
-
       if (response.status === 201) {
+        fetchBlocks();
         closeModal();
         setBlockInfo({
           blockName: "",

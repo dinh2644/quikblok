@@ -47,21 +47,21 @@ const Home = ({userData}: UserDataProps) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const fetchBlocks = async () => {
+    try {
+      const blockData = await axios.get("/getBlock");
+      setListOfBlocks(blockData.data.myBlocks);
+      setIsLoading(false)
+    } catch (error) {
+      console.error("Error fetching blocks:", error);
+      toast.error("Failed to fetch blocks");
+    }finally{
+      setIsLoading(false)
+    }
+  };
 
   // Fetch user's blocks
   useEffect(() => {
-    const fetchBlocks = async () => {
-      try {
-        const blockData = await axios.get("/getBlock");
-        setListOfBlocks(blockData.data.myBlocks);
-        setIsLoading(false)
-      } catch (error) {
-        console.error("Error fetching blocks:", error);
-        toast.error("Failed to fetch blocks");
-      }finally{
-        setIsLoading(false)
-      }
-    };
     fetchBlocks();
   }, []);
 
@@ -74,20 +74,20 @@ const Home = ({userData}: UserDataProps) => {
   })
 
   // Delete blocks
-  const handleDeleteBlock = (blockId: string) => {
-    axios
-      .delete(`/deleteBlock/${blockId}`)
-      .then(() => {
+  const handleDeleteBlock = async (blockId: string) => {
+    try {
+      const response = await axios.delete(`/deleteBlock/${blockId}`)
+      if(response.status === 201){
         const updatedBlockList = listOfBlocks.filter(
           (block) => block._id !== blockId
         );
         setListOfBlocks(updatedBlockList);
         toast.success("Block deleted");
-        window.location.reload();
-      })
-      .catch((err) => {
-        console.error("Error deleting block: ", err);
-      });
+      }
+    } catch (error) {
+      console.error("Error deleting block", error);
+      
+    }
   };
 
  if(isLoading){
@@ -105,7 +105,8 @@ const Home = ({userData}: UserDataProps) => {
                   <Blocks
                     listOfBlocks={filteredData}
                     handleDeleteBlock={handleDeleteBlock}
-                  />
+                    fetchBlocks={fetchBlocks}
+                  />           
                 </div>
                 <div>
                   {listOfBlocks.length > 0 ? (
@@ -134,7 +135,7 @@ const Home = ({userData}: UserDataProps) => {
                       </div>
                       <div className="row">
                         <div className="d-flex justify-content-center">
-                          <NewBlock />
+                          <NewBlock fetchBlocks={fetchBlocks} />
                         </div>
                       </div>
                     </>

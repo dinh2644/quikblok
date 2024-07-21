@@ -524,7 +524,7 @@ const deleteBlock = async (req, res) => {
     if (!deletedBlock) {
       res.status(404).json({ message: "Block not found" });
     } else {
-      res.json({ message: "Block deleted successfully" });
+      res.status(201).json({ message: "Block deleted successfully" });
     }
   } catch (error) {
     console.error(error);

@@ -23,6 +23,7 @@ interface BlockInfoProp {
 interface BlocksProp {
   listOfBlocks: BlockInfoProp[];
   handleDeleteBlock: (blockId: string) => void;
+  fetchBlocks: ()=>void;
 }
 
 interface SecurityQuestion {
@@ -30,7 +31,7 @@ interface SecurityQuestion {
   answer: string;
 }
 
-const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
+const Blocks = ({ listOfBlocks, handleDeleteBlock, fetchBlocks }: BlocksProp) => {
   const [blockList, setBlockList] = useState<BlockInfoProp[]>(listOfBlocks);
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -67,8 +68,8 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
         })
       );
       setBlockList(decryptedBlocks);
-    };
-    decryptAllPasswords();
+    };      
+      decryptAllPasswords();
   }, [listOfBlocks]);
 
   // Save line edit
@@ -174,7 +175,7 @@ const Blocks = ({ listOfBlocks, handleDeleteBlock }: BlocksProp) => {
             ))
           }
 
-          {listOfBlocks.length > 0 && <NewBlock1 />}
+          {listOfBlocks.length > 0 && <NewBlock1 fetchBlocks={fetchBlocks} />}
 
           {/* Map respective modal for each block */}
           {listOfBlocks.map((item, index: number) => (
