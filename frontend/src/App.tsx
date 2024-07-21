@@ -17,8 +17,8 @@ import Home from './pages/Home';
 import ProfilePage from './pages/ProfilePage';
 
 
-axios.defaults.baseURL = "http://localhost:8000";
-//axios.defaults.baseURL = "https://quikblok.onrender.com";
+//axios.defaults.baseURL = "http://localhost:8000";
+axios.defaults.baseURL = "https://quikblok.onrender.com";
 axios.defaults.withCredentials = true;
 
 const App = () => {
