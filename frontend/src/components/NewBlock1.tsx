@@ -211,6 +211,7 @@ const fileInput = document.getElementById('setpictureInput') as HTMLInputElement
                     name="name"
                     onChange={handleChange}               
                     value={blockInfo.name}
+                    autoComplete="on"
                   />
                 </div>
                 <div className="mb-3">
@@ -226,6 +227,7 @@ const fileInput = document.getElementById('setpictureInput') as HTMLInputElement
                     name="email"
                     onChange={handleChange}               
                     value={blockInfo.email}
+                    autoComplete="on"
                   />
                 </div>
                 <div className="mb-3">
@@ -239,6 +241,7 @@ const fileInput = document.getElementById('setpictureInput') as HTMLInputElement
                     name="username"
                     onChange={handleChange}               
                     value={blockInfo.username}
+                    autoComplete="on"
                   />
                 </div>
                 <div className="mb-3">

@@ -41,7 +41,7 @@ const Navbar = ({userData}: UserDataProps) => {
         </div>
         <div className="nav-item">
           <div className="dropdown">
-            <div className="dropdown-toggle welcomeDropdown" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            <div className="dropdown-toggle welcomeDropdown" id="dropdownMenuButton1" data-bs-toggle="dropdown">
               Hello, {userData}
             </div>
             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
@@ -64,8 +64,7 @@ const Navbar = ({userData}: UserDataProps) => {
       {/* Logout modal */}
       <div
         className="modal fade"
-        id="logoutModal"
-        tabIndex={-1}
+        id="logoutModal" 
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >

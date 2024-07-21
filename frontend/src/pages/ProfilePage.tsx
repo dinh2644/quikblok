@@ -316,8 +316,7 @@ const ProfilePage = ({userData}: UserDataProps) => {
             {/* Logout modal */}
             <div
               className="modal fade"
-              id="logoutModal"
-              tabIndex={-1}
+              id="logoutModal"      
               aria-labelledby="exampleModalLabel"
               aria-hidden="true"
             >

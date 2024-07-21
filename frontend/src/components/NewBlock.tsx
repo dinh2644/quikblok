@@ -156,6 +156,7 @@ const NewBlock = () => {
         className="btn newBlockBtn"
         data-bs-toggle="modal"
         data-bs-target="#staticBackdrop"
+        title="new block button"
       >
         <svg className="svg-circleplus" viewBox="0 0 100 100">
           <circle cx="50" cy="50" r="45" fill="none" strokeWidth="2"></circle>
@@ -168,8 +169,7 @@ const NewBlock = () => {
         className="modal fade"
         id="staticBackdrop"
         data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabIndex={-1}
+        data-bs-keyboard="false" 
         aria-labelledby="staticBackdropLabel"
         aria-hidden="true"
       >
@@ -213,6 +213,7 @@ const NewBlock = () => {
                     name="name"
                     onChange={handleChange}               
                     value={blockInfo.name}
+                    autoComplete="on"
                   />
                 </div>
                 <div className="mb-3">
@@ -227,6 +228,7 @@ const NewBlock = () => {
                     name="email"
                     onChange={handleChange}               
                     value={blockInfo.email}
+                    autoComplete="on"
                   />
                 </div>
                 <div className="mb-3">
@@ -240,6 +242,7 @@ const NewBlock = () => {
                     name="username"
                     onChange={handleChange}               
                     value={blockInfo.username}
+                    autoComplete="on"
                   />
                 </div>
                 <div className="mb-3">

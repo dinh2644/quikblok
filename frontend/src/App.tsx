@@ -17,40 +17,43 @@ import Home from './pages/Home';
 import ProfilePage from './pages/ProfilePage';
 
 
-//axios.defaults.baseURL = "http://localhost:8000";
-axios.defaults.baseURL = "https://quikblok.onrender.com";
+axios.defaults.baseURL = "http://localhost:8000";
+//axios.defaults.baseURL = "https://quikblok.onrender.com";
 axios.defaults.withCredentials = true;
 
 const App = () => {
   const isAuthenticated = !!localStorage.getItem('token')
   const [userData, setUserData] = useState<{[key:string]:any}>({
-    _id: "",
-    firstName: "",
-    password: "",
-    lastName: "",
-    email: "",
-    username: "",
+    userInfo:{
+      _id: "123",
+      firstName: "John",
+      password: "password123",
+      lastName: "Dinh",
+      email: "johndoe@mail.com",
+      username: "johnnydoester",
+
+    }
   })
   
   // Fetch user data
-  useEffect(()=>{
-    const fetchUserData = async()=>{
-      try {
-        const {data} = await axios.get("/");
-        if (data && data.userInfo) {
-          setUserData(data)
-        }else if (data.status === false) {
-          localStorage.removeItem('token');
-          window.location.href="/"
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    if (isAuthenticated) {
-      fetchUserData();
-    }
-  },[])
+  // useEffect(()=>{
+  //   const fetchUserData = async()=>{
+  //     try {
+  //       const {data} = await axios.get("/");
+  //       if (data && data.userInfo) {
+  //         setUserData(data)
+  //       }else if (data.status === false) {
+  //         localStorage.removeItem('token');
+  //         window.location.href="/"
+  //       }
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   }
+  //   if (isAuthenticated) {
+  //     fetchUserData();
+  //   }
+  // },[])
 
 
   return (
