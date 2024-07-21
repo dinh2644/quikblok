@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {Navigate, Route, Routes } from "react-router-dom";
 import { Toaster } from 'react-hot-toast';
 import axios from "axios";
@@ -23,37 +23,35 @@ axios.defaults.withCredentials = true;
 
 const App = () => {
   const isAuthenticated = !!localStorage.getItem('token')
-  const [userData ] = useState<{[key:string]:any}>({
-    userInfo:{
-      _id: "123",
-      firstName: "John",
-      password: "password123",
-      lastName: "Dinh",
-      email: "johndoe@mail.com",
-      username: "johnnydoester",
-
-    }
+  const [userData, setUserData] = useState<{[key:string]:any}>({
+    _id: "",
+    firstName: "",
+    password: "",
+    lastName: "",
+    email: "",
+    username: "",
   })
-
-
-  // useEffect(()=>{
-  //   const fetchUserData = async()=>{
-  //     try {
-  //       const {data} = await axios.get("/");
-  //       if (data && data.userInfo) {
-  //         setUserData(data)
-  //       }else if (data.status === false) {
-  //         localStorage.removeItem('token');
-  //         window.location.href="/"
-  //       }
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   }
-  //   if (isAuthenticated) {
-  //     fetchUserData();
-  //   }
-  // },[])
+  
+  // Fetch user data
+  useEffect(()=>{
+    const fetchUserData = async()=>{
+      try {
+        const {data} = await axios.get("/");
+        if (data && data.userInfo) {
+          setUserData(data)
+        }
+        // }else if (data.status === false) {
+        //   localStorage.removeItem('token');
+        //   window.location.href="/"
+        // }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    //if (isAuthenticated) {
+      fetchUserData();
+   // }
+  },[])
 
 
   return (
